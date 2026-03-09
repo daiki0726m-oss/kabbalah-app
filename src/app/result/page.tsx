@@ -2,8 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
-import { Lock, Sparkles, CheckCircle2, TrendingUp, Heart, Briefcase, Calendar, Star, LineChart, ShieldCheck } from "lucide-react";
-import Link from "next/link";
+import { Lock, Sparkles, Heart, Briefcase, Star, LineChart, ShieldCheck, Compass, Feather, CalendarDays, BookOpen } from "lucide-react";
 import { motion } from "framer-motion";
 
 function ResultTeaserContent() {
@@ -38,178 +37,209 @@ function ResultTeaserContent() {
   };
 
   return (
-    <main className="min-h-screen bg-[#0A0F1C] text-slate-300 font-serif overflow-x-hidden selection:bg-[#D4AF37] selection:text-white pb-32">
+    <main className="min-h-screen bg-[#FDFBF7] text-[#4A4036] font-serif overflow-x-hidden selection:bg-[#E5D3B3] selection:text-[#4A4036]">
       
-      {/* Header */}
-      <nav className="w-full max-w-4xl mx-auto px-6 py-8 text-center border-b border-white/5 relative z-10">
-        <h1 className="text-xl tracking-[0.3em] text-[#D4AF37]">基本鑑定結果（無料版）</h1>
-        <p className="text-xs text-slate-500 mt-3 tracking-widest font-sans">Kabbalah Numerology Initial Report</p>
+      {/* Top Navigation */}
+      <nav className="w-full bg-[#FDFBF7]/90 backdrop-blur-md border-b border-[#EAE3D9]">
+        <div className="max-w-3xl mx-auto px-6 h-14 flex items-center justify-between">
+          <div className="text-sm font-light tracking-widest text-[#4A4036] flex items-center gap-2">
+            <Feather className="w-4 h-4 text-[#CFA770]" strokeWidth={1.5} />
+            <span>Kabbalah 鑑定室</span>
+          </div>
+          <span className="text-[10px] tracking-[0.15em] text-[#8A7A6A] font-sans">基本鑑定結果</span>
+        </div>
       </nav>
 
-      {/* Mystical Background Polish */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-[#D4AF37]/5 rounded-full blur-[120px]"></div>
-      </div>
+      {/* Gold Ribbon */}
+      <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-[#D4AF37]/40 to-transparent"></div>
 
-      <div className="max-w-4xl mx-auto mt-12 px-5 relative z-10">
+      <div className="max-w-3xl mx-auto px-5 pb-32">
         
         {/* FREE SECTION: The Teaser */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
+        <motion.section 
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          className="bg-[#111827]/80 backdrop-blur-sm border border-[#D4AF37]/20 rounded-sm p-8 md:p-14 shadow-2xl mb-16 relative overflow-hidden"
+          transition={{ duration: 0.8 }}
+          className="mt-12"
         >
-          {/* Decorative Corner */}
-          <div className="absolute top-0 left-0 w-16 h-16 border-t border-l border-[#D4AF37]/30"></div>
-          <div className="absolute bottom-0 right-0 w-16 h-16 border-b border-r border-[#D4AF37]/30"></div>
-
-          <div className="text-center mb-10 pb-10 border-b border-white/5">
-            <Sparkles className="text-[#D4AF37] w-8 h-8 mx-auto mb-6" />
-            <h2 className="text-2xl md:text-3xl text-white tracking-widest font-light mb-4">
-              {name} 様の基本性質<br className="block sm:hidden"/><span className="text-lg md:text-xl text-[#D4AF37] mt-2 block">（マスターナンバー・ライフパス）</span>
-            </h2>
-            <p className="text-sm text-slate-400 tracking-wider">カバラ数秘術による第一層の鑑定結果</p>
-          </div>
-          
-          <div className="space-y-6 leading-[2.2] tracking-wider text-[15px] md:text-lg text-slate-300 font-light text-justify md:text-left indent-4 md:indent-0">
-            <p>
-              生年月日とお名前の音韻から導き出されたあなたのマスターナンバーは、極めて直感力に優れ、人には見えない真理を捉える力を持つ特別な数字です。
-            </p>
-            <p>
-              表向きには周囲との調和を重んじる温和な性質を見せながらも、あなたの心の奥底には「誰にも縛られず、独自の美学を貫きたい」という強い欲求（ソウル・ナンバー）が眠っています。この数年は、その内なる欲求と現実とのギャップに苦しむことが多かったのではないでしょうか。
-            </p>
-            <p>
-              しかし、カバラのバイオリズム方程式によれば、あなたの人生は間もなく<span className="text-[#D4AF37] font-medium tracking-widest">「第一の大きなステージクリア（The Shift）」</span>を迎えます。これまでの苦労が、まったく新しい形で実を結ぶ特異点です。
-            </p>
-          </div>
-        </motion.div>
-
-        {/* PAYWALL SECTION: Showing the Value of the 10,000 character report */}
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 0.5 }}
-          className="relative mt-12"
-        >
-          {/* Header for Paid Content */}
-          <div className="text-center mb-12">
-            <h3 className="text-2xl md:text-3xl text-white tracking-widest font-light mb-4">
-              専門書1冊分（10,000文字）の<br className="block sm:hidden"/>完全版鑑定書でわかること
-            </h3>
-            <p className="text-sm md:text-base text-slate-400 tracking-wider">
-              熟練の鑑定士のみが読み解ける、あなたの人生の「5つの核心」
-            </p>
+          {/* Cover Header */}
+          <div className="text-center mb-10">
+            <div className="flex justify-center mb-5">
+              <div className="w-12 h-12 rounded-full border border-[#D4AF37]/30 flex items-center justify-center bg-[#FAF8F5]">
+                <Compass className="w-6 h-6 text-[#D4AF37]" strokeWidth={1.5} />
+              </div>
+            </div>
+            <h2 className="text-[10px] tracking-[0.2em] text-[#D4AF37] uppercase font-sans font-bold mb-4">Initial Report</h2>
+            <h1 className="text-2xl md:text-3xl font-medium text-[#2C241B] tracking-widest leading-relaxed mb-3">
+              {name} 様の基本性質
+            </h1>
+            <p className="text-sm text-[#8A7A6A] tracking-wider">カバラ数秘術による第一層の鑑定結果</p>
           </div>
 
-          {/* Faked Premium Content Structure (Blurred Background Layer) */}
-          <div className="bg-[#111827] border border-white/5 rounded-sm p-8 md:p-12 shadow-2xl relative select-none overflow-hidden">
+          {/* Divider */}
+          <div className="flex items-center justify-center gap-4 mb-10">
+            <div className="flex-1 h-[1px] bg-gradient-to-r from-transparent to-[#EAE3D9]"></div>
+            <Sparkles className="w-4 h-4 text-[#CFA770]" strokeWidth={1.5} />
+            <div className="flex-1 h-[1px] bg-gradient-to-l from-transparent to-[#EAE3D9]"></div>
+          </div>
+
+          {/* Teaser Body Text */}
+          <div className="bg-white border border-[#EAE3D9] rounded-sm p-8 md:p-12 shadow-sm relative overflow-hidden">
+            {/* Decorative Corner */}
+            <div className="absolute top-0 left-0 w-12 h-12 border-t border-l border-[#D4AF37]/20"></div>
+            <div className="absolute bottom-0 right-0 w-12 h-12 border-b border-r border-[#D4AF37]/20"></div>
             
-            <div className="blur-[12px] opacity-30 space-y-16 pointer-events-none">
-              
-              {/* Fake Category 1 */}
-              <div>
-                <h4 className="text-xl text-white mb-6 border-b border-white/10 pb-4">1. 2026年〜2027年の絶対的運勢バイオリズム</h4>
-                {/* Visual Chart Placeholder */}
-                <div className="w-full h-32 flex items-end gap-2 border-b border-white/20 pb-2 mb-6">
-                  {[20, 40, 30, 60, 80, 50, 90, 100, 70, 85, 95, 110].map((h, i) => (
-                    <div key={i} className="flex-1 bg-[#D4AF37] opacity-60 rounded-t-sm" style={{ height: `${h}%` }}></div>
-                  ))}
-                </div>
-                <p className="leading-loose text-lg">このグラフが示す通り、あなたの運気は今年の中盤から急激な上昇曲線を描きます。特に秋口の「木星」の影響圏内に入るタイミングで、これまで停滞していた物事が一気に動き出します。この時期に絶対に逃してはいけないサインは...</p>
-              </div>
-
-              {/* Fake Category 2 & 3 Grid */}
-              <div className="grid grid-cols-2 gap-8">
-                <div>
-                  <h4 className="text-xl text-white mb-4">2. 天職と富の引き寄せ</h4>
-                  <p className="leading-loose text-lg">あなたのディスティニーナンバーが示す本当の適職は、現状の延長線上にはありません。ゼロから生み出すのではなく、既存の価値を全く違う角度から結びつける仕事。具体的には...</p>
-                </div>
-                <div>
-                  <h4 className="text-xl text-white mb-4">3. 運命の相手と惹かれ合う条件</h4>
-                  <p className="leading-loose text-lg">あなたとソウルメイトになる人間の特徴は非常に明確です。過去に出会った○○のようなタイプではなく、全く逆の属性を持つ人物。その人物が現れる時期は正確に言うと...</p>
-                </div>
-              </div>
-
+            <div className="space-y-6 leading-[2.2] tracking-wider text-[14px] md:text-[15px] text-[#3A332C] font-medium text-justify">
+              <p>
+                生年月日とお名前の音韻から導き出されたあなたのマスターナンバーは、極めて直感力に優れ、人には見えない真理を捉える力を持つ特別な数字です。
+              </p>
+              <p>
+                表向きには周囲との調和を重んじる温和な性質を見せながらも、あなたの心の奥底には「誰にも縛られず、独自の美学を貫きたい」という強い欲求（ソウル・ナンバー）が眠っています。この数年は、その内なる欲求と現実とのギャップに苦しむことが多かったのではないでしょうか。
+              </p>
+              <p>
+                しかし、カバラのバイオリズム方程式によれば、あなたの人生は間もなく<span className="text-[#A51C1C] font-bold" style={{ background: 'linear-gradient(to top, rgba(212, 175, 55, 0.2) 0%, transparent 100%)', padding: '0 2px' }}>「第一の大きなステージクリア（The Shift）」</span>を迎えます。これまでの苦労が、まったく新しい形で実を結ぶ特異点です。
+              </p>
             </div>
 
-            {/* Paywall Overlay Panel (The actual CTA) */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0A0F1C] via-[#0A0F1C]/90 to-transparent flex flex-col items-center justify-end px-4 sm:px-6 pb-12 pt-32">
+            {/* Fade out at the bottom to suggest more content */}
+            <div className="mt-8 pt-8 border-t border-dashed border-[#EAE3D9] text-center">
+              <p className="text-xs text-[#8A7A6A] tracking-widest leading-relaxed">
+                ここまでが無料でご覧いただける鑑定結果の範囲です。<br />
+                この先にある「人生の核心」をお読みになりたい方は、以下をご確認ください。
+              </p>
+            </div>
+          </div>
+        </motion.section>
+
+        {/* PAYWALL SECTION */}
+        <motion.section
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="mt-16"
+        >
+          {/* Header */}
+          <div className="text-center mb-10">
+            <h3 className="text-xl md:text-2xl font-light text-[#2C241B] tracking-widest mb-3">
+              完全版鑑定書でわかること
+            </h3>
+            <p className="text-sm text-[#8A7A6A] tracking-widest">
+              熟練の鑑定士があなただけに綴る、10,000文字の深い洞察
+            </p>
+          </div>
+
+          {/* Blurred Preview + CTA Card */}
+          <div className="bg-white border border-[#EAE3D9] rounded-sm shadow-sm relative select-none overflow-hidden">
+            
+            {/* Blurred fake content to show volume/value */}
+            <div className="blur-[10px] opacity-20 space-y-12 p-8 md:p-12 pointer-events-none">
+              <div>
+                <h4 className="text-lg text-[#2C241B] mb-4 border-b border-[#EAE3D9] pb-3">1. 2026年〜2027年の運勢バイオリズム</h4>
+                <div className="w-full h-28 flex items-end gap-2 border-b border-[#EAE3D9] pb-2 mb-4">
+                  {[20, 40, 30, 60, 80, 50, 90, 100, 70, 85, 95, 110].map((h, i) => (
+                    <div key={i} className="flex-1 bg-[#CFA770] rounded-t-sm" style={{ height: `${h}%` }}></div>
+                  ))}
+                </div>
+                <p className="leading-loose">このグラフが示す通り、あなたの運気は今年の中盤から急激な上昇曲線を描きます。特に秋口の「木星」の影響圏内に入るタイミングで、これまで停滞していた物事が一気に動き出します…</p>
+              </div>
+              <div className="grid grid-cols-2 gap-6">
+                <div>
+                  <h4 className="text-lg text-[#2C241B] mb-3">2. 天職と富の引き寄せ</h4>
+                  <p className="leading-loose">あなたのディスティニーナンバーが示す本当の適職は、現状の延長線上にはありません。具体的には…</p>
+                </div>
+                <div>
+                  <h4 className="text-lg text-[#2C241B] mb-3">3. 運命の相手と惹かれ合う条件</h4>
+                  <p className="leading-loose">あなたとソウルメイトになる人間の特徴は非常に明確です。その人物が現れる時期は…</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Paywall Overlay (The actual CTA) */}
+            <div className="absolute inset-0 bg-gradient-to-t from-[#FDFBF7] via-[#FDFBF7]/95 to-[#FDFBF7]/60 flex flex-col items-center justify-end px-4 sm:px-6 pb-10 pt-20">
               
-              <div className="bg-[#111827]/95 backdrop-blur-xl border border-[#D4AF37]/40 p-6 sm:p-10 md:p-12 w-full max-w-2xl text-center shadow-[0_0_50px_rgba(212,175,55,0.1)] rounded-sm transform translate-y-8">
-                <Lock className="w-10 h-10 text-[#D4AF37] mx-auto mb-6" />
-                <h3 className="text-xl md:text-2xl text-white tracking-widest font-medium mb-4">
-                  ここから先は「完全版鑑定（有料）」です
+              <div className="bg-white border border-[#EAE3D9] p-6 sm:p-10 md:p-12 w-full max-w-2xl text-center shadow-[0_4px_30px_rgba(0,0,0,0.06)] rounded-sm">
+                <div className="w-14 h-14 rounded-full border border-[#D4AF37]/30 flex items-center justify-center bg-[#FAF8F5] mx-auto mb-6">
+                  <Lock className="w-6 h-6 text-[#D4AF37]" strokeWidth={1.5} />
+                </div>
+                <h3 className="text-lg md:text-xl text-[#2C241B] tracking-widest font-medium mb-3">
+                  ここから先は「完全版鑑定」です
                 </h3>
-                <p className="text-sm md:text-[15px] text-slate-300 leading-relaxed mb-10 tracking-wide font-light">
-                  カバラ数秘術の全アルゴリズム（姓名数・誕生数・年運数）を結合し、<span className="text-white font-medium">以下のカテゴリー</span>について10,000文字の緻密な鑑定書（PDF）を即座に発行します。
+                <p className="text-sm text-[#6A5A4A] leading-relaxed mb-8 tracking-wide font-light max-w-md mx-auto">
+                  カバラ数秘術の全アルゴリズムを結合し、以下のカテゴリーについて10,000文字の緻密な鑑定書を即座に発行します。
                 </p>
                 
                 {/* Visual List of Paid Contents */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 mb-10 text-left w-full mx-auto">
-                  <div className="flex items-start gap-3 bg-white/5 p-4 rounded-sm border border-white/5">
-                    <LineChart className="w-5 h-5 text-[#D4AF37] shrink-0 mt-0.5" /> 
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8 text-left w-full mx-auto">
+                  <div className="flex items-start gap-3 bg-[#FAF8F5] p-4 rounded-sm border border-[#EAE3D9]">
+                    <LineChart className="w-5 h-5 text-[#CFA770] shrink-0 mt-0.5" strokeWidth={1.5} /> 
                     <div>
-                      <span className="text-white text-sm tracking-widest block mb-1">直近3年間の運勢バイオリズム</span>
-                      <span className="text-xs text-slate-400 leading-snug block">停滞期と飛躍の時期（2026年〜2028年）の波をグラフ化し、動くべき月を特定。</span>
+                      <span className="text-[#2C241B] text-sm tracking-widest block mb-1 font-medium">運勢バイオリズム</span>
+                      <span className="text-xs text-[#8A7A6A] leading-snug block">10年＋12ヶ月のグラフで動くべき時期を特定</span>
                     </div>
                   </div>
-                  <div className="flex items-start gap-3 bg-white/5 p-4 rounded-sm border border-white/5">
-                    <Briefcase className="w-5 h-5 text-[#D4AF37] shrink-0 mt-0.5" /> 
+                  <div className="flex items-start gap-3 bg-[#FAF8F5] p-4 rounded-sm border border-[#EAE3D9]">
+                    <Briefcase className="w-5 h-5 text-[#CFA770] shrink-0 mt-0.5" strokeWidth={1.5} /> 
                     <div>
-                      <span className="text-white text-sm tracking-widest block mb-1">適職と財を成す才能</span>
-                      <span className="text-xs text-slate-400 leading-snug block">あなたが本当に稼げる環境、避けるべき働き方、隠された才能の活かし方。</span>
+                      <span className="text-[#2C241B] text-sm tracking-widest block mb-1 font-medium">適職と財を成す才能</span>
+                      <span className="text-xs text-[#8A7A6A] leading-snug block">本当に稼げる環境と隠された才能の活かし方</span>
                     </div>
                   </div>
-                  <div className="flex items-start gap-3 bg-white/5 p-4 rounded-sm border border-white/5">
-                    <Heart className="w-5 h-5 text-[#D4AF37] shrink-0 mt-0.5" /> 
+                  <div className="flex items-start gap-3 bg-[#FAF8F5] p-4 rounded-sm border border-[#EAE3D9]">
+                    <Heart className="w-5 h-5 text-[#CFA770] shrink-0 mt-0.5" strokeWidth={1.5} /> 
                     <div>
-                      <span className="text-white text-sm tracking-widest block mb-1">運命の相手と惹かれ合う時期</span>
-                      <span className="text-xs text-slate-400 leading-snug block">ソウルメイトの特徴（容姿・職業・性格）と、二人が出会う強烈なタイミング。</span>
+                      <span className="text-[#2C241B] text-sm tracking-widest block mb-1 font-medium">運命の相手と出会う時期</span>
+                      <span className="text-xs text-[#8A7A6A] leading-snug block">ソウルメイトの特徴と出会いの強烈なタイミング</span>
                     </div>
                   </div>
-                  <div className="flex items-start gap-3 bg-white/5 p-4 rounded-sm border border-white/5">
-                    <Star className="w-5 h-5 text-[#D4AF37] shrink-0 mt-0.5" /> 
+                  <div className="flex items-start gap-3 bg-[#FAF8F5] p-4 rounded-sm border border-[#EAE3D9]">
+                    <Star className="w-5 h-5 text-[#CFA770] shrink-0 mt-0.5" strokeWidth={1.5} /> 
                     <div>
-                      <span className="text-white text-sm tracking-widest block mb-1">魂の課題とカルマ</span>
-                      <span className="text-xs text-slate-400 leading-snug block">なぜ同じパターンで人間関係につまずくのか。その根本原因と解決策。</span>
+                      <span className="text-[#2C241B] text-sm tracking-widest block mb-1 font-medium">魂の課題とカルマ</span>
+                      <span className="text-xs text-[#8A7A6A] leading-snug block">同じ失敗パターンの根本原因と解決策</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="border-t border-white/10 pt-8">
-                  <p className="text-3xl text-white mb-6 font-medium font-sans tracking-wide flex items-center justify-center gap-2">
-                    ¥2,980 <span className="text-sm text-slate-500 font-normal mt-2">（税込・一括買取）</span>
+                <div className="border-t border-[#EAE3D9] pt-6">
+                  <p className="text-2xl md:text-3xl text-[#2C241B] mb-5 font-medium font-sans tracking-wide flex items-center justify-center gap-2">
+                    ¥2,980 <span className="text-xs text-[#8A7A6A] font-normal mt-1">（税込・一括買取）</span>
                   </p>
                   
                   <button 
                     onClick={handleCheckout}
                     disabled={loading}
-                    className="btn-gold w-full py-5 rounded-sm shadow-[0_0_20px_rgba(212,175,55,0.3)] bg-gradient-to-r from-[#B8972E] to-[#D4AF37] text-white font-medium tracking-widest text-lg transition-all hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(212,175,55,0.5)] disabled:opacity-50 disabled:hover:scale-100 flex justify-center items-center"
+                    className="w-full py-4 rounded-sm shadow-md bg-[#CFA770] hover:bg-[#B69260] text-white font-medium tracking-widest text-base transition-all disabled:bg-[#EAE3D9] disabled:cursor-not-allowed flex justify-center items-center"
                   >
                     {loading ? (
-                      <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                     ) : (
-                      "完全版鑑定書（10,000文字）を受け取る"
+                      "完全版鑑定書を受け取る"
                     )}
                   </button>
-                  <p className="mt-5 text-[11px] text-slate-500 tracking-wider font-sans">
-                    <ShieldCheck className="w-3 h-3 inline mr-1 -mt-0.5"/>
-                    Stripe社による安全なSSL暗号化決済。決済完了後、即座にPDFをダウンロード可能です。
+                  <p className="mt-4 text-[11px] text-[#8A7A6A] tracking-wider font-sans flex items-center justify-center gap-1">
+                    <ShieldCheck className="w-3 h-3 inline -mt-0.5"/>
+                    Stripe社による安全なSSL暗号化決済
                   </p>
                 </div>
               </div>
             </div>
           </div>
-        </motion.div>
+        </motion.section>
       </div>
+
+      {/* Footer */}
+      <footer className="bg-[#FAF4EA] py-8 text-center border-t border-[#EAE3D9]">
+        <div className="text-[10px] text-[#8A7A6A] tracking-[0.2em] font-sans uppercase">
+          &copy; 2026 Kabbalah 鑑定室
+        </div>
+      </footer>
     </main>
   );
 }
 
 export default function ResultTeaserPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#0A0F1C]" />}>
+    <Suspense fallback={<div className="min-h-screen bg-[#FDFBF7]" />}>
       <ResultTeaserContent />
     </Suspense>
   );
