@@ -244,39 +244,95 @@ function ResultTeaserContent() {
             <h2 className="text-lg md:text-xl font-light text-[#2C241B] tracking-widest mb-2">
               あなたの2026年 ─ 月別運勢
             </h2>
-            <p className="text-xs text-[#8A7A6A] tracking-widest">最初の3ヶ月分をお見せします</p>
+            <p className="text-xs text-[#8A7A6A] tracking-widest">1月の詳細鑑定結果をお見せします</p>
           </div>
 
           <div className="space-y-4">
-            {profile.monthlyTeaser.map((text, idx) => (
-              <div key={idx} className="bg-white border border-[#EAE3D9] rounded-sm p-5 md:p-6 shadow-sm">
-                <div className="flex items-center gap-3 mb-3">
-                  <span className="text-[10px] font-bold tracking-widest text-[#8A7A6A] font-sans uppercase">2026</span>
-                  <span className="text-xl text-[#CFA770] font-bold">{idx + 1}月</span>
+            {profile.monthlyTeaser.map((m) => (
+              <div key={m.month} className="bg-white border border-[#EAE3D9] rounded-sm shadow-sm overflow-hidden">
+                {/* Month Header */}
+                <div className="bg-gradient-to-r from-[#FAF4EA] to-white px-5 md:px-6 py-4 border-b border-[#EAE3D9]">
+                  <div className="flex items-center gap-3">
+                    <span className="text-[10px] font-bold tracking-widest text-[#8A7A6A] font-sans uppercase">2026</span>
+                    <span className="text-xl text-[#CFA770] font-bold">{m.month}月</span>
+                    <span className="text-sm text-[#4A4036] tracking-wider ml-1">─ {m.title}</span>
+                  </div>
+                  <p className="text-sm text-[#4A4036] leading-[2] tracking-wider mt-3">{m.overall}</p>
                 </div>
-                <p className="text-sm text-[#4A4036] leading-[2] tracking-wider">{text}</p>
+
+                {/* Subcategories */}
+                <div className="divide-y divide-[#EAE3D9]">
+                  <div className="px-5 md:px-6 py-4 flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-full bg-[#FAF4EA] border border-[#EAE3D9] flex items-center justify-center shrink-0 mt-0.5">
+                      <Briefcase className="w-4 h-4 text-[#CFA770]" strokeWidth={1.5} />
+                    </div>
+                    <div>
+                      <p className="text-[10px] tracking-[0.15em] text-[#CFA770] uppercase font-sans font-bold mb-1">仕事運</p>
+                      <p className="text-sm text-[#4A4036] leading-[2] tracking-wider">{m.work}</p>
+                    </div>
+                  </div>
+                  <div className="px-5 md:px-6 py-4 flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-full bg-[#FAF4EA] border border-[#EAE3D9] flex items-center justify-center shrink-0 mt-0.5">
+                      <TrendingUp className="w-4 h-4 text-[#CFA770]" strokeWidth={1.5} />
+                    </div>
+                    <div>
+                      <p className="text-[10px] tracking-[0.15em] text-[#CFA770] uppercase font-sans font-bold mb-1">金運</p>
+                      <p className="text-sm text-[#4A4036] leading-[2] tracking-wider">{m.finance}</p>
+                    </div>
+                  </div>
+                  <div className="px-5 md:px-6 py-4 flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-full bg-[#FAF4EA] border border-[#EAE3D9] flex items-center justify-center shrink-0 mt-0.5">
+                      <Heart className="w-4 h-4 text-[#CFA770]" strokeWidth={1.5} />
+                    </div>
+                    <div>
+                      <p className="text-[10px] tracking-[0.15em] text-[#CFA770] uppercase font-sans font-bold mb-1">恋愛運</p>
+                      <p className="text-sm text-[#4A4036] leading-[2] tracking-wider">{m.love}</p>
+                    </div>
+                  </div>
+                  <div className="px-5 md:px-6 py-4 flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-full bg-[#FAF4EA] border border-[#EAE3D9] flex items-center justify-center shrink-0 mt-0.5">
+                      <ShieldCheck className="w-4 h-4 text-[#CFA770]" strokeWidth={1.5} />
+                    </div>
+                    <div>
+                      <p className="text-[10px] tracking-[0.15em] text-[#CFA770] uppercase font-sans font-bold mb-1">健康運</p>
+                      <p className="text-sm text-[#4A4036] leading-[2] tracking-wider">{m.health}</p>
+                    </div>
+                  </div>
+                </div>
               </div>
             ))}
 
-            {/* Fade-out cliffhanger for months 4-12 */}
+            {/* Fade-out cliffhanger for month 2 */}
             <div className="relative">
-              <div className="bg-white border border-[#EAE3D9] rounded-sm p-5 md:p-6 shadow-sm overflow-hidden">
-                <div className="flex items-center gap-3 mb-3">
-                  <span className="text-[10px] font-bold tracking-widest text-[#8A7A6A] font-sans uppercase">2026</span>
-                  <span className="text-xl text-[#CFA770] font-bold">4月</span>
+              <div className="bg-white border border-[#EAE3D9] rounded-sm shadow-sm overflow-hidden">
+                <div className="bg-gradient-to-r from-[#FAF4EA] to-white px-5 md:px-6 py-4 border-b border-[#EAE3D9]">
+                  <div className="flex items-center gap-3">
+                    <span className="text-[10px] font-bold tracking-widest text-[#8A7A6A] font-sans uppercase">2026</span>
+                    <span className="text-xl text-[#CFA770] font-bold">2月</span>
+                    <span className="text-sm text-[#4A4036] tracking-wider ml-1">─ 転機の月</span>
+                  </div>
+                  <p className="text-sm text-[#4A4036] leading-[2] tracking-wider mt-3">
+                    2月はあなたにとって「人生の分岐点」となる重要な月です。この月に起きる出来事が、今後3年間の…
+                  </p>
                 </div>
-                <p className="text-sm text-[#4A4036] leading-[2] tracking-wider">
-                  4月はあなたにとって「人生の分岐点」となる重要な月です。この月に起きる出来事が、今後3年間の…
-                </p>
+                <div className="px-5 md:px-6 py-4 flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-full bg-[#FAF4EA] border border-[#EAE3D9] flex items-center justify-center shrink-0 mt-0.5">
+                    <Briefcase className="w-4 h-4 text-[#CFA770]" strokeWidth={1.5} />
+                  </div>
+                  <div>
+                    <p className="text-[10px] tracking-[0.15em] text-[#CFA770] uppercase font-sans font-bold mb-1">仕事運</p>
+                    <p className="text-sm text-[#4A4036] leading-[2] tracking-wider">上半期最大のチャンスが訪れます。ただしそのチャンスは、一見「困難」の姿をして…</p>
+                  </div>
+                </div>
               </div>
               {/* Gradient fade */}
-              <div className="absolute bottom-0 left-0 right-0 h-full bg-gradient-to-t from-[#FDFBF7] via-[#FDFBF7]/80 to-transparent rounded-sm pointer-events-none"></div>
+              <div className="absolute bottom-0 left-0 right-0 h-3/4 bg-gradient-to-t from-[#FDFBF7] via-[#FDFBF7]/90 to-transparent rounded-sm pointer-events-none"></div>
             </div>
           </div>
 
           <div className="text-center mt-6">
             <p className="text-xs text-[#8A7A6A] tracking-widest flex items-center justify-center gap-1">
-              <ChevronRight className="w-3 h-3" /> 4月〜12月の詳細は完全版鑑定書に収録
+              <ChevronRight className="w-3 h-3" /> 2月〜12月の詳細は完全版鑑定書に収録
             </p>
           </div>
         </motion.section>
