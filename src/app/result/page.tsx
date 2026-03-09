@@ -202,7 +202,7 @@ function ResultTeaserContent() {
 
                 <div className="border-t border-[#EAE3D9] pt-6">
                   <p className="text-2xl md:text-3xl text-[#2C241B] mb-5 font-medium font-sans tracking-wide flex items-center justify-center gap-2">
-                    ¥2,980 <span className="text-xs text-[#8A7A6A] font-normal mt-1">（税込・一括買取）</span>
+                    ¥980 <span className="text-xs text-[#8A7A6A] font-normal mt-1">（税込・一括買取）</span>
                   </p>
                   
                   <button 
