@@ -1,12 +1,12 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { Lock, Sparkles, CheckCircle2, TrendingUp, Heart, Briefcase, Calendar, Star, LineChart, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 
-export default function ResultTeaserPage() {
+function ResultTeaserContent() {
   const searchParams = useSearchParams();
   const rawName = searchParams.get("name") || "あなた";
   const rawDob = searchParams.get("dob") || "1990-01-01";
@@ -204,5 +204,13 @@ export default function ResultTeaserPage() {
         </motion.div>
       </div>
     </main>
+  );
+}
+
+export default function ResultTeaserPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#0A0F1C]" />}>
+      <ResultTeaserContent />
+    </Suspense>
   );
 }

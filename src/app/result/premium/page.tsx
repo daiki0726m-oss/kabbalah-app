@@ -1,12 +1,12 @@
 'use client';
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from 'next/navigation';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { motion } from "framer-motion";
 import { Compass, Briefcase, Heart, ShieldCheck, Users, Sparkles, Star, CalendarDays, Coins, CheckCircle2 } from "lucide-react";
 
-export default function PremiumLivePage() {
+function PremiumLiveContent() {
   const searchParams = useSearchParams();
   const sessionId = searchParams.get('session_id');
 
@@ -375,5 +375,13 @@ export default function PremiumLivePage() {
         }
       `}} />
     </div>
+  );
+}
+
+export default function PremiumLivePage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#FDFBF7]" />}>
+      <PremiumLiveContent />
+    </Suspense>
   );
 }
