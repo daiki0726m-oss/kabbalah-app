@@ -17,14 +17,7 @@ export async function POST(req: Request) {
       payment_method_types: ['card'],
       line_items: [
         {
-          price_data: {
-            currency: 'jpy',
-            product_data: {
-              name: 'カバラ数秘術 完全鑑定書（プレミアムレポート）',
-              description: '人生の羅針盤となる、あなただけの数万文字におよぶパーソナル鑑定書データの生成と送付。',
-            },
-            unit_amount: 3000, // 3,000 JPY
-          },
+          price: 'price_1T92FsEEPLYPnKaY7lepgmS7',
           quantity: 1,
         },
       ],
