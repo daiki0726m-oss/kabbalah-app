@@ -2,7 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 import { Suspense, useState, useEffect, useMemo } from "react";
-import { Lock, Sparkles, Heart, Briefcase, Star, ShieldCheck, Compass, Feather, Sun, Moon, Gem, TrendingUp, Users, ChevronRight, Clock, Crown, Check } from "lucide-react";
+import { Lock, Sparkles, Heart, Briefcase, Star, ShieldCheck, Compass, Feather, Sun, Moon, Gem, TrendingUp, Users, ChevronRight, Clock, Crown, Check, X } from "lucide-react";
 import { motion } from "framer-motion";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from "recharts";
 import { calculateLifePathNumber, generateBiorhythm, personalityData } from "@/lib/numerology";
@@ -383,22 +383,34 @@ function ResultTeaserContent() {
               </h3>
               <p className="text-xs text-[#8A7A6A] tracking-wider mb-4">10,000文字のパーソナル鑑定書</p>
 
-              <div className="space-y-2 text-left text-sm mb-6 flex-1">
+              <div className="space-y-2.5 text-left text-sm mb-6 flex-1">
                 <div className="flex items-start gap-2">
                   <Check className="w-4 h-4 text-[#CFA770] shrink-0 mt-0.5" strokeWidth={2} />
-                  <span className="text-[#4A4036] tracking-wider">12ヶ月分の月別運勢</span>
+                  <span className="text-[#4A4036] tracking-wider">魂の設計図（光・影・才能）</span>
                 </div>
                 <div className="flex items-start gap-2">
                   <Check className="w-4 h-4 text-[#CFA770] shrink-0 mt-0.5" strokeWidth={2} />
-                  <span className="text-[#4A4036] tracking-wider">天職と財を成す才能</span>
+                  <span className="text-[#4A4036] tracking-wider">10年間の人生バイオリズム</span>
                 </div>
                 <div className="flex items-start gap-2">
                   <Check className="w-4 h-4 text-[#CFA770] shrink-0 mt-0.5" strokeWidth={2} />
-                  <span className="text-[#4A4036] tracking-wider">運命の相手と出会う時期</span>
+                  <span className="text-[#4A4036] tracking-wider">12ヶ月の行動指針（仕事/金/健康/対人）</span>
                 </div>
                 <div className="flex items-start gap-2">
                   <Check className="w-4 h-4 text-[#CFA770] shrink-0 mt-0.5" strokeWidth={2} />
-                  <span className="text-[#4A4036] tracking-wider">魂の課題とカルマ</span>
+                  <span className="text-[#4A4036] tracking-wider">運命の転機（人生を変える1日）</span>
+                </div>
+                <div className="flex items-start gap-2 opacity-40">
+                  <X className="w-4 h-4 text-[#8A7A6A] shrink-0 mt-0.5" strokeWidth={2} />
+                  <span className="text-[#8A7A6A] tracking-wider line-through">相性診断（1件分）</span>
+                </div>
+                <div className="flex items-start gap-2 opacity-40">
+                  <X className="w-4 h-4 text-[#8A7A6A] shrink-0 mt-0.5" strokeWidth={2} />
+                  <span className="text-[#8A7A6A] tracking-wider line-through">ラッキーアクション365日分</span>
+                </div>
+                <div className="flex items-start gap-2 opacity-40">
+                  <X className="w-4 h-4 text-[#8A7A6A] shrink-0 mt-0.5" strokeWidth={2} />
+                  <span className="text-[#8A7A6A] tracking-wider line-through">1年後フォローアップ鑑定権</span>
                 </div>
               </div>
 
@@ -436,22 +448,34 @@ function ResultTeaserContent() {
               </h3>
               <p className="text-xs text-[#8A7A6A] tracking-wider mb-4">スタンダード全内容 + 特別鑑定</p>
 
-              <div className="space-y-2 text-left text-sm mb-6 flex-1">
+              <div className="space-y-2.5 text-left text-sm mb-6 flex-1">
                 <div className="flex items-start gap-2">
                   <Check className="w-4 h-4 text-[#D4AF37] shrink-0 mt-0.5" strokeWidth={2} />
-                  <span className="text-[#4A4036] tracking-wider font-medium">スタンダードの全内容</span>
+                  <span className="text-[#4A4036] tracking-wider">魂の設計図（光・影・才能）</span>
                 </div>
                 <div className="flex items-start gap-2">
                   <Check className="w-4 h-4 text-[#D4AF37] shrink-0 mt-0.5" strokeWidth={2} />
-                  <span className="text-[#4A4036] tracking-wider"><strong>相性診断</strong>（1件分）</span>
+                  <span className="text-[#4A4036] tracking-wider">10年間の人生バイオリズム</span>
                 </div>
                 <div className="flex items-start gap-2">
                   <Check className="w-4 h-4 text-[#D4AF37] shrink-0 mt-0.5" strokeWidth={2} />
-                  <span className="text-[#4A4036] tracking-wider">ラッキーアクション365日分</span>
+                  <span className="text-[#4A4036] tracking-wider">12ヶ月の行動指針（仕事/金/健康/対人）</span>
                 </div>
                 <div className="flex items-start gap-2">
                   <Check className="w-4 h-4 text-[#D4AF37] shrink-0 mt-0.5" strokeWidth={2} />
-                  <span className="text-[#4A4036] tracking-wider">1年後フォローアップ鑑定権</span>
+                  <span className="text-[#4A4036] tracking-wider">運命の転機（人生を変える1日）</span>
+                </div>
+                <div className="flex items-start gap-2 bg-[#FFF9ED] -mx-2 px-2 py-1 rounded">
+                  <Check className="w-4 h-4 text-[#D4AF37] shrink-0 mt-0.5" strokeWidth={2} />
+                  <span className="text-[#2C241B] tracking-wider font-medium">相性診断（1件分）</span>
+                </div>
+                <div className="flex items-start gap-2 bg-[#FFF9ED] -mx-2 px-2 py-1 rounded">
+                  <Check className="w-4 h-4 text-[#D4AF37] shrink-0 mt-0.5" strokeWidth={2} />
+                  <span className="text-[#2C241B] tracking-wider font-medium">ラッキーアクション365日分</span>
+                </div>
+                <div className="flex items-start gap-2 bg-[#FFF9ED] -mx-2 px-2 py-1 rounded">
+                  <Check className="w-4 h-4 text-[#D4AF37] shrink-0 mt-0.5" strokeWidth={2} />
+                  <span className="text-[#2C241B] tracking-wider font-medium">1年後フォローアップ鑑定権</span>
                 </div>
               </div>
 
