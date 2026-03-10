@@ -6,7 +6,7 @@ const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY || 'dummy_api_key',
 });
 
-export const maxDuration = 60; 
+export const maxDuration = 60;
 
 export async function POST(req: Request) {
   try {
@@ -18,20 +18,22 @@ export async function POST(req: Request) {
 
     let name = 'ゲスト';
     let dob = '不明';
+    let plan = 'standard';
 
     if (sessionId.startsWith('cs_test_dummy')) {
-       const parts = sessionId.split('_');
-       if (parts.length > 3) {
-         name = decodeURIComponent(parts[3]);
-         dob = parts[4] || '1990-01-01';
-       }
+      const parts = sessionId.split('_');
+      if (parts.length > 3) {
+        name = decodeURIComponent(parts[3]);
+        dob = parts[4] || '1990-01-01';
+      }
     } else {
-       const session = await stripe.checkout.sessions.retrieve(sessionId);
-       if (session.payment_status !== 'paid') {
-         return NextResponse.json({ error: 'Payment not completed or invalid session' }, { status: 403 });
-       }
-       name = session.metadata?.name || 'ゲスト';
-       dob = session.metadata?.dob || '不明';
+      const session = await stripe.checkout.sessions.retrieve(sessionId);
+      if (session.payment_status !== 'paid') {
+        return NextResponse.json({ error: 'Payment not completed or invalid session' }, { status: 403 });
+      }
+      name = session.metadata?.name || 'ゲスト';
+      dob = session.metadata?.dob || '不明';
+      plan = session.metadata?.plan || 'standard';
     }
 
     const today = new Date();
@@ -90,7 +92,7 @@ export async function POST(req: Request) {
       model: 'gemini-2.5-flash',
       contents: prompt,
       config: {
-        temperature: 0.85, 
+        temperature: 0.85,
         maxOutputTokens: 8192,
         responseMimeType: "application/json",
       }
@@ -101,7 +103,7 @@ export async function POST(req: Request) {
     const cleanJson = reportJson.replace(/```json\n|\n```/g, '');
     const parsedData = JSON.parse(cleanJson);
 
-    return NextResponse.json({ report: parsedData });
+    return NextResponse.json({ report: parsedData, plan, name });
   } catch (error: any) {
     console.error('Error generating AI report:', error);
     return NextResponse.json({ error: 'Failed to generate report. Please try again later.' }, { status: 500 });
