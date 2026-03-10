@@ -3,7 +3,7 @@ import { stripe } from '@/lib/stripe';
 
 export async function POST(req: Request) {
   try {
-    const { name, dob } = await req.json();
+    const { name, dob, plan = 'standard' } = await req.json();
 
     if (!name || !dob) {
       return NextResponse.json(
@@ -12,12 +12,17 @@ export async function POST(req: Request) {
       );
     }
 
+    // Select price based on plan
+    const priceId = plan === 'premium'
+      ? (process.env.STRIPE_PREMIUM_PRICE_ID || 'price_1T92FsEEPLYPnKaY7lepgmS7')
+      : 'price_1T92FsEEPLYPnKaY7lepgmS7';
+
     // Creating a Checkout Session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [
         {
-          price: 'price_1T92FsEEPLYPnKaY7lepgmS7',
+          price: priceId,
           quantity: 1,
         },
       ],
@@ -27,6 +32,7 @@ export async function POST(req: Request) {
       metadata: {
         name,
         dob,
+        plan,
       },
       // IMPORTANT: Redirect URLs after checkout.
       success_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/result/premium?session_id={CHECKOUT_SESSION_ID}`,

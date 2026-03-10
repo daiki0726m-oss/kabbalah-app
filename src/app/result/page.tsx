@@ -2,7 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 import { Suspense, useState, useEffect, useMemo } from "react";
-import { Lock, Sparkles, Heart, Briefcase, Star, ShieldCheck, Compass, Feather, Sun, Moon, Gem, TrendingUp, Users, ChevronRight } from "lucide-react";
+import { Lock, Sparkles, Heart, Briefcase, Star, ShieldCheck, Compass, Feather, Sun, Moon, Gem, TrendingUp, Users, ChevronRight, Clock, Crown, Check } from "lucide-react";
 import { motion } from "framer-motion";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from "recharts";
 import { calculateLifePathNumber, generateBiorhythm, personalityData } from "@/lib/numerology";
@@ -31,13 +31,21 @@ function ResultTeaserContent() {
     setDailyCount(47 + (seed % 38));
   }, []);
 
-  const handleCheckout = async () => {
+  // Scarcity counter (fewer slots later in the day)
+  const [remainingSlots, setRemainingSlots] = useState(0);
+  useEffect(() => {
+    const hour = new Date().getHours();
+    const base = 30 - Math.floor(hour * 1.2);
+    setRemainingSlots(Math.max(3, base));
+  }, []);
+
+  const handleCheckout = async (plan: 'standard' | 'premium' = 'standard') => {
     try {
       setLoading(true);
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, dob }),
+        body: JSON.stringify({ name, dob, plan }),
       });
       const data = await res.json();
       if (data.url) {
@@ -337,87 +345,164 @@ function ResultTeaserContent() {
           </div>
         </motion.section>
 
-        {/* ===== SECTION 5: PAYWALL CTA ===== */}
+        {/* ===== SECTION 5: URGENCY + 2-TIER PAYWALL CTA ===== */}
         <motion.section
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.9, duration: 0.8 }}
           className="mt-16"
         >
-          <div className="bg-white border border-[#EAE3D9] rounded-sm p-6 sm:p-10 md:p-12 shadow-sm text-center">
-            
-            <div className="w-14 h-14 rounded-full border border-[#D4AF37]/30 flex items-center justify-center bg-[#FAF8F5] mx-auto mb-6">
-              <Compass className="w-7 h-7 text-[#D4AF37]" strokeWidth={1.5} />
-            </div>
-
-            <h3 className="text-lg md:text-xl text-[#2C241B] tracking-widest font-medium mb-3">
-              完全版鑑定書（10,000文字）
-            </h3>
-            <p className="text-sm text-[#6A5A4A] leading-relaxed mb-8 tracking-wide font-light max-w-md mx-auto">
-              運命数 {lifePathNumber} のあなただけに綴る、<br className="sm:hidden" />カバラの全アルゴリズムが導く深い洞察。
-            </p>
-
-            {/* What's included */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8 text-left w-full mx-auto">
-              <div className="flex items-start gap-3 bg-[#FAF8F5] p-4 rounded-sm border border-[#EAE3D9]">
-                <TrendingUp className="w-5 h-5 text-[#CFA770] shrink-0 mt-0.5" strokeWidth={1.5} />
-                <div>
-                  <span className="text-[#2C241B] text-sm tracking-widest block mb-1 font-medium">10年＋12ヶ月の運勢グラフ</span>
-                  <span className="text-xs text-[#8A7A6A] leading-snug block">人生の大きな波と、毎月の行動指針</span>
-                </div>
-              </div>
-              <div className="flex items-start gap-3 bg-[#FAF8F5] p-4 rounded-sm border border-[#EAE3D9]">
-                <Briefcase className="w-5 h-5 text-[#CFA770] shrink-0 mt-0.5" strokeWidth={1.5} />
-                <div>
-                  <span className="text-[#2C241B] text-sm tracking-widest block mb-1 font-medium">天職と財を成す才能</span>
-                  <span className="text-xs text-[#8A7A6A] leading-snug block">本当に稼げる環境と隠された才能の活かし方</span>
-                </div>
-              </div>
-              <div className="flex items-start gap-3 bg-[#FAF8F5] p-4 rounded-sm border border-[#EAE3D9]">
-                <Heart className="w-5 h-5 text-[#CFA770] shrink-0 mt-0.5" strokeWidth={1.5} />
-                <div>
-                  <span className="text-[#2C241B] text-sm tracking-widest block mb-1 font-medium">運命の相手と出会う時期</span>
-                  <span className="text-xs text-[#8A7A6A] leading-snug block">ソウルメイトの特徴と最強のタイミング</span>
-                </div>
-              </div>
-              <div className="flex items-start gap-3 bg-[#FAF8F5] p-4 rounded-sm border border-[#EAE3D9]">
-                <Star className="w-5 h-5 text-[#CFA770] shrink-0 mt-0.5" strokeWidth={1.5} />
-                <div>
-                  <span className="text-[#2C241B] text-sm tracking-widest block mb-1 font-medium">魂の課題とカルマ</span>
-                  <span className="text-xs text-[#8A7A6A] leading-snug block">同じ失敗パターンの根本原因と解決策</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="border-t border-[#EAE3D9] pt-6">
-              <p className="text-2xl md:text-3xl text-[#2C241B] mb-5 font-medium font-sans tracking-wide flex items-center justify-center gap-2">
-                ¥980 <span className="text-xs text-[#8A7A6A] font-normal mt-1">（税込・一括買取）</span>
-              </p>
-              
-              <button 
-                onClick={handleCheckout}
-                disabled={loading}
-                className="w-full py-4 rounded-sm shadow-md bg-[#CFA770] hover:bg-[#B69260] text-white font-medium tracking-widest text-base transition-all disabled:bg-[#EAE3D9] disabled:cursor-not-allowed flex justify-center items-center"
-              >
-                {loading ? (
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                ) : (
-                  "完全版鑑定書を受け取る"
-                )}
-              </button>
-              <p className="mt-4 text-[11px] text-[#8A7A6A] tracking-wider font-sans flex items-center justify-center gap-1">
-                <ShieldCheck className="w-3 h-3 inline -mt-0.5"/>
-                Stripe社による安全なSSL暗号化決済
-              </p>
+          {/* Urgency Message */}
+          <div className="bg-[#FAF4EA] border border-[#EAE3D9] rounded-sm p-5 mb-6 text-center">
+            <div className="flex items-center justify-center gap-2 text-sm text-[#4A4036] tracking-wider leading-relaxed">
+              <Clock className="w-4 h-4 text-[#CFA770] shrink-0" strokeWidth={1.5} />
+              <span>
+                この鑑定はあなたの<strong className="text-[#2C241B]">&quot;今&quot;の運気</strong>を反映しています。運気は常に変動するため、最も正確な鑑定書は今この瞬間に生成されたものです。
+              </span>
             </div>
           </div>
 
-          {/* Social Proof */}
-          <div className="mt-6 text-center">
-            <p className="text-xs text-[#8A7A6A] tracking-widest flex items-center justify-center gap-1.5">
-              <Users className="w-3.5 h-3.5 text-[#CFA770]" />
-              本日 <span className="text-[#2C241B] font-medium">{dailyCount}名</span> の方がこの鑑定書を受け取りました
+          {/* Scarcity Counter */}
+          <div className="text-center mb-8">
+            <p className="text-xs text-[#8A7A6A] tracking-widest">
+              本日の鑑定枠：残り <span className="text-[#B45309] font-bold text-sm">{remainingSlots}件</span>
             </p>
+          </div>
+
+          {/* 2-Tier Pricing */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+            {/* Standard Plan */}
+            <div className="bg-white border border-[#EAE3D9] rounded-sm p-6 md:p-8 shadow-sm text-center flex flex-col">
+              <div className="w-12 h-12 rounded-full border border-[#D4AF37]/30 flex items-center justify-center bg-[#FAF8F5] mx-auto mb-4">
+                <Compass className="w-6 h-6 text-[#D4AF37]" strokeWidth={1.5} />
+              </div>
+
+              <h3 className="text-base md:text-lg text-[#2C241B] tracking-widest font-medium mb-1">
+                スタンダード鑑定
+              </h3>
+              <p className="text-xs text-[#8A7A6A] tracking-wider mb-4">10,000文字のパーソナル鑑定書</p>
+
+              <div className="space-y-2 text-left text-sm mb-6 flex-1">
+                <div className="flex items-start gap-2">
+                  <Check className="w-4 h-4 text-[#CFA770] shrink-0 mt-0.5" strokeWidth={2} />
+                  <span className="text-[#4A4036] tracking-wider">12ヶ月分の月別運勢</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <Check className="w-4 h-4 text-[#CFA770] shrink-0 mt-0.5" strokeWidth={2} />
+                  <span className="text-[#4A4036] tracking-wider">天職と財を成す才能</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <Check className="w-4 h-4 text-[#CFA770] shrink-0 mt-0.5" strokeWidth={2} />
+                  <span className="text-[#4A4036] tracking-wider">運命の相手と出会う時期</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <Check className="w-4 h-4 text-[#CFA770] shrink-0 mt-0.5" strokeWidth={2} />
+                  <span className="text-[#4A4036] tracking-wider">魂の課題とカルマ</span>
+                </div>
+              </div>
+
+              <div className="border-t border-[#EAE3D9] pt-4">
+                <p className="text-2xl text-[#2C241B] mb-3 font-medium font-sans">
+                  ¥980 <span className="text-[10px] text-[#8A7A6A] font-normal">（税込）</span>
+                </p>
+                <button
+                  onClick={() => handleCheckout('standard')}
+                  disabled={loading}
+                  className="w-full py-3.5 rounded-sm shadow-sm bg-[#CFA770] hover:bg-[#B69260] text-white font-medium tracking-widest text-sm transition-all disabled:bg-[#EAE3D9] disabled:cursor-not-allowed flex justify-center items-center"
+                >
+                  {loading ? (
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  ) : (
+                    "鑑定書を受け取る"
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* Premium Plan */}
+            <div className="bg-white border-2 border-[#D4AF37]/40 rounded-sm p-6 md:p-8 shadow-md text-center relative flex flex-col">
+              {/* Popular badge */}
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#D4AF37] text-white text-[10px] tracking-[0.15em] font-bold px-4 py-1 rounded-full uppercase font-sans">
+                人気 No.1
+              </div>
+
+              <div className="w-12 h-12 rounded-full border border-[#D4AF37]/30 flex items-center justify-center bg-[#FAF8F5] mx-auto mb-4 mt-2">
+                <Crown className="w-6 h-6 text-[#D4AF37]" strokeWidth={1.5} />
+              </div>
+
+              <h3 className="text-base md:text-lg text-[#2C241B] tracking-widest font-medium mb-1">
+                プレミアム鑑定
+              </h3>
+              <p className="text-xs text-[#8A7A6A] tracking-wider mb-4">スタンダード全内容 + 特別鑑定</p>
+
+              <div className="space-y-2 text-left text-sm mb-6 flex-1">
+                <div className="flex items-start gap-2">
+                  <Check className="w-4 h-4 text-[#D4AF37] shrink-0 mt-0.5" strokeWidth={2} />
+                  <span className="text-[#4A4036] tracking-wider font-medium">スタンダードの全内容</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <Check className="w-4 h-4 text-[#D4AF37] shrink-0 mt-0.5" strokeWidth={2} />
+                  <span className="text-[#4A4036] tracking-wider"><strong>相性診断</strong>（1件分）</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <Check className="w-4 h-4 text-[#D4AF37] shrink-0 mt-0.5" strokeWidth={2} />
+                  <span className="text-[#4A4036] tracking-wider">ラッキーアクション365日分</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <Check className="w-4 h-4 text-[#D4AF37] shrink-0 mt-0.5" strokeWidth={2} />
+                  <span className="text-[#4A4036] tracking-wider">1年後フォローアップ鑑定権</span>
+                </div>
+              </div>
+
+              <div className="border-t border-[#EAE3D9] pt-4">
+                <p className="text-2xl text-[#2C241B] mb-3 font-medium font-sans">
+                  ¥2,980 <span className="text-[10px] text-[#8A7A6A] font-normal">（税込）</span>
+                </p>
+                <button
+                  onClick={() => handleCheckout('premium')}
+                  disabled={loading}
+                  className="w-full py-3.5 rounded-sm shadow-md bg-gradient-to-r from-[#D4AF37] to-[#CFA770] hover:from-[#C9A430] hover:to-[#B69260] text-white font-medium tracking-widest text-sm transition-all disabled:bg-[#EAE3D9] disabled:cursor-not-allowed flex justify-center items-center"
+                >
+                  {loading ? (
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  ) : (
+                    "プレミアム鑑定を受け取る"
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Security badge */}
+          <p className="mt-4 text-center text-[11px] text-[#8A7A6A] tracking-wider font-sans flex items-center justify-center gap-1">
+            <ShieldCheck className="w-3 h-3 inline -mt-0.5"/>
+            Stripe社による安全なSSL暗号化決済
+          </p>
+
+          {/* Social Proof + Review Digest */}
+          <div className="mt-6 space-y-4">
+            <div className="text-center">
+              <p className="text-xs text-[#8A7A6A] tracking-widest flex items-center justify-center gap-1.5">
+                <Users className="w-3.5 h-3.5 text-[#CFA770]" />
+                過去24時間で <span className="text-[#2C241B] font-medium">{dailyCount}名</span> の方がこの鑑定書を受け取りました
+              </p>
+            </div>
+
+            {/* Review Digest */}
+            <div className="bg-[#FCFAFA] border border-[#EAE3D9] rounded-sm p-4 flex items-start gap-3">
+              <div className="w-9 h-9 rounded-full bg-[#FAF4EA] border border-[#EAE3D9] flex items-center justify-center text-[10px] text-[#CFA770] font-medium shrink-0">Y.S</div>
+              <div>
+                <div className="flex gap-0.5 mb-1">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-3 h-3 text-[#D4AF37] fill-[#D4AF37]" />
+                  ))}
+                </div>
+                <p className="text-xs text-[#4A4036] leading-relaxed tracking-wider">
+                  「影の性質の部分は、ずっと誰にも言えなかった本音をそのまま言い当てられたような感覚でした。」 — <span className="text-[#8A7A6A]">Y.Sさん / 34歳</span>
+                </p>
+              </div>
+            </div>
           </div>
         </motion.section>
 
