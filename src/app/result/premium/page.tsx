@@ -3,8 +3,8 @@
 import React, { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from 'next/navigation';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-import { motion } from "framer-motion";
-import { Compass, Briefcase, Heart, ShieldCheck, Users, Sparkles, Star, CalendarDays, Coins, CheckCircle2, Crown, ArrowRight } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Compass, Briefcase, Heart, ShieldCheck, Users, Sparkles, Star, CalendarDays, Coins, CheckCircle2, Crown, ArrowRight, ChevronDown, Gift, Bookmark, Calendar } from "lucide-react";
 
 function PremiumLiveContent() {
   const searchParams = useSearchParams();
@@ -19,6 +19,19 @@ function PremiumLiveContent() {
   const [customerName, setCustomerName] = useState<string>('ゲスト');
   const [isUpgrading, setIsUpgrading] = useState(false);
   const [loadingPhase, setLoadingPhase] = useState(0);
+
+  // Lucky Actions
+  const [openMonth, setOpenMonth] = useState<number | null>(null);
+
+  // Compatibility
+  const [compatName, setCompatName] = useState('');
+  const [compatYear, setCompatYear] = useState('1990');
+  const [compatMonth, setCompatMonth] = useState('1');
+  const [compatDay, setCompatDay] = useState('1');
+  const [compatLoading, setCompatLoading] = useState(false);
+  const [compatDone, setCompatDone] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [compatResult, setCompatResult] = useState<any>(null);
 
   const extractedName = sessionId?.startsWith('cs_test_dummy') && sessionId.split('_').length > 3 ? decodeURIComponent(sessionId.split('_')[3]) : 'ゲスト';
 
@@ -253,6 +266,209 @@ function PremiumLiveContent() {
               <div className="bg-white/[0.04] border border-[#D4AF37]/20 p-4 rounded-sm mt-4">
                 <h4 className="text-[#D4AF37] font-bold mb-2">この日を境にどう動くべきか</h4>
                 <div dangerouslySetInnerHTML={{ __html: report.fatefulDay.action?.replace(/\n/g, '<br/>') || '' }} />
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* 5.5 Lucky Actions 365 */}
+        {report.luckyActions && report.luckyActions.length > 0 && (
+          <section className="px-4 py-12 border-b border-white/5">
+            <div className="text-center mb-8">
+              <div className="w-12 h-12 rounded-full border border-[#D4AF37]/30 flex items-center justify-center bg-[#D4AF37]/10 mx-auto mb-4">
+                <Gift className="w-6 h-6 text-[#D4AF37]" strokeWidth={1.5} />
+              </div>
+              <h3 className="text-base font-medium tracking-[0.2em] text-[#F5F0E8] mb-2" style={{ fontFamily: '"Noto Serif JP", serif' }}>ラッキーアクション 365日</h3>
+              <p className="text-xs text-[#7A7068] tracking-wider">毎日の開運アクションがあなたの運気を確実に上昇させます</p>
+            </div>
+
+            <div className="space-y-2">
+              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+              {report.luckyActions.map((month: any, idx: number) => (
+                <div key={idx} className="bg-white/[0.03] border border-white/[0.06] rounded-sm overflow-hidden">
+                  <button
+                    onClick={() => setOpenMonth(openMonth === idx ? null : idx)}
+                    className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-white/[0.02] transition-colors"
+                  >
+                    <div className="flex items-center gap-3">
+                      <Calendar className="w-4 h-4 text-[#D4AF37]" strokeWidth={1.5} />
+                      <span className="text-sm text-[#F5F0E8] tracking-wider font-medium">{month.monthLabel}</span>
+                      <span className="text-[10px] text-[#7A7068] tracking-wider">({month.actions?.length || 0}日分)</span>
+                    </div>
+                    <ChevronDown className={`w-4 h-4 text-[#7A7068] transition-transform ${openMonth === idx ? 'rotate-180' : ''}`} />
+                  </button>
+                  <AnimatePresence>
+                    {openMonth === idx && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="px-5 pb-4 border-t border-white/[0.04]">
+                          <div className="grid grid-cols-1 gap-0">
+                            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                            {month.actions?.map((item: any, j: number) => (
+                              <div key={j} className="flex items-start gap-3 py-2.5 border-b border-white/[0.03] last:border-b-0">
+                                <span className="text-[10px] font-bold text-[#D4AF37] w-8 shrink-0 pt-0.5" style={{ fontFamily: 'Inter, sans-serif' }}>{item.day}日</span>
+                                <span className="text-[13px] text-[#BEB5A5] tracking-wider leading-relaxed">{item.action}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* 5.6 Compatibility Diagnosis */}
+        {plan === 'premium' && (
+          <section className="px-6 py-12 bg-[#151221] border-b border-white/5">
+            <div className="text-center mb-8">
+              <div className="w-12 h-12 rounded-full border border-[#D4AF37]/30 flex items-center justify-center bg-[#D4AF37]/10 mx-auto mb-4">
+                <Users className="w-6 h-6 text-[#D4AF37]" strokeWidth={1.5} />
+              </div>
+              <h3 className="text-base font-medium tracking-[0.2em] text-[#F5F0E8] mb-2" style={{ fontFamily: '"Noto Serif JP", serif' }}>カバラ相性診断</h3>
+              <p className="text-xs text-[#7A7068] tracking-wider">気になる方の名前と生年月日を入力してください（1回限り）</p>
+            </div>
+
+            {!compatDone ? (
+              <div className="max-w-sm mx-auto space-y-4">
+                <div>
+                  <label className="text-[10px] tracking-[0.15em] text-[#7A7068] uppercase block mb-1.5" style={{ fontFamily: 'Inter, sans-serif' }}>お相手の名前</label>
+                  <input
+                    type="text" value={compatName} onChange={(e) => setCompatName(e.target.value)}
+                    placeholder="お相手の名前"
+                    className="w-full bg-white/[0.04] border border-white/10 rounded-sm px-4 py-3 text-sm text-[#F5F0E8] placeholder:text-[#7A7068]/60 focus:border-[#D4AF37]/50 focus:outline-none transition-colors tracking-wider"
+                  />
+                </div>
+                <div className="grid grid-cols-3 gap-2">
+                  <div>
+                    <label className="text-[10px] tracking-[0.15em] text-[#7A7068] uppercase block mb-1.5" style={{ fontFamily: 'Inter, sans-serif' }}>年</label>
+                    <select value={compatYear} onChange={e => setCompatYear(e.target.value)}
+                      className="w-full bg-white/[0.04] border border-white/10 rounded-sm px-3 py-3 text-sm text-[#F5F0E8] focus:border-[#D4AF37]/50 focus:outline-none">
+                      {Array.from({ length: 80 }, (_, i) => new Date().getFullYear() - 18 - i).map(y => <option key={y} value={y} className="bg-[#151221]">{y}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-[10px] tracking-[0.15em] text-[#7A7068] uppercase block mb-1.5" style={{ fontFamily: 'Inter, sans-serif' }}>月</label>
+                    <select value={compatMonth} onChange={e => setCompatMonth(e.target.value)}
+                      className="w-full bg-white/[0.04] border border-white/10 rounded-sm px-3 py-3 text-sm text-[#F5F0E8] focus:border-[#D4AF37]/50 focus:outline-none">
+                      {Array.from({ length: 12 }, (_, i) => i + 1).map(m => <option key={m} value={m} className="bg-[#151221]">{m}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-[10px] tracking-[0.15em] text-[#7A7068] uppercase block mb-1.5" style={{ fontFamily: 'Inter, sans-serif' }}>日</label>
+                    <select value={compatDay} onChange={e => setCompatDay(e.target.value)}
+                      className="w-full bg-white/[0.04] border border-white/10 rounded-sm px-3 py-3 text-sm text-[#F5F0E8] focus:border-[#D4AF37]/50 focus:outline-none">
+                      {Array.from({ length: 31 }, (_, i) => i + 1).map(d => <option key={d} value={d} className="bg-[#151221]">{d}</option>)}
+                    </select>
+                  </div>
+                </div>
+                <button
+                  onClick={async () => {
+                    if (!compatName.trim()) return;
+                    setCompatLoading(true);
+                    try {
+                      const dob2 = `${compatYear}-${compatMonth.padStart(2, '0')}-${compatDay.padStart(2, '0')}`;
+                      const res = await fetch('/api/compatibility', {
+                        method: 'POST', headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ name1: customerName || extractedName, dob1: '1990-01-01', name2: compatName, dob2 })
+                      });
+                      const data = await res.json();
+                      setCompatResult(data.compatibility);
+                      setCompatDone(true);
+                    } catch { /* ignore */ } finally { setCompatLoading(false); }
+                  }}
+                  disabled={compatLoading || !compatName.trim()}
+                  className="w-full py-3.5 rounded-sm font-bold tracking-widest text-sm transition-all disabled:opacity-30 text-[#0C0A14] flex justify-center items-center"
+                  style={{ background: 'linear-gradient(135deg, #D4AF37, #F5D76E)', boxShadow: '0 0 20px rgba(212,175,55,0.15)' }}
+                >
+                  {compatLoading ? (
+                    <div className="flex items-center gap-2"><div className="w-4 h-4 border-2 border-[#0C0A14] border-t-transparent rounded-full animate-spin" /><span>相性を鑑定中...</span></div>
+                  ) : '✦ 相性を鑑定する'}
+                </button>
+              </div>
+            ) : compatResult ? (
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+                {/* Score */}
+                <div className="text-center">
+                  <p className="text-[10px] tracking-[0.2em] text-[#D4AF37] uppercase mb-2" style={{ fontFamily: 'Inter, sans-serif' }}>Compatibility Score</p>
+                  <div className="w-24 h-24 rounded-full border-2 border-[#D4AF37]/40 flex items-center justify-center bg-[#D4AF37]/10 mx-auto mb-3">
+                    <span className="text-4xl font-bold text-[#D4AF37]" style={{ fontFamily: 'Inter, sans-serif' }}>{compatResult.compatibilityScore}</span>
+                  </div>
+                  <p className="text-xs text-[#7A7068] tracking-wider">{compatResult.person1?.name} × {compatResult.person2?.name}</p>
+                </div>
+
+                {/* Person traits */}
+                <div className="grid grid-cols-2 gap-3">
+                  {[compatResult.person1, compatResult.person2].map((p: { name: string; destinyNumber: number; trait: string }, i: number) => p && (
+                    <div key={i} className="bg-white/[0.04] border border-white/[0.08] rounded-sm p-4 text-center">
+                      <p className="text-lg font-bold text-[#D4AF37] mb-1" style={{ fontFamily: 'Inter, sans-serif' }}>{p.destinyNumber}</p>
+                      <p className="text-xs text-[#F5F0E8] font-medium tracking-wider mb-2">{p.name}</p>
+                      <p className="text-[11px] text-[#BEB5A5] leading-relaxed">{p.trait}</p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Analysis sections */}
+                {[
+                  { label: '総合分析', content: compatResult.overallAnalysis },
+                  { label: '2人の強み', content: compatResult.strengths },
+                  { label: '注意すべき課題', content: compatResult.challenges },
+                  { label: 'アドバイス', content: compatResult.advice },
+                ].map((sec, i) => (
+                  <div key={i} className="bg-white/[0.03] border border-white/[0.06] rounded-sm p-5">
+                    <p className="text-[10px] tracking-[0.15em] text-[#D4AF37] uppercase font-bold mb-2" style={{ fontFamily: 'Inter, sans-serif' }}>{sec.label}</p>
+                    <p className="text-[13px] text-[#BEB5A5] leading-[2] tracking-wider">{sec.content}</p>
+                  </div>
+                ))}
+              </motion.div>
+            ) : null}
+          </section>
+        )}
+
+        {/* 5.7 Follow-up Right */}
+        {plan === 'premium' && (
+          <section className="px-6 py-12 border-b border-white/5">
+            <div className="text-center mb-6">
+              <div className="w-12 h-12 rounded-full border border-[#D4AF37]/30 flex items-center justify-center bg-[#D4AF37]/10 mx-auto mb-4">
+                <Bookmark className="w-6 h-6 text-[#D4AF37]" strokeWidth={1.5} />
+              </div>
+              <h3 className="text-base font-medium tracking-[0.2em] text-[#F5F0E8] mb-2" style={{ fontFamily: '"Noto Serif JP", serif' }}>1年後フォローアップ鑑定権</h3>
+              <p className="text-xs text-[#7A7068] tracking-wider">プレミアム特典として、1年後に無料で再鑑定できます</p>
+            </div>
+
+            <div className="bg-white/[0.04] border border-[#D4AF37]/20 rounded-sm p-6 max-w-sm mx-auto">
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <CheckCircle2 className="w-5 h-5 text-[#D4AF37] shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-sm text-[#F5F0E8] font-medium tracking-wider">再鑑定可能期限</p>
+                    <p className="text-xs text-[#D4AF37] tracking-wider">{new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' })}まで</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <CheckCircle2 className="w-5 h-5 text-[#D4AF37] shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-sm text-[#F5F0E8] font-medium tracking-wider">1年間の成長を数秘術で可視化</p>
+                    <p className="text-xs text-[#7A7068] tracking-wider">運命数の影響がどう変化したかを鑑定</p>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-6 pt-4 border-t border-white/10 text-center">
+                <p className="text-[11px] text-[#BEB5A5] tracking-wider leading-relaxed mb-3">このページをブックマークして保存してください。<br />1年後に同じURLからアクセスできます。</p>
+                <button
+                  onClick={() => { if (typeof window !== 'undefined') { alert('ブラウザのブックマーク機能でこのページを保存してください。\n\nURL: ' + window.location.href); } }}
+                  className="w-full py-3 rounded-sm text-sm tracking-widest text-[#D4AF37] border border-[#D4AF37]/30 hover:bg-[#D4AF37]/10 transition-colors flex items-center justify-center gap-2"
+                >
+                  <Bookmark className="w-4 h-4" /> このページをブックマーク
+                </button>
               </div>
             </div>
           </section>

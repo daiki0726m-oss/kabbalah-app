@@ -84,6 +84,19 @@ export async function POST(req: Request) {
     "reason": "なぜこの日が起点となるのか、数秘術の根拠をもとに熱く深く語る（長文）",
     "action": "この日を境にどう動くべきか、具体的で実践的なアクションプランとマインドセットのアドバイス（長文）"
   },
+  "luckyActions": [
+    // 1月〜12月まで12個のオブジェクト。各月に28〜31日分の開運アクションを含む。
+    {
+      "monthLabel": "1月",
+      "actions": [
+        // その月の1日〜末日まで、1日1つの具体的な開運アクション
+        { "day": 1, "action": "具体的かつ実践的な開運アクション（10〜30文字程度）" },
+        { "day": 2, "action": "..." }
+        // ...末日まで
+      ]
+    }
+    // ...12ヶ月分
+  ],
   "finalMessage": "全体のまとめと、お客様の未来を祝福し、背中を強く押す力強い言葉（長文）"
 }
 `;
@@ -93,7 +106,7 @@ export async function POST(req: Request) {
       contents: prompt,
       config: {
         temperature: 0.85,
-        maxOutputTokens: 8192,
+        maxOutputTokens: 16384,
         responseMimeType: "application/json",
       }
     });
