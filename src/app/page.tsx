@@ -37,7 +37,7 @@ export default function PremiumHumanMentorshipLP() {
 
   return (
     <main className="min-h-screen bg-[#FDFBF7] text-[#4A4036] font-serif selection:bg-[#E5D3B3] selection:text-[#4A4036]">
-      
+
       {/* --- TOP NAVIGATION --- */}
       <nav className="w-full fixed top-0 z-50 bg-[#FDFBF7]/90 backdrop-blur-md border-b border-[#EAE3D9]">
         <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
@@ -64,13 +64,13 @@ export default function PremiumHumanMentorshipLP() {
             このまま今の仕事を続けて、本当にいいんだろうか。<br className="md:hidden" />
             私の人生、このままで終わるの…？
           </p>
-          
+
           {/* Solution */}
           <h1 className="text-2xl md:text-4xl lg:text-5xl font-medium text-[#2C241B] leading-[1.6] tracking-wider mb-6">
             その答えは、<br className="md:hidden" />あなたの<span className="relative inline-block px-2 mx-1 z-10 before:content-[''] before:absolute before:bottom-0 before:left-0 before:w-full before:h-3 before:bg-[#EAE3D9] before:-z-10">生年月日</span>に<br />
             刻まれています。
           </h1>
-          
+
           <p className="text-sm md:text-base text-[#6A5A4A] font-light leading-loose tracking-widest max-w-lg mx-auto mb-4">
             カバラ数秘術が、あなたの「本当の才能」「人生の転機」「2026年の行動指針」を数万文字のレポートで解き明かします。
           </p>
@@ -155,7 +155,7 @@ export default function PremiumHumanMentorshipLP() {
         </div>
 
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16 relative z-10 items-center">
-          
+
           {/* Visual Content */}
           <div className="lg:col-span-5 relative w-full aspect-[4/5] rounded-sm overflow-hidden shadow-sm hidden lg:block">
             <Image src="/images/report_contents.png" alt="Sealed personalized letter" fill className="object-cover hover:scale-105 transition-transform duration-1000" />
@@ -172,66 +172,66 @@ export default function PremiumHumanMentorshipLP() {
             </div>
 
             <div className="space-y-4 w-full">
-            
-            {/* Report Item 1 */}
-            <div className="bg-white/5 backdrop-blur-sm p-6 md:p-8 rounded-sm border border-white/10 flex flex-col md:flex-row gap-5 items-start md:items-center">
-              <div className="w-14 h-14 rounded-full bg-[#CFA770]/15 flex flex-shrink-0 items-center justify-center border border-[#CFA770]/30">
-                <Heart className="w-5 h-5 text-[#CFA770]" strokeWidth={1.5} />
-              </div>
-              <div>
-                <h3 className="text-base md:text-lg font-medium text-white mb-2 tracking-wider">
-                  第一章：あなたの運命数が示す「魂の設計図」
-                </h3>
-                <p className="text-sm text-[#A09080] leading-relaxed tracking-widest">
-                  あなたが生まれ持った宿命と、光の性質（才能）・影の性質（無意識のブレーキ）・隠された才能を、カバラの全アルゴリズムで詳細に読み解きます。
-                </p>
-              </div>
-            </div>
 
-            {/* Report Item 2 */}
-            <div className="bg-white/5 backdrop-blur-sm p-6 md:p-8 rounded-sm border border-white/10 flex flex-col md:flex-row gap-5 items-start md:items-center">
-              <div className="w-14 h-14 rounded-full bg-[#CFA770]/15 flex flex-shrink-0 items-center justify-center border border-[#CFA770]/30">
-                <Compass className="w-5 h-5 text-[#CFA770]" strokeWidth={1.5} />
+              {/* Report Item 1 */}
+              <div className="bg-white/5 backdrop-blur-sm p-6 md:p-8 rounded-sm border border-white/10 flex flex-col md:flex-row gap-5 items-start md:items-center">
+                <div className="w-14 h-14 rounded-full bg-[#CFA770]/15 flex flex-shrink-0 items-center justify-center border border-[#CFA770]/30">
+                  <Heart className="w-5 h-5 text-[#CFA770]" strokeWidth={1.5} />
+                </div>
+                <div>
+                  <h3 className="text-base md:text-lg font-medium text-white mb-2 tracking-wider">
+                    第一章：あなたの運命数が示す「魂の設計図」
+                  </h3>
+                  <p className="text-sm text-[#A09080] leading-relaxed tracking-widest">
+                    あなたが生まれ持った宿命と、光の性質（才能）・影の性質（無意識のブレーキ）・隠された才能を、カバラの全アルゴリズムで詳細に読み解きます。
+                  </p>
+                </div>
               </div>
-              <div>
-                <h3 className="text-base md:text-lg font-medium text-white mb-2 tracking-wider">
-                  第二章：10年間の人生バイオリズム
-                </h3>
-                <p className="text-sm text-[#A09080] leading-relaxed tracking-widest">
-                  2026〜2035年の運勢の波をグラフで可視化。人生の「黄金期」がいつ訪れるのか、今が「準備」と「勝負」のどちらの時期なのかを具体的に提示します。
-                </p>
-              </div>
-            </div>
 
-            {/* Report Item 3 */}
-            <div className="bg-white/5 backdrop-blur-sm p-6 md:p-8 rounded-sm border border-white/10 flex flex-col md:flex-row gap-5 items-start md:items-center">
-              <div className="w-14 h-14 rounded-full bg-[#CFA770]/15 flex flex-shrink-0 items-center justify-center border border-[#CFA770]/30">
-                <BookOpen className="w-5 h-5 text-[#CFA770]" strokeWidth={1.5} />
+              {/* Report Item 2 */}
+              <div className="bg-white/5 backdrop-blur-sm p-6 md:p-8 rounded-sm border border-white/10 flex flex-col md:flex-row gap-5 items-start md:items-center">
+                <div className="w-14 h-14 rounded-full bg-[#CFA770]/15 flex flex-shrink-0 items-center justify-center border border-[#CFA770]/30">
+                  <Compass className="w-5 h-5 text-[#CFA770]" strokeWidth={1.5} />
+                </div>
+                <div>
+                  <h3 className="text-base md:text-lg font-medium text-white mb-2 tracking-wider">
+                    第二章：10年間の人生バイオリズム
+                  </h3>
+                  <p className="text-sm text-[#A09080] leading-relaxed tracking-widest">
+                    2026〜2035年の運勢の波をグラフで可視化。人生の「黄金期」がいつ訪れるのか、今が「準備」と「勝負」のどちらの時期なのかを具体的に提示します。
+                  </p>
+                </div>
               </div>
-              <div>
-                <h3 className="text-base md:text-lg font-medium text-white mb-2 tracking-wider">
-                  第三章：今年のあなた ─ 12ヶ月の行動指針
-                </h3>
-                <p className="text-sm text-[#A09080] leading-relaxed tracking-widest">
-                  仕事運・金運・健康運・対人関係の4カテゴリで、毎月やるべきことを具体的に解説。月ごとのテーマとカバラの数字の巡りに基づくアクションプランをお届けします。
-                </p>
-              </div>
-            </div>
 
-            {/* Report Item 4 */}
-            <div className="bg-white/5 backdrop-blur-sm p-6 md:p-8 rounded-sm border border-white/10 flex flex-col md:flex-row gap-5 items-start md:items-center">
-              <div className="w-14 h-14 rounded-full bg-[#CFA770]/15 flex flex-shrink-0 items-center justify-center border border-[#CFA770]/30">
-                <Sparkles className="w-5 h-5 text-[#CFA770]" strokeWidth={1.5} />
+              {/* Report Item 3 */}
+              <div className="bg-white/5 backdrop-blur-sm p-6 md:p-8 rounded-sm border border-white/10 flex flex-col md:flex-row gap-5 items-start md:items-center">
+                <div className="w-14 h-14 rounded-full bg-[#CFA770]/15 flex flex-shrink-0 items-center justify-center border border-[#CFA770]/30">
+                  <BookOpen className="w-5 h-5 text-[#CFA770]" strokeWidth={1.5} />
+                </div>
+                <div>
+                  <h3 className="text-base md:text-lg font-medium text-white mb-2 tracking-wider">
+                    第三章：今年のあなた ─ 12ヶ月の行動指針
+                  </h3>
+                  <p className="text-sm text-[#A09080] leading-relaxed tracking-widest">
+                    仕事運・金運・健康運・対人関係の4カテゴリで、毎月やるべきことを具体的に解説。月ごとのテーマとカバラの数字の巡りに基づくアクションプランをお届けします。
+                  </p>
+                </div>
               </div>
-              <div>
-                <h3 className="text-base md:text-lg font-medium text-white mb-2 tracking-wider">
-                  第四章：運命の転機 ─ あなたの人生を変える1日
-                </h3>
-                <p className="text-sm text-[#A09080] leading-relaxed tracking-widest">
-                  カバラが示す「最も重要な日」をピンポイントで特定。その日を境にどう動くべきか、具体的なアクションプランとマインドセットをお伝えします。
-                </p>
+
+              {/* Report Item 4 */}
+              <div className="bg-white/5 backdrop-blur-sm p-6 md:p-8 rounded-sm border border-white/10 flex flex-col md:flex-row gap-5 items-start md:items-center">
+                <div className="w-14 h-14 rounded-full bg-[#CFA770]/15 flex flex-shrink-0 items-center justify-center border border-[#CFA770]/30">
+                  <Sparkles className="w-5 h-5 text-[#CFA770]" strokeWidth={1.5} />
+                </div>
+                <div>
+                  <h3 className="text-base md:text-lg font-medium text-white mb-2 tracking-wider">
+                    第四章：運命の転機 ─ あなたの人生を変える1日
+                  </h3>
+                  <p className="text-sm text-[#A09080] leading-relaxed tracking-widest">
+                    カバラが示す「最も重要な日」をピンポイントで特定。その日を境にどう動くべきか、具体的なアクションプランとマインドセットをお伝えします。
+                  </p>
+                </div>
               </div>
-            </div>
             </div>
 
             {/* Mini CTA after report contents */}
@@ -349,48 +349,204 @@ export default function PremiumHumanMentorshipLP() {
         </div>
       </section>
 
-      {/* --- AUTHORITY SECTION (Kabbalah & Steve Jobs) --- */}
-      <section className="w-full py-20 px-6 bg-[#FCFAFA] border-b border-[#EAE3D9]">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
-          
-          {/* Text Content */}
-          <div className="lg:col-span-7 space-y-10 order-2 lg:order-1">
-            <div className="text-center lg:text-left">
-              <h2 className="text-2xl md:text-3xl font-light text-[#2C241B] tracking-widest mb-4">
-                なぜ、カバラ数秘術なのか？
-              </h2>
-              <p className="text-sm text-[#8A7A6A] tracking-widest">
-                世界的イノベーターも重んじた「直感」と「運命の法則」
-              </p>
-            </div>
+      {/* ============================================================ */}
+      {/* === AUTHORITY — "Why Kabbalah?" with History & Famous People  */}
+      {/* ============================================================ */}
+      <section className="w-full py-24 px-6 bg-[#FDFBF7] border-b border-[#EAE3D9] relative overflow-hidden">
+        {/* Sacred Geometry Background */}
+        <div className="absolute inset-0 opacity-[0.06] pointer-events-none">
+          <Image src="/images/kabbalah_geometry_bg.png" alt="" fill className="object-cover" />
+        </div>
 
-            <div className="space-y-5 text-[#4A4036] tracking-widest leading-relaxed text-sm md:text-base text-justify">
-              <h3 className="text-lg font-medium text-[#CFA770] border-b border-[#EAE3D9] pb-2 inline-block">歴史が証明する「魂のデータ解析」</h3>
+        <div className="max-w-4xl mx-auto relative z-10">
+
+          {/* Section Header */}
+          <div className="text-center mb-16">
+            <p className="text-xs text-[#CFA770] tracking-[0.2em] uppercase font-sans font-bold mb-3">Why Kabbalah Numerology?</p>
+            <h2 className="text-2xl md:text-3xl font-light text-[#2C241B] tracking-widest mb-5 leading-relaxed">
+              4,000年の叡智が証明する、<br className="md:hidden" />
+              「数」が人生を変える力
+            </h2>
+            <p className="text-sm text-[#8A7A6A] tracking-widest leading-loose max-w-2xl mx-auto">
+              星占い、タロット、手相 ─ 占いは数あれど、<br className="md:hidden" />
+              カバラ数秘術だけが持つ<span className="text-[#CFA770] font-medium">「3つの決定的な違い」</span>があります。
+            </p>
+          </div>
+
+          {/* --- Kabbalah History --- */}
+          <div className="bg-white border border-[#EAE3D9] rounded-sm p-8 md:p-10 mb-12 shadow-sm">
+            <h3 className="text-base md:text-lg font-medium text-[#2C241B] tracking-widest mb-6 text-center">
+              📜 カバラ数秘術とは？
+            </h3>
+            <div className="text-sm text-[#4A4036] leading-[2.2] tracking-wider space-y-5">
               <p>
-                カバラ数秘術は、単なるスピリチュアルな占星術ではありません。古代ユダヤの神秘思想に端を発し、数千年にわたり体系化されてきた「運命の解読システム」です。
+                カバラ（Kabbalah）とは、古代ヘブライ語で<span className="text-[#CFA770] font-medium">「受け取られたもの」</span>を意味します。
               </p>
               <p>
-                「万物は数なり」というピタゴラスの言葉通り、あなたの生年月日と名前に込められた固有の数字には、人生のパターン、行動の癖、そして隠された才能のデータがすべて記述されています。
-              </p>
-            </div>
-            
-            <div className="space-y-5 text-[#4A4036] tracking-widest leading-relaxed text-sm md:text-base text-justify">
-               <h3 className="text-lg font-medium text-[#CFA770] border-b border-[#EAE3D9] pb-2 inline-block">「直感は、知能よりもパワフルだ」</h3>
-              <p>
-                Appleの創業者スティーブ・ジョブズは、究極の論理的思考を持ちながらも、東洋思想や直感的なインスピレーションを深く信奉し、数々の革新的なプロダクトを生み出しました。
+                紀元前2000年頃、古代ユダヤの神秘思想家たちが<br className="md:hidden" />
+                「生命の樹（セフィロトの樹）」という宇宙の設計図を体系化。<br />
+                そこから導かれた<span className="text-[#CFA770] font-medium">数字の法則</span>こそが、カバラ数秘術の根幹です。
               </p>
               <p>
-                この鑑定書が提供するのは、目に見えない運命の法則を論理的に整理し、あなたの「直感」を確信に変えるための客観的なデータです。
+                星の配置や偶然のカードに頼る他の占いとは異なり、<br className="md:hidden" />
+                カバラは<span className="font-medium text-[#2C241B]">あなたの生年月日から導かれる「運命数」</span>を<br className="md:hidden" />
+                数学的アルゴリズムで算出します。<br />
+                <span className="text-[#8A7A6A] text-xs">─ つまり、占う人によって結果が変わることがありません。</span>
               </p>
             </div>
           </div>
 
-          {/* Visual Content */}
-          {/* Hidden on mobile to avoid consecutive images */}
-          <div className="lg:col-span-5 relative w-full aspect-[4/3] rounded-sm overflow-hidden shadow-sm order-2 lg:order-2 hidden md:block">
-            <Image src="/images/kabbalah_authority.png" alt="Antique compass and books" fill className="object-cover hover:scale-105 transition-transform duration-1000" />
+          {/* --- 3 Key Differentiators --- */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+            {/* Differentiator 1 */}
+            <div className="bg-white border border-[#EAE3D9] rounded-sm p-6 text-center shadow-sm">
+              <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-[#FAF4EA] border border-[#CFA770]/30 flex items-center justify-center">
+                <span className="text-lg">🔢</span>
+              </div>
+              <h4 className="text-sm font-medium text-[#2C241B] tracking-widest mb-3">数学的な正確さ</h4>
+              <p className="text-xs text-[#8A7A6A] leading-[2] tracking-wider">
+                感覚や直感に頼らず、<br />
+                生年月日を数学的に解析。<br />
+                <span className="text-[#CFA770] font-medium">誰が計算しても同じ結果</span>が<br />
+                導き出されます。
+              </p>
+            </div>
+            {/* Differentiator 2 */}
+            <div className="bg-white border border-[#EAE3D9] rounded-sm p-6 text-center shadow-sm">
+              <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-[#FAF4EA] border border-[#CFA770]/30 flex items-center justify-center">
+                <span className="text-lg">🌳</span>
+              </div>
+              <h4 className="text-sm font-medium text-[#2C241B] tracking-widest mb-3">人生全体の設計図</h4>
+              <p className="text-xs text-[#8A7A6A] leading-[2] tracking-wider">
+                「今日の運勢」ではなく、<br />
+                才能・天職・人間関係・<br />
+                10年先の転機まで<br />
+                <span className="text-[#CFA770] font-medium">人生を俯瞰</span>できます。
+              </p>
+            </div>
+            {/* Differentiator 3 */}
+            <div className="bg-white border border-[#EAE3D9] rounded-sm p-6 text-center shadow-sm">
+              <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-[#FAF4EA] border border-[#CFA770]/30 flex items-center justify-center">
+                <span className="text-lg">🗓️</span>
+              </div>
+              <h4 className="text-sm font-medium text-[#2C241B] tracking-widest mb-3">具体的な行動指針</h4>
+              <p className="text-xs text-[#8A7A6A] leading-[2] tracking-wider">
+                「気をつけましょう」で終わらず、<br />
+                <span className="text-[#CFA770] font-medium">月ごとのアクションプラン</span>を<br />
+                仕事・金運・健康・人間関係の<br />
+                4軸で具体的に提示します。
+              </p>
+            </div>
           </div>
 
+          {/* --- Famous Practitioners --- */}
+          <div className="text-center mb-10">
+            <h3 className="text-lg md:text-xl font-light text-[#2C241B] tracking-widest mb-3">
+              歴史上の偉人たちも信じた<br className="md:hidden" />「数の力」
+            </h3>
+            <p className="text-xs text-[#8A7A6A] tracking-widest">
+              カバラと数秘術に導かれた人物たち
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-12">
+            {/* Pythagoras */}
+            <div className="bg-white border border-[#EAE3D9] rounded-sm p-6 shadow-sm">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-full bg-[#2C241B] flex-shrink-0 flex items-center justify-center text-white text-lg font-serif">Π</div>
+                <div>
+                  <p className="text-sm font-medium text-[#2C241B] tracking-wider mb-1">ピタゴラス</p>
+                  <p className="text-[10px] text-[#8A7A6A] tracking-widest mb-3">古代ギリシャの数学者 / 紀元前570年</p>
+                </div>
+              </div>
+              <blockquote className="mt-3 pl-4 border-l-2 border-[#CFA770]/40">
+                <p className="text-sm text-[#4A4036] leading-[2] tracking-wider italic">
+                  「万物は数なり」
+                </p>
+              </blockquote>
+              <p className="text-xs text-[#8A7A6A] leading-[1.9] tracking-wider mt-3">
+                数秘術の父。宇宙のすべてを数で説明できると提唱し、<br className="md:hidden" />
+                カバラの数的体系に哲学的基盤を与えた人物です。
+              </p>
+            </div>
+
+            {/* Tesla */}
+            <div className="bg-white border border-[#EAE3D9] rounded-sm p-6 shadow-sm">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-full bg-[#2C241B] flex-shrink-0 flex items-center justify-center text-white text-lg font-serif">T</div>
+                <div>
+                  <p className="text-sm font-medium text-[#2C241B] tracking-wider mb-1">ニコラ・テスラ</p>
+                  <p className="text-[10px] text-[#8A7A6A] tracking-widest mb-3">発明家・物理学者 / 1856-1943</p>
+                </div>
+              </div>
+              <blockquote className="mt-3 pl-4 border-l-2 border-[#CFA770]/40">
+                <p className="text-sm text-[#4A4036] leading-[2] tracking-wider italic">
+                  「3, 6, 9の偉大さを知れば、<br className="md:hidden" />
+                  宇宙の鍵を手にするだろう」
+                </p>
+              </blockquote>
+              <p className="text-xs text-[#8A7A6A] leading-[1.9] tracking-wider mt-3">
+                交流電流の発明者。数字に異常な執着を持ち、<br className="md:hidden" />
+                ホテルの部屋番号も3で割れる数しか選ばなかったと言われています。
+              </p>
+            </div>
+
+            {/* Madonna */}
+            <div className="bg-white border border-[#EAE3D9] rounded-sm p-6 shadow-sm">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-full bg-[#2C241B] flex-shrink-0 flex items-center justify-center text-white text-lg font-serif">M</div>
+                <div>
+                  <p className="text-sm font-medium text-[#2C241B] tracking-wider mb-1">マドンナ</p>
+                  <p className="text-[10px] text-[#8A7A6A] tracking-widest mb-3">歌手・プロデューサー / 1958-</p>
+                </div>
+              </div>
+              <blockquote className="mt-3 pl-4 border-l-2 border-[#CFA770]/40">
+                <p className="text-sm text-[#4A4036] leading-[2] tracking-wider italic">
+                  「カバラは私の人生の<br className="md:hidden" />
+                  あらゆる判断の指針になっている」
+                </p>
+              </blockquote>
+              <p className="text-xs text-[#8A7A6A] leading-[1.9] tracking-wider mt-3">
+                世界的ポップアイコン。1990年代後半からカバラを<br className="md:hidden" />
+                熱心に学び、人生の重要な決断にカバラの教えを活用しています。
+              </p>
+            </div>
+
+            {/* Da Vinci */}
+            <div className="bg-white border border-[#EAE3D9] rounded-sm p-6 shadow-sm">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-full bg-[#2C241B] flex-shrink-0 flex items-center justify-center text-white text-lg font-serif">L</div>
+                <div>
+                  <p className="text-sm font-medium text-[#2C241B] tracking-wider mb-1">レオナルド・ダ・ヴィンチ</p>
+                  <p className="text-[10px] text-[#8A7A6A] tracking-widest mb-3">芸術家・科学者 / 1452-1519</p>
+                </div>
+              </div>
+              <blockquote className="mt-3 pl-4 border-l-2 border-[#CFA770]/40">
+                <p className="text-sm text-[#4A4036] leading-[2] tracking-wider italic">
+                  「数の比率の中に、<br className="md:hidden" />
+                  宇宙の美しさが隠されている」
+                </p>
+              </blockquote>
+              <p className="text-xs text-[#8A7A6A] leading-[1.9] tracking-wider mt-3">
+                万能の天才。黄金比（1:1.618）に執着し、<br className="md:hidden" />
+                数の神秘が美と真理を貫くと信じて作品を創り続けました。
+              </p>
+            </div>
+          </div>
+
+          {/* Closing Message */}
+          <div className="text-center max-w-2xl mx-auto">
+            <p className="text-sm text-[#4A4036] leading-[2.2] tracking-wider">
+              4,000年の歴史と、数々の天才が信じた「数の法則」。<br />
+              その叡智をもとに、あなた専用の鑑定書を無料でお届けします。
+            </p>
+            <div className="mt-6">
+              <a href="#form" className="inline-flex items-center gap-2 text-sm text-[#CFA770] hover:text-[#D4AF37] tracking-widest transition-colors border border-[#CFA770]/40 hover:border-[#D4AF37]/60 px-6 py-3 rounded-sm">
+                <Sparkles className="w-4 h-4" strokeWidth={1.5} />
+                無料で鑑定を始める
+              </a>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -404,7 +560,7 @@ export default function PremiumHumanMentorshipLP() {
             <p className="text-sm text-[#8A7A6A] tracking-widest">実際の鑑定書の一部をお見せします</p>
           </div>
 
-          <div className="bg-white border border-[#EAE3D9] rounded-sm p-8 md:p-12 shadow-sm relative overflow-hidden" style={{minHeight: '520px'}}>
+          <div className="bg-white border border-[#EAE3D9] rounded-sm p-8 md:p-12 shadow-sm relative overflow-hidden" style={{ minHeight: '520px' }}>
             {/* Visible sample */}
             <div className="mb-2">
               <p className="text-[10px] tracking-[0.15em] text-[#CFA770] uppercase font-sans font-bold mb-3">第一章：あなたの運命数が示す「魂の設計図」</p>
@@ -445,7 +601,7 @@ export default function PremiumHumanMentorshipLP() {
       {/* --- FORM SECTION (Warm Initiation) --- */}
       <section id="form" className="w-full py-24 px-6 bg-white border-t border-[#EAE3D9]">
         <div className="max-w-2xl mx-auto">
-          
+
           {/* Real-time counter */}
           <div className="flex items-center justify-center gap-2 mb-8 text-xs text-[#8A7A6A] tracking-widest">
             <Users className="w-4 h-4 text-[#CFA770]" />
@@ -472,7 +628,7 @@ export default function PremiumHumanMentorshipLP() {
 
           <div className="bg-[#FCFAFA] p-8 md:p-14 border border-[#EAE3D9] rounded-sm shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)]">
             <form onSubmit={handleSubmit} className="space-y-10">
-              
+
               {/* Name Input */}
               <div className="space-y-3">
                 <label className="block text-sm tracking-widest font-medium text-[#4A4036]">
