@@ -15,8 +15,21 @@ const notoSerifJP = Noto_Serif_JP({
 });
 
 export const metadata: Metadata = {
-  title: "カバラ数秘術 | プレミアム運命鑑定",
-  description: "古代ユダヤの秘術を用いて、あなたの本当の才能と運命の転換期を紐解きます。数十年の研鑽を積んだ熟練の鑑定士による本物の占い。",
+  title: "カバラ数秘術 | 4,000年の叡智が、あなたの運命を解読する",
+  description: "生年月日だけで、隠された才能・人生の転機・運命の日を解き明かす。ピタゴラスやテスラも信じた数の法則が、あなた専用の鑑定書を無料で生成します。",
+  openGraph: {
+    title: "カバラ数秘術 | あなたの生年月日に眠る魂の暗号",
+    description: "4,000年の叡智が証明する、数が人生を変える力。名前と生年月日だけで数万文字のパーソナル鑑定書を無料でお届けします。",
+    images: [{ url: "/images/ogp.png", width: 1200, height: 630 }],
+    type: "website",
+    locale: "ja_JP",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "カバラ数秘術 | あなたの魂の暗号を解読する",
+    description: "生年月日だけで人生の設計図が明らかに。無料で鑑定書を受け取れます。",
+    images: ["/images/ogp.png"],
+  },
 };
 
 export default function RootLayout({
@@ -27,7 +40,7 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body
-        className={`${notoSansJP.variable} ${notoSerifJP.variable} font-sans antialiased text-slate-800 bg-[#FAF9F6]`}
+        className={`${notoSansJP.variable} ${notoSerifJP.variable} font-sans antialiased text-[#BEB5A5] bg-[#0C0A14]`}
       >
         {children}
       </body>

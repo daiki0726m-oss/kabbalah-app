@@ -24,18 +24,24 @@ export default function KabbalahLP() {
   const [birthMonth, setBirthMonth] = useState("1");
   const [birthDay, setBirthDay] = useState("1");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [loadingPhase, setLoadingPhase] = useState(0);
   const [nameCompleted, setNameCompleted] = useState(false);
   const [dobCompleted, setDobCompleted] = useState(false);
 
   const [dailyCount, setDailyCount] = useState(0);
   useEffect(() => { const d = new Date(); setDailyCount(47 + ((d.getDate() + d.getMonth() * 31) % 38)); }, []);
 
+  const loadingMessages = ["魂の暗号を受信中...", "運命数を算出中...", "鑑定書を編纂中..."];
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) return;
     setIsSubmitting(true);
+    setLoadingPhase(0);
     const dob = `${birthYear}-${birthMonth.padStart(2, '0')}-${birthDay.padStart(2, '0')}`;
-    setTimeout(() => { router.push(`/result?name=${encodeURIComponent(name)}&dob=${encodeURIComponent(dob)}`); }, 800);
+    setTimeout(() => setLoadingPhase(1), 1200);
+    setTimeout(() => setLoadingPhase(2), 2400);
+    setTimeout(() => { router.push(`/result?name=${encodeURIComponent(name)}&dob=${encodeURIComponent(dob)}`); }, 3600);
   };
 
   const years = Array.from({ length: 80 }, (_, i) => new Date().getFullYear() - 18 - i);
@@ -44,6 +50,28 @@ export default function KabbalahLP() {
 
   return (
     <main className="min-h-screen bg-[#0C0A14] text-[#BEB5A5] selection:bg-[#D4AF37]/30 selection:text-white">
+
+      {/* ── MYSTICAL LOADING OVERLAY ── */}
+      {isSubmitting && (
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="fixed inset-0 z-[100] bg-[#0C0A14] flex flex-col items-center justify-center gap-8">
+          {/* Rotating geometry */}
+          <div className="relative w-24 h-24">
+            <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 8, ease: 'linear' }} className="absolute inset-0 border border-[#D4AF37]/30 rounded-full"></motion.div>
+            <motion.div animate={{ rotate: -360 }} transition={{ repeat: Infinity, duration: 12, ease: 'linear' }} className="absolute inset-2 border border-[#D4AF37]/20 rounded-full"></motion.div>
+            <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 6, ease: 'linear' }} className="absolute inset-4 border border-[#D4AF37]/40 rounded-full"></motion.div>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <Sparkles className="w-6 h-6 text-[#D4AF37] animate-pulse" strokeWidth={1.5} />
+            </div>
+          </div>
+          <div className="text-center">
+            <motion.p key={loadingPhase} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
+              className="text-sm text-[#D4AF37] tracking-[0.15em]" style={{ fontFamily: '"Noto Serif JP", serif' }}>
+              {loadingMessages[loadingPhase]}
+            </motion.p>
+            <p className="text-[10px] text-[#7A7068] tracking-widest mt-3 uppercase" style={{ fontFamily: 'Inter, sans-serif' }}>{name} 様の鑑定書を準備しています</p>
+          </div>
+        </motion.div>
+      )}
 
       {/* ── NAV ── */}
       <nav className="w-full fixed top-0 z-50 bg-[#0C0A14]/80 backdrop-blur-xl border-b border-white/5">
