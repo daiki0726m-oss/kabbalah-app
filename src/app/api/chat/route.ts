@@ -6,7 +6,7 @@ const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY || 'dummy_api_key',
 });
 
-export const maxDuration = 60;
+export const maxDuration = 120;
 
 export async function POST(req: Request) {
   try {
@@ -121,19 +121,51 @@ export async function POST(req: Request) {
       contents: prompt,
       config: {
         temperature: 0.85,
-        maxOutputTokens: 16384,
+        maxOutputTokens: 65536,
         responseMimeType: "application/json",
       }
     });
 
     const reportJson = response.text || "{}";
-    // Clean up any stray markdown json wraps if any, though MimeType should prevent it.
     const cleanJson = reportJson.replace(/```json\n|\n```/g, '');
-    const parsedData = JSON.parse(cleanJson);
+
+    let parsedData;
+    try {
+      parsedData = JSON.parse(cleanJson);
+    } catch {
+      // Attempt to repair truncated JSON
+      console.warn('JSON parse failed, attempting repair...');
+      const repaired = repairJson(cleanJson);
+      parsedData = JSON.parse(repaired);
+    }
 
     return NextResponse.json({ report: parsedData, plan, name });
   } catch (error: any) {
     console.error('Error generating AI report:', error);
     return NextResponse.json({ error: 'Failed to generate report. Please try again later.' }, { status: 500 });
   }
+}
+
+function repairJson(json: string): string {
+  let s = json.trim();
+  // Count open/close braces and brackets
+  let braces = 0, brackets = 0, inString = false, escape = false;
+  for (const c of s) {
+    if (escape) { escape = false; continue; }
+    if (c === '\\') { escape = true; continue; }
+    if (c === '"') { inString = !inString; continue; }
+    if (inString) continue;
+    if (c === '{') braces++;
+    if (c === '}') braces--;
+    if (c === '[') brackets++;
+    if (c === ']') brackets--;
+  }
+  // If we ended inside a string, close it
+  if (inString) s += '"';
+  // Remove trailing comma
+  s = s.replace(/,\s*$/, '');
+  // Close any open brackets/braces
+  while (brackets > 0) { s += ']'; brackets--; }
+  while (braces > 0) { s += '}'; braces--; }
+  return s;
 }
