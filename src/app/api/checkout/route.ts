@@ -14,8 +14,15 @@ export async function POST(req: Request) {
 
     // Select price based on plan
     const priceId = plan === 'premium'
-      ? (process.env.STRIPE_PREMIUM_PRICE_ID || 'price_1T92FsEEPLYPnKaY7lepgmS7')
-      : 'price_1T92FsEEPLYPnKaY7lepgmS7';
+      ? process.env.STRIPE_PREMIUM_PRICE_ID
+      : process.env.STRIPE_STANDARD_PRICE_ID;
+
+    if (!priceId) {
+      return NextResponse.json(
+        { error: `Price ID not configured for plan: ${plan}. Please set STRIPE_${plan.toUpperCase()}_PRICE_ID environment variable.` },
+        { status: 500 }
+      );
+    }
 
     // Creating a Checkout Session
     const session = await stripe.checkout.sessions.create({
