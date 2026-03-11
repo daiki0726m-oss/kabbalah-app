@@ -122,7 +122,7 @@ function PremiumLiveContent() {
             </div>
             <p className="text-[10px] tracking-[0.25em] text-[#D4AF37] uppercase font-bold mb-4" style={{ fontFamily: 'Inter, sans-serif' }}>Kabbalah Premium</p>
             <h1 className="text-2xl font-light tracking-widest text-[#F5F0E8] mb-2 leading-relaxed" style={{ fontFamily: '"Noto Serif JP", serif' }}>
-              {extractedName} 様の<br />魂の設計図と未来への道標
+              {customerName} 様の<br />魂の設計図と未来への道標
             </h1>
           </motion.div>
           <div className="mt-8 pt-6 border-t border-dashed border-white/10">
@@ -425,7 +425,7 @@ function PremiumLiveContent() {
                 ].map((sec, i) => (
                   <div key={i} className="bg-white/[0.03] border border-white/[0.06] rounded-sm p-5">
                     <p className="text-[10px] tracking-[0.15em] text-[#D4AF37] uppercase font-bold mb-2" style={{ fontFamily: 'Inter, sans-serif' }}>{sec.label}</p>
-                    <p className="text-[13px] text-[#BEB5A5] leading-[2] tracking-wider">{sec.content}</p>
+                    <p className="text-[13px] text-[#BEB5A5] leading-[2] tracking-wider" dangerouslySetInnerHTML={{ __html: (sec.content || '').replace(/\n/g, '<br/>') }} />
                   </div>
                 ))}
               </motion.div>
@@ -434,7 +434,7 @@ function PremiumLiveContent() {
         )}
 
         {/* 5.7 Follow-up Right */}
-        {plan === 'premium' && (
+        {(
           <section className="px-6 py-12 border-b border-white/5">
             <div className="text-center mb-6">
               <div className="w-12 h-12 rounded-full border border-[#D4AF37]/30 flex items-center justify-center bg-[#D4AF37]/10 mx-auto mb-4">
