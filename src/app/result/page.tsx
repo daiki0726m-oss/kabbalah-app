@@ -23,6 +23,15 @@ function ResultTeaserContent() {
 
   useEffect(() => { const d = new Date(); setDailyCount(47 + ((d.getDate() + d.getMonth() * 31) % 38)); }, []);
 
+  // Reset loading state when user navigates back from Stripe
+  useEffect(() => {
+    const resetLoading = () => { setLoading(false); };
+    const handlePageShow = (e: PageTransitionEvent) => { if (e.persisted) setLoading(false); };
+    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') resetLoading(); });
+    window.addEventListener('pageshow', handlePageShow);
+    return () => { window.removeEventListener('pageshow', handlePageShow); };
+  }, []);
+
   const [remainingSlots, setRemainingSlots] = useState(0);
   useEffect(() => { const h = new Date().getHours(); setRemainingSlots(Math.max(3, 30 - Math.floor(h * 1.2))); }, []);
 
