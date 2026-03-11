@@ -184,6 +184,7 @@ export async function GET(req: Request) {
     });
   } catch (error: any) {
     console.error('Tweet error:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    const errDetail = error?.data ? JSON.stringify(error.data) : error.message;
+    return NextResponse.json({ error: errDetail, code: error?.code, rateLimit: error?.rateLimit }, { status: 500 });
   }
 }
