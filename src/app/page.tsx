@@ -84,9 +84,12 @@ export default function KabbalahLP() {
             <Sparkles className="w-3.5 h-3.5" strokeWidth={1.5} />
             <span>Kabbalah</span>
           </div>
-          <button onClick={() => document.getElementById('form')?.scrollIntoView({ behavior: 'smooth' })} className="text-[10px] tracking-[0.15em] uppercase text-[#D4AF37] border border-[#D4AF37]/30 px-4 py-1.5 hover:bg-[#D4AF37]/10 transition-colors" style={{ fontFamily: 'Inter, sans-serif' }}>
-            Free Reading
-          </button>
+          <div className="flex items-center gap-4">
+            <a href="/blog" className="text-[10px] tracking-[0.15em] uppercase text-[#7A7068] hover:text-[#D4AF37] transition-colors" style={{ fontFamily: 'Inter, sans-serif' }}>Column</a>
+            <button onClick={() => document.getElementById('form')?.scrollIntoView({ behavior: 'smooth' })} className="text-[10px] tracking-[0.15em] uppercase text-[#D4AF37] border border-[#D4AF37]/30 px-4 py-1.5 hover:bg-[#D4AF37]/10 transition-colors" style={{ fontFamily: 'Inter, sans-serif' }}>
+              Free Reading
+            </button>
+          </div>
         </div>
       </nav>
 
