@@ -27,6 +27,18 @@ const articles = [
   },
 ];
 
+const destinyArticles = [
+  { num: 1, title: '開拓者', desc: 'リーダーシップと独立心。自らの道を切り拓く開拓者タイプ。' },
+  { num: 2, title: '調和者', desc: '協調性と繊細さ。場の空気を読む天性の外交官。' },
+  { num: 3, title: '表現者', desc: '創造性とコミュニケーション力。周囲を照らすムードメーカー。' },
+  { num: 4, title: '建設者', desc: '安定志向と堅実さ。確実に積み上げる努力家タイプ。' },
+  { num: 5, title: '冒険者', desc: '自由と変化への渇望。好奇心旺盛な冒険家タイプ。' },
+  { num: 6, title: '守護者', desc: '愛と責任感。家族やコミュニティを守る存在。' },
+  { num: 7, title: '探究者', desc: '知性と神秘への追求。真理を求める孤高の研究者。' },
+  { num: 8, title: '実現者', desc: '実行力と物質的成功。ビジョンを現実に変える力。' },
+  { num: 9, title: '博愛者', desc: '人道主義と理想主義。人類への深い愛を持つ存在。' },
+];
+
 export default function BlogIndexPage() {
   return (
     <main className="min-h-screen bg-[#0C0A14] text-[#BEB5A5] selection:bg-[#D4AF37]/30 selection:text-white">
@@ -69,6 +81,22 @@ export default function BlogIndexPage() {
               </article>
             </Link>
           ))}
+        </div>
+
+        {/* Destiny Number Grid */}
+        <div className="mt-12">
+          <h2 className="text-sm font-medium text-[#F5F0E8] tracking-widest mb-6 text-center" style={{ fontFamily: '"Noto Serif JP", serif' }}>運命数を深掘り</h2>
+          <div className="grid grid-cols-3 gap-3">
+            {destinyArticles.map((d) => (
+              <Link key={d.num} href={`/blog/destiny-number/${d.num}`} className="group bg-white/[0.03] border border-white/[0.08] rounded-sm p-4 hover:border-[#D4AF37]/20 transition-all text-center">
+                <div className="w-10 h-10 mx-auto mb-2 rounded-full border border-[#D4AF37]/30 flex items-center justify-center bg-[#D4AF37]/10">
+                  <span className="text-lg font-bold text-[#D4AF37]" style={{ fontFamily: 'Inter, sans-serif' }}>{d.num}</span>
+                </div>
+                <p className="text-xs font-medium text-[#F5F0E8] group-hover:text-[#D4AF37] transition-colors">{d.title}</p>
+                <p className="text-[10px] text-[#7A7068] mt-1 leading-relaxed">{d.desc}</p>
+              </Link>
+            ))}
+          </div>
         </div>
 
         {/* CTA */}
