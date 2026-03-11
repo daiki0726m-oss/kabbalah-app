@@ -153,8 +153,9 @@ export function generateStaticParams() {
   return Object.keys(destinyData).map((num) => ({ num }));
 }
 
-export function generateMetadata({ params }: { params: { num: string } }): Metadata {
-  const d = destinyData[params.num];
+export async function generateMetadata({ params }: { params: Promise<{ num: string }> }): Promise<Metadata> {
+  const { num } = await params;
+  const d = destinyData[num];
   if (!d) return {};
   return {
     title: `運命数${d.num}「${d.title}」の性格・恋愛・適職を徹底解説 | カバラ数秘術`,
@@ -162,8 +163,9 @@ export function generateMetadata({ params }: { params: { num: string } }): Metad
   };
 }
 
-export default function DestinyNumberDetailPage({ params }: { params: { num: string } }) {
-  const d = destinyData[params.num];
+export default async function DestinyNumberDetailPage({ params }: { params: Promise<{ num: string }> }) {
+  const { num } = await params;
+  const d = destinyData[num];
   if (!d) return notFound();
 
   return (
@@ -276,7 +278,7 @@ export default function DestinyNumberDetailPage({ params }: { params: { num: str
         <div className="mt-10 text-center">
           <p className="text-xs text-[#7A7068] tracking-wider mb-3">他の運命数を見る</p>
           <div className="flex flex-wrap justify-center gap-2">
-            {Object.keys(destinyData).filter(n => n !== params.num).map(n => (
+            {Object.keys(destinyData).filter(n => n !== num).map(n => (
               <Link key={n} href={`/blog/destiny-number/${n}`} className="w-9 h-9 rounded-full border border-white/10 flex items-center justify-center text-xs text-[#BEB5A5] hover:border-[#D4AF37]/30 hover:text-[#D4AF37] transition-colors" style={{ fontFamily: 'Inter, sans-serif' }}>{n}</Link>
             ))}
           </div>
