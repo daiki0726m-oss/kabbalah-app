@@ -277,7 +277,7 @@ function ResultTeaserContent() {
 
           <div className="text-center mb-8">
             <p className="text-xs text-[#7A7068] tracking-widest">
-              鑑定書は<span className="text-[#F5D76E] font-bold">ご購入後すぐに</span>お届けします
+              鑑定書は<span className="text-[#F5D76E] font-bold">ご購入後すぐに</span>確認できます
             </p>
           </div>
 
@@ -294,7 +294,7 @@ function ResultTeaserContent() {
                 {["魂の設計図（光・影・才能）", "10年間の人生バイオリズム", "12ヶ月の行動指針（仕事/金/健康/対人）", "運命の転機（人生を変える1日）"].map((t, j) => (
                   <div key={j} className="flex items-start gap-2"><Check className="w-4 h-4 text-[#D4AF37] shrink-0 mt-0.5" strokeWidth={2} /><span className="text-[#BEB5A5] tracking-wider">{t}</span></div>
                 ))}
-                {["相性診断（1件分）", "ラッキーアクション365日分", "ブックマーク保存機能"].map((t, j) => (
+                {["相性診断（1件分）", "ラッキーアクション365日分", "鑑定士からの総合アドバイス"].map((t, j) => (
                   <div key={j} className="flex items-start gap-2 opacity-30"><X className="w-4 h-4 text-[#7A7068] shrink-0 mt-0.5" strokeWidth={2} /><span className="text-[#7A7068] tracking-wider line-through">{t}</span></div>
                 ))}
               </div>
@@ -319,7 +319,7 @@ function ResultTeaserContent() {
                 {["魂の設計図（光・影・才能）", "10年間の人生バイオリズム", "12ヶ月の行動指針（仕事/金/健康/対人）", "運命の転機（人生を変える1日）"].map((t, j) => (
                   <div key={j} className="flex items-start gap-2"><Check className="w-4 h-4 text-[#D4AF37] shrink-0 mt-0.5" strokeWidth={2} /><span className="text-[#BEB5A5] tracking-wider">{t}</span></div>
                 ))}
-                {["相性診断（1件分）", "ラッキーアクション365日分", "ブックマーク保存機能"].map((t, j) => (
+                {["相性診断（1件分）", "ラッキーアクション365日分", "鑑定士からの総合アドバイス"].map((t, j) => (
                   <div key={j} className="flex items-start gap-2 bg-[#D4AF37]/10 -mx-2 px-2 py-1 rounded"><Check className="w-4 h-4 text-[#D4AF37] shrink-0 mt-0.5" strokeWidth={2} /><span className="text-[#F5F0E8] tracking-wider font-medium">{t}</span></div>
                 ))}
               </div>

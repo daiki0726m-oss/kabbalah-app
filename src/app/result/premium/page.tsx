@@ -467,6 +467,27 @@ function PremiumLiveContent() {
           </div>
         </section>
 
+        {/* 5.8 Comprehensive Advice (Premium only) */}
+        {plan === 'premium' && report.comprehensiveAdvice && (
+          <section className="px-6 py-12 border-b border-white/5 bg-[#151221]">
+            <div className="text-center mb-8">
+              <div className="w-12 h-12 mx-auto mb-4 rounded-full flex items-center justify-center bg-[#D4AF37]/10 border border-[#D4AF37]/30">
+                <Crown className="w-6 h-6 text-[#D4AF37]" strokeWidth={1.5} />
+              </div>
+              <h3 className="text-sm font-medium tracking-[0.2em] text-[#D4AF37] mb-2 flex items-center justify-center gap-2">
+                ✦ 鑑定士からの総合アドバイス
+              </h3>
+              <p className="text-[11px] text-[#7A7068] tracking-wider">プレミアム限定 ─ あなたの人生を豊かにする処方箋</p>
+            </div>
+            <div className="relative">
+              <div className="absolute top-0 left-0 w-[2px] h-full bg-gradient-to-b from-[#D4AF37]/50 via-[#D4AF37]/20 to-transparent rounded-r ml-6"></div>
+              <div className="pl-4">
+                <div className="text-[14px] leading-[2.2] text-[#BEB5A5] tracking-wider html-content" dangerouslySetInnerHTML={{ __html: report.comprehensiveAdvice?.replace(/\n/g, '<br/>') || '' }} />
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* 6. Conclusion */}
         <section className="px-8 py-14 text-center border-b border-white/5">
           <div className="mb-6 flex justify-center">
@@ -494,7 +515,7 @@ function PremiumLiveContent() {
               {[
                 { title: "相性診断（1件分）", desc: "気になる人との相性をカバラで鑑定" },
                 { title: "ラッキーアクション365日分", desc: "毎日の具体的な開運アドバイス" },
-                { title: "ブックマーク保存機能", desc: "いつでも鑑定書を見返せる保存機能" },
+                { title: "鑑定士からの総合アドバイス", desc: "あなたの人生を豊かにする処方箋" },
               ].map((item, i) => (
                 <div key={i} className="flex items-start gap-3">
                   <CheckCircle2 className="w-5 h-5 text-[#D4AF37] flex-shrink-0 mt-0.5" />
