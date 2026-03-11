@@ -494,7 +494,7 @@ function PremiumLiveContent() {
               {[
                 { title: "相性診断（1件分）", desc: "気になる人との相性をカバラで鑑定" },
                 { title: "ラッキーアクション365日分", desc: "毎日の具体的な開運アドバイス" },
-                { title: "1年後フォローアップ鑑定権", desc: "1年後に再鑑定して成長を確認" },
+                { title: "ブックマーク保存機能", desc: "いつでも鑑定書を見返せる保存機能" },
               ].map((item, i) => (
                 <div key={i} className="flex items-start gap-3">
                   <CheckCircle2 className="w-5 h-5 text-[#D4AF37] flex-shrink-0 mt-0.5" />

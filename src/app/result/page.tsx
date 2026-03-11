@@ -125,11 +125,11 @@ function ResultTeaserContent() {
         {/* ===== SNS Share ===== */}
         <motion.section initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4, duration: 0.8 }} className="mt-10 px-4">
           <div className="bg-white/[0.03] backdrop-blur-sm border border-white/[0.08] rounded-sm p-6 text-center">
-            <p className="text-xs text-[#7A7068] tracking-wider mb-3">あなたの鑑定結果を友達にシェア</p>
+            <p className="text-xs text-[#7A7068] tracking-wider mb-3">この占いを友達にもシェア</p>
             <div className="flex items-center justify-center gap-3">
               {/* LINE Share */}
               <a
-                href={`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.origin : 'https://kabbalah-app-ruddy.vercel.app')}&text=${encodeURIComponent(`カバラ数秘術で鑑定したら、私の運命数は【${lifePathNumber}】でした！無料で鑑定できます✨`)}`}
+                href={`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent('https://kabbalah-app-ruddy.vercel.app')}&text=${encodeURIComponent(`カバラ数秘術で鑑定したら、私の運命数は【${lifePathNumber}】でした！無料で鑑定できます✨`)}`}
                 target="_blank" rel="noopener noreferrer"
                 className="flex items-center gap-2 px-5 py-2.5 rounded-sm text-white text-xs font-bold tracking-wider transition-all hover:opacity-80"
                 style={{ background: '#06C755' }}
@@ -140,7 +140,7 @@ function ResultTeaserContent() {
               </a>
               {/* X (Twitter) Share */}
               <a
-                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`カバラ数秘術で鑑定したら、私の運命数は【${lifePathNumber}】でした！\n4,000年の叡智が導く運命の鑑定書、無料で試せます✨`)}&url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.origin : 'https://kabbalah-app-ruddy.vercel.app')}`}
+                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`カバラ数秘術で鑑定したら、私の運命数は【${lifePathNumber}】でした！\n4,000年の叡智が導く運命の鑑定書、無料で試せます✨`)}&url=${encodeURIComponent('https://kabbalah-app-ruddy.vercel.app')}`}
                 target="_blank" rel="noopener noreferrer"
                 className="flex items-center gap-2 px-5 py-2.5 rounded-sm text-white text-xs font-bold tracking-wider transition-all hover:opacity-80 bg-black border border-white/20"
                 onClick={() => { if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') (window as any).gtag('event', 'share', { method: 'Twitter', content_type: 'result' }); }}
@@ -284,7 +284,7 @@ function ResultTeaserContent() {
                 {["魂の設計図（光・影・才能）", "10年間の人生バイオリズム", "12ヶ月の行動指針（仕事/金/健康/対人）", "運命の転機（人生を変える1日）"].map((t, j) => (
                   <div key={j} className="flex items-start gap-2"><Check className="w-4 h-4 text-[#D4AF37] shrink-0 mt-0.5" strokeWidth={2} /><span className="text-[#BEB5A5] tracking-wider">{t}</span></div>
                 ))}
-                {["相性診断（1件分）", "ラッキーアクション365日分", "1年後フォローアップ鑑定権"].map((t, j) => (
+                {["相性診断（1件分）", "ラッキーアクション365日分", "ブックマーク保存機能"].map((t, j) => (
                   <div key={j} className="flex items-start gap-2 opacity-30"><X className="w-4 h-4 text-[#7A7068] shrink-0 mt-0.5" strokeWidth={2} /><span className="text-[#7A7068] tracking-wider line-through">{t}</span></div>
                 ))}
               </div>
@@ -309,7 +309,7 @@ function ResultTeaserContent() {
                 {["魂の設計図（光・影・才能）", "10年間の人生バイオリズム", "12ヶ月の行動指針（仕事/金/健康/対人）", "運命の転機（人生を変える1日）"].map((t, j) => (
                   <div key={j} className="flex items-start gap-2"><Check className="w-4 h-4 text-[#D4AF37] shrink-0 mt-0.5" strokeWidth={2} /><span className="text-[#BEB5A5] tracking-wider">{t}</span></div>
                 ))}
-                {["相性診断（1件分）", "ラッキーアクション365日分", "1年後フォローアップ鑑定権"].map((t, j) => (
+                {["相性診断（1件分）", "ラッキーアクション365日分", "ブックマーク保存機能"].map((t, j) => (
                   <div key={j} className="flex items-start gap-2 bg-[#D4AF37]/10 -mx-2 px-2 py-1 rounded"><Check className="w-4 h-4 text-[#D4AF37] shrink-0 mt-0.5" strokeWidth={2} /><span className="text-[#F5F0E8] tracking-wider font-medium">{t}</span></div>
                 ))}
               </div>
