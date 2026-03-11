@@ -36,6 +36,9 @@ export const metadata: Metadata = {
     description: "生年月日だけで人生の設計図が明らかに。無料で鑑定書を受け取れます。",
     images: ["/images/ogp.png"],
   },
+  verification: {
+    google: "Mc4_q_pucr5JwX5nRWOiXXv5kEFa6enEeFkreVTMSuY",
+  },
 };
 
 // JSON-LD structured data
