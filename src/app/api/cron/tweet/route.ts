@@ -116,12 +116,46 @@ async function generateTweet(category: string, todayNumber: number): Promise<str
 
   const prompt = prompts[category] || prompts.cta;
 
-  const response = await ai.models.generateContent({
-    model: 'gemini-2.0-flash',
-    contents: prompt,
-  });
+  try {
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.0-flash',
+      contents: prompt,
+    });
+    return (response.text || '').trim();
+  } catch {
+    // Fallback pre-written tweets when Gemini is unavailable
+    return getFallbackTweet(category, todayNumber);
+  }
+}
 
-  return (response.text || '').trim();
+const fallbackTweets: Record<string, string[]> = {
+  daily_energy: [
+    `🔮 今日の数秘エネルギー\n\n今日はあなたの直感が冴える日。ふと浮かんだアイデアを大切にしてください。小さな「気になる」が大きな転機につながるかもしれません。\n\n✦ あなたの運命数は？→ ${SITE_URL}`,
+    `🔮 今日の数秘エネルギー\n\n今日は人とのつながりが幸運を呼ぶ日。普段話さない人に声をかけてみて。思わぬ良い出会いがあるかもしれません。\n\n✦ あなたの運命数は？→ ${SITE_URL}`,
+    `🔮 今日の数秘エネルギー\n\n今日は内省の日。5分でいいので静かに自分と向き合う時間を作ってみてください。答えはいつも自分の中にあります。\n\n✦ あなたの運命数は？→ ${SITE_URL}`,
+  ],
+  what_is: [
+    `📖 数秘術の世界\n\n「カバラ」はヘブライ語で「受け取られたもの」という意味。4000年前のバビロニアで生まれたこの叡智は、口伝として秘密裏に受け継がれてきました。\n\n✦ 30秒で無料鑑定 → ${SITE_URL}`,
+    `📖 数秘術の世界\n\n数秘術では、生年月日を一桁に還元した「運命数」があなたの本質を表すと考えます。1〜9、そして特別な11と22。あなたの数字は何でしょう？\n\n✦ 30秒で無料鑑定 → ${SITE_URL}`,
+  ],
+  trivia: [
+    `💡 数秘トリビア\n\n天才発明家ニコラ・テスラは「3・6・9の数字の壮大さが分かれば、宇宙への鍵を手にする」と語りました。彼はホテルの部屋番号も3で割り切れる数を選んでいたそうです。\n\n✦ あなたの数字を知る → ${SITE_URL}`,
+    `💡 数秘トリビア\n\nピタゴラスは数学者であると同時に神秘家でもありました。「万物は数なり」と説き、数が持つ振動が人間の運命に影響を与えると確信していたのです。\n\n✦ あなたの数字を知る → ${SITE_URL}`,
+  ],
+  destiny_number: [
+    `🔢 運命数7の人\n\n物事の本質を見抜く鋭い洞察力の持ち主。科学と神秘の両方に惹かれる探究者タイプです。ただし、考えすぎて行動が遅れることも。\n\nあなたの運命数は7ですか？\n\n✦ 運命数を調べる → ${SITE_URL}`,
+    `🔢 運命数1の人\n\n生まれながらのリーダー。自分の信念を貫く強さと、新しいことに挑戦する勇気を持っています。ただし、頑固になりすぎないよう注意。\n\nあなたの運命数は1ですか？\n\n✦ 運命数を調べる → ${SITE_URL}`,
+  ],
+  cta: [
+    `✦ 夜のひととき、自分と向き合ってみませんか？\n\nカバラ数秘術は4000年の叡智。あなたの「光」と「影」、隠された才能、10年間のバイオリズムまで、生年月日だけで読み解きます。\n\n👇 30秒で鑑定書を受け取る\n${SITE_URL}`,
+    `✦ あなたの生年月日には、運命の暗号が刻まれています\n\n性格の本質、才能、人生の転機…カバラ数秘術が4000年かけて体系化した「数の法則」で無料鑑定。\n\n👇 30秒で鑑定書を受け取る\n${SITE_URL}`,
+  ],
+};
+
+function getFallbackTweet(category: string, todayNumber: number): string {
+  const tweets = fallbackTweets[category] || fallbackTweets.cta;
+  const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000);
+  return tweets[dayOfYear % tweets.length];
 }
 
 export async function GET(req: Request) {
