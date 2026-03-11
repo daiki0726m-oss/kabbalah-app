@@ -188,7 +188,7 @@ function ResultTeaserContent() {
             <h2 className="text-lg md:text-xl font-light text-[#F5F0E8] tracking-widest mb-2" style={{ fontFamily: '"Noto Serif JP", serif' }}>
               あなたの今後12ヶ月 ─ 月別運勢
             </h2>
-            <p className="text-xs text-[#7A7068] tracking-widest">1月の詳細鑑定結果をお見せします</p>
+            <p className="text-xs text-[#7A7068] tracking-widest">{new Date().getMonth() + 1}月の詳細鑑定結果をお見せします</p>
           </div>
 
           <div className="space-y-4">
@@ -196,8 +196,8 @@ function ResultTeaserContent() {
               <div key={m.month} className="bg-white/[0.04] backdrop-blur-sm border border-white/[0.08] rounded-sm overflow-hidden">
                 <div className="bg-white/[0.03] px-5 md:px-6 py-4 border-b border-white/[0.06]">
                   <div className="flex items-center gap-3">
-                    <span className="text-[10px] font-bold tracking-widest text-[#7A7068] uppercase" style={{ fontFamily: 'Inter, sans-serif' }}>{new Date().getFullYear()}</span>
-                    <span className="text-xl text-[#D4AF37] font-bold">{m.month}月</span>
+                    <span className="text-[10px] font-bold tracking-widest text-[#7A7068] uppercase" style={{ fontFamily: 'Inter, sans-serif' }}>{new Date().getMonth() + 1 <= 12 ? new Date().getFullYear() : new Date().getFullYear() + 1}</span>
+                    <span className="text-xl text-[#D4AF37] font-bold">{new Date().getMonth() + 1}月</span>
                     <span className="text-sm text-[#BEB5A5] tracking-wider ml-1">─ {m.title}</span>
                   </div>
                   <p className="text-sm text-[#BEB5A5] leading-[2] tracking-wider mt-3">{m.overall}</p>
@@ -226,12 +226,12 @@ function ResultTeaserContent() {
               <div className="bg-white/[0.04] backdrop-blur-sm border border-white/[0.08] rounded-sm overflow-hidden">
                 <div className="bg-white/[0.03] px-5 md:px-6 py-4 border-b border-white/[0.06]">
                   <div className="flex items-center gap-3">
-                    <span className="text-[10px] font-bold tracking-widest text-[#7A7068] uppercase" style={{ fontFamily: 'Inter, sans-serif' }}>2026</span>
-                    <span className="text-xl text-[#D4AF37] font-bold">2月</span>
+                    <span className="text-[10px] font-bold tracking-widest text-[#7A7068] uppercase" style={{ fontFamily: 'Inter, sans-serif' }}>{(new Date().getMonth() + 2) > 12 ? new Date().getFullYear() + 1 : new Date().getFullYear()}</span>
+                    <span className="text-xl text-[#D4AF37] font-bold">{(new Date().getMonth() + 2) > 12 ? (new Date().getMonth() + 2) - 12 : new Date().getMonth() + 2}月</span>
                     <span className="text-sm text-[#BEB5A5] tracking-wider ml-1">─ 転機の月</span>
                   </div>
                   <p className="text-sm text-[#BEB5A5] leading-[2] tracking-wider mt-3">
-                    2月はあなたにとって「人生の分岐点」となる重要な月です。この月に起きる出来事が、今後3年間の…
+                    {(new Date().getMonth() + 2) > 12 ? (new Date().getMonth() + 2) - 12 : new Date().getMonth() + 2}月はあなたにとって「人生の分岐点」となる重要な月です。この月に起きる出来事が、今後3年間の…
                   </p>
                 </div>
                 <div className="px-5 md:px-6 py-4 flex items-start gap-3">
@@ -250,7 +250,7 @@ function ResultTeaserContent() {
 
           <div className="text-center mt-6">
             <p className="text-xs text-[#7A7068] tracking-widest flex items-center justify-center gap-1">
-              <ChevronRight className="w-3 h-3" /> 2月〜12月の詳細は完全版鑑定書に収録
+              <ChevronRight className="w-3 h-3" /> {(new Date().getMonth() + 2) > 12 ? (new Date().getMonth() + 2) - 12 : new Date().getMonth() + 2}月以降の詳細は完全版鑑定書に収録
             </p>
           </div>
         </motion.section>

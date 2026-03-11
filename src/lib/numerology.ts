@@ -15,14 +15,16 @@ export function calculateLifePathNumber(dob: string): number {
   return sum;
 }
 
-/** Generate a deterministic biorhythm curve from DOB */
+/** Generate a deterministic biorhythm curve from DOB, starting from current month */
 export function generateBiorhythm(dob: string): { label: string; value: number }[] {
   const seed = dob.replace(/-/g, '').split('').map(Number).reduce((a, b) => a + b, 0);
-  const months = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
-  return months.map((m, i) => {
+  const allMonths = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+  const currentMonth = new Date().getMonth(); // 0-indexed
+  return Array.from({ length: 12 }, (_, i) => {
+    const monthIndex = (currentMonth + i) % 12;
     // Deterministic pseudo-random based on seed + month index
-    const raw = Math.sin(seed * 0.7 + i * 1.3) * 30 + Math.cos(seed * 0.3 + i * 0.9) * 20 + 55;
-    return { label: m, value: Math.round(Math.max(15, Math.min(95, raw))) };
+    const raw = Math.sin(seed * 0.7 + monthIndex * 1.3) * 30 + Math.cos(seed * 0.3 + monthIndex * 0.9) * 20 + 55;
+    return { label: allMonths[monthIndex], value: Math.round(Math.max(15, Math.min(95, raw))) };
   });
 }
 
