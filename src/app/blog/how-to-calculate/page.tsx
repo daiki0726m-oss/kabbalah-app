@@ -68,7 +68,7 @@ export default function HowToCalculatePage() {
             </p>
           </div>
           <p>
-            結果は<b>11</b>。これはマスターナンバーなので、ここで確定です！この人の運命数は<b>「11」</b>——直感力と霊感に優れた「スピリチュアルメッセンジャー」の数字です。
+            結果は<b>11</b>。これはマスターナンバーなので、ここで確定です！この人の運命数は<b>「11」</b>——鋭い直感力を持つ「マスター直感者」の数字です。
           </p>
 
           <h2 className="text-base font-medium text-[#F5F0E8] tracking-widest pt-4 border-t border-white/5" style={{ fontFamily: '"Noto Serif JP", serif' }}>
@@ -84,21 +84,24 @@ export default function HowToCalculatePage() {
             </p>
           </div>
           <p>
-            この人の運命数は<b>「6」</b>——愛と調和を司る「癒しの守護者」の数字です。
+            この人の運命数は<b>「6」</b>——愛と調和をつかさどる「美と調和の守護者」の数字です。
           </p>
 
           <h2 className="text-base font-medium text-[#F5F0E8] tracking-widest pt-4 border-t border-white/5" style={{ fontFamily: '"Noto Serif JP", serif' }}>
             マスターナンバーとは？
           </h2>
           <p>
-            カバラ数秘術には<b>「11」</b>と<b>「22」</b>という2つの特別な数字があります。これらは「マスターナンバー」と呼ばれ、通常の一桁化を行わずにそのまま確定させます。
+            カバラ数秘術には<b>「11」「22」「33」</b>という3つの特別な数字があります。これらは「マスターナンバー」と呼ばれ、一桁にせずそのまま確定させます。
           </p>
           <ul className="space-y-3 pl-4">
             <li className="relative pl-4 before:content-[''] before:absolute before:left-0 before:top-3 before:w-1.5 before:h-1.5 before:bg-[#D4AF37]/50 before:rounded-full">
-              <b>マスターナンバー11</b> — 高い直感力と霊的感受性。人を導く使命を持つ
+              <b>マスターナンバー11</b> — 鋭い直感力と深い洞察力で、人を導く使命を持つ
             </li>
             <li className="relative pl-4 before:content-[''] before:absolute before:left-0 before:top-3 before:w-1.5 before:h-1.5 before:bg-[#D4AF37]/50 before:rounded-full">
-              <b>マスターナンバー22</b> — 壮大なビジョンと実現力。世界レベルで影響を与える可能性
+              <b>マスターナンバー22</b> — 壮大なビジョンを現実の形にする力を持つ
+            </li>
+            <li className="relative pl-4 before:content-[''] before:absolute before:left-0 before:top-3 before:w-1.5 before:h-1.5 before:bg-[#D4AF37]/50 before:rounded-full">
+              <b>マスターナンバー33</b> — 無条件の愛で人を癒す、最も稀少な数字
             </li>
           </ul>
 
