@@ -443,6 +443,8 @@ export default function KabbalahLP() {
           <a href="/legal/tokushouhou" className="text-[10px] text-[#7A7068] tracking-wider hover:text-[#D4AF37] transition-colors">特定商取引法に基づく表記</a>
           <span className="text-[#7A7068]/30">|</span>
           <a href="/legal/privacy" className="text-[10px] text-[#7A7068] tracking-wider hover:text-[#D4AF37] transition-colors">プライバシーポリシー</a>
+          <span className="text-[#7A7068]/30">|</span>
+          <a href="/blog" className="text-[10px] text-[#7A7068] tracking-wider hover:text-[#D4AF37] transition-colors">コラム</a>
         </div>
         <p className="text-[10px] text-[#7A7068] tracking-[0.2em] uppercase" style={{ fontFamily: 'Inter, sans-serif' }}>&copy; 2026 Kabbalah</p>
       </footer>
