@@ -16,8 +16,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Session ID required' }, { status: 400 });
     }
 
-    let name = 'ゲスト';
-    let dob = '不明';
+    let name = '\u30b2\u30b9\u30c8';
+    let dob = '\u4e0d\u660e';
     let plan = 'standard';
 
     if (sessionId.startsWith('cs_test_dummy')) {
@@ -31,77 +31,84 @@ export async function POST(req: Request) {
       if (session.payment_status !== 'paid') {
         return NextResponse.json({ error: 'Payment not completed or invalid session' }, { status: 403 });
       }
-      name = session.metadata?.name || 'ゲスト';
-      dob = session.metadata?.dob || '不明';
+      name = session.metadata?.name || '\u30b2\u30b9\u30c8';
+      dob = session.metadata?.dob || '\u4e0d\u660e';
       plan = session.metadata?.plan || 'standard';
     }
 
     const today = new Date();
-    const todayString = `${today.getFullYear()}年${today.getMonth() + 1}月${today.getDate()}日`;
+    const todayString = `${today.getFullYear()}\u5e74${today.getMonth() + 1}\u6708${today.getDate()}\u65e5`;
     const currentYear = today.getFullYear();
-    const currentMonth = today.getMonth() + 1; // 1-indexed
+    const currentMonth = today.getMonth() + 1;
 
-    // Generate 12-month labels starting from current month
     const monthLabels: string[] = [];
     for (let i = 0; i < 12; i++) {
       const m = ((currentMonth - 1 + i) % 12) + 1;
       const y = currentYear + Math.floor((currentMonth - 1 + i) / 12);
-      monthLabels.push(`${y}年${m}月`);
+      monthLabels.push(`${y}\u5e74${m}\u6708`);
     }
-    const periodLabel = `${monthLabels[0]}〜${monthLabels[11]}`;
+    const periodLabel = `${monthLabels[0]}\u301c${monthLabels[11]}`;
 
-    // Generate 10-year labels
     const yearLabels = Array.from({ length: 10 }, (_, i) => `${currentYear + i}`);
 
-    const prompt = `# 命令書
-あなたは、鑑定歴20年以上の「プロのカバラ数秘術師」であり、卓越した文章力を持つ「プロのライター」です。
-以下の【入力情報】と【制約条件】をもとに、お客様がスマホで読んで「お金を払ってでも読みたい」と深く感動し、具体的な行動を起こしたくなるような圧倒的なボリュームの鑑定書を、**厳格なJSONフォーマット**で作成してください。
-
-# 制約条件（必ず厳守すること）
-1. **【アスタリスク禁止】** 文章中や強調として「アスタリスク（*）」は絶対に使用しないでください。強調したい場合はHTMLの「<b>タグ</b>」を使用してください。
-2. **【プロのトーンと圧倒的文字数】** AI特有の「～と言えるでしょう」「重要です」といった無難な表現は排除し、プロとして優しくも断言するトーンで、非常に深く、圧倒的な文字数（長文）で記述してください。
-3. **【数秘術の根拠提示】** すべての文章（10年運勢、今年の運勢、毎月の運勢、運命の日）において、「あなたの運命数〇が示す性質によれば…」「今年のパーソナルイヤー〇のサイクルによると…」といったカバラ数秘術の具体的な計算結果を根拠として盛り込んでください。
-4. **【JSON出力】** 出力は必ず以下のJSON構造とし、Markdownのコードブロック (\`\`\`json) は含めず、純粋なJSONテキストのみを出力してください。各キーに対するテキスト（説明文）は長文で、改行（\\n）や<b>タグを含めて構いません。
-5. **【期間】** 月別の運勢・アクションプランは「${periodLabel}」の12ヶ月間を対象としてください。年を跨ぐ場合もあります。
-
-# 入力情報
-・お客様の名前：${name}
-・生年月日：${dob}
-・本日の日付（鑑定日）：${todayString}
-
-【出力必須JSON構造】
-{
-  "coverIntro": "プロの占い師としての重厚な挨拶。生年月日から導き出された運命数を提示し、その数字が持つ本質的な宿命を圧倒的な長文で解説。",
-  "biorhythm10Years": [
-    // ${yearLabels[0]}年から${yearLabels[9]}年までの10年間の運勢の波（0〜100）
-    { "year": "${yearLabels[0]}", "value": 30 }, { "year": "${yearLabels[1]}", "value": 50 } // ...計10年分
-  ],
-  "biorhythm10YearsText": "上記の10年がカバラ数秘術的にどのようなサイクルになるのか、人生の大きなテーマについての深い解説（圧倒的な長文）。",
-  "biorhythm12Months": [
-    // ${periodLabel}の12ヶ月間の運勢の波（0〜100）
-    { "month": "${monthLabels[0]}", "value": 40 }, { "month": "${monthLabels[1]}", "value": 45 } // ...計12ヶ月分
-  ],
-  "biorhythm12MonthsText": "この12ヶ月のパーソナルイヤーが示す意味と、果たすべき使命やテーマの解説（長文）。",
-  "monthlyPlans": [
-    // ${periodLabel}の12ヶ月間の月別アクションプラン（12個のオブジェクト）
-    {
-      "month": "${monthLabels[0]}",
-      "title": "〇月のテーマを簡潔に",
-      "overall": "全体運（長文。毎月のカバラの数字の巡りも根拠に入れること）",
-      "work": "仕事運（長文）",
-      "finance": "金運（長文）",
-      "health": "健康運（長文）",
-      "relationships": "対人関係（長文）"
-    }
-  ],
-  "fatefulDay": {
-    "date": "〇月〇日", // 本日の日付より未来で、上記12ヶ月以内の具体的な日付を指定
-    "reason": "なぜこの日が起点となるのか、数秘術の根拠をもとに熱く深く語る（長文）",
-    "action": "この日を境にどう動くべきか、具体的で実践的なアクションプランとマインドセットのアドバイス（長文）"
-  },
-  "finalMessage": "全体のまとめと、お客様の未来を祝福し、背中を強く押す力強い言葉（長文）"
-}
-`;
+    const prompt = [
+      '# \u547d\u4ee4\u66f8',
+      '\u3042\u306a\u305f\u306f\u3001\u9451\u5b9a\u6b74\uff12\uff10\u5e74\u4ee5\u4e0a\u306e\u300c\u30d7\u30ed\u306e\u30ab\u30d0\u30e9\u6570\u79d8\u8853\u5e2b\u300d\u3067\u3042\u308a\u3001\u5353\u8d8a\u3057\u305f\u6587\u7ae0\u529b\u3092\u6301\u3064\u300c\u30d7\u30ed\u306e\u30e9\u30a4\u30bf\u30fc\u300d\u3067\u3059\u3002',
+      '\u4ee5\u4e0b\u306e\u3010\u5165\u529b\u60c5\u5831\u3011\u3068\u3010\u5236\u7d04\u6761\u4ef6\u3011\u3092\u3082\u3068\u306b\u3001\u304a\u5ba2\u69d8\u304c\u30b9\u30de\u30db\u3067\u8aad\u3093\u3067\u300c\u304a\u91d1\u3092\u6255\u3063\u3066\u3067\u3082\u8aad\u307f\u305f\u3044\u300d\u3068\u6df1\u304f\u611f\u52d5\u3057\u3001\u5177\u4f53\u7684\u306a\u884c\u52d5\u3092\u8d77\u3053\u3057\u305f\u304f\u306a\u308b\u3088\u3046\u306a\u5727\u5012\u7684\u306a\u30dc\u30ea\u30e5\u30fc\u30e0\u306e\u9451\u5b9a\u66f8\u3092\u3001\u53b3\u683c\u306aJSON\u30d5\u30a9\u30fc\u30de\u30c3\u30c8\u3067\u4f5c\u6210\u3057\u3066\u304f\u3060\u3055\u3044\u3002',
+      '',
+      '# \u30ab\u30d0\u30e9\u6570\u79d8\u8853\u306e\u8a08\u7b97\u65b9\u6cd5\uff08\u5fc5\u305a\u3053\u306e\u901a\u308a\u306b\u8a08\u7b97\u3059\u308b\u3053\u3068\uff09',
+      '1. \u904b\u547d\u6570\uff08\u30e9\u30a4\u30d5\u30d1\u30b9\u30ca\u30f3\u30d0\u30fc\uff09\u306e\u8a08\u7b97\uff1a\u751f\u5e74\u6708\u65e5\u306e\u5e74\u30fb\u6708\u30fb\u65e5\u3092\u305d\u308c\u305e\u308c\u500b\u5225\u306b\u4e00\u6841\u306b\u9084\u5143\u3057\u3066\u304b\u3089\u5408\u8a08\u3057\u3001\u3055\u3089\u306b\u4e00\u6841\u306b\u9084\u5143\u3059\u308b\u3002\u305f\u3060\u3057\u9014\u4e2d\u306711, 22, 33\u306b\u306a\u3063\u305f\u5834\u5408\u306f\u30de\u30b9\u30bf\u30fc\u30ca\u30f3\u30d0\u30fc\u3068\u3057\u3066\u4fdd\u6301\u3002',
+      '   \u4f8b: 1985\u5e747\u670826\u65e5 \u2192 \u5e74: 1+9+8+5=23\u21922+3=5, \u6708: 7, \u65e5: 2+6=8 \u2192 \u5408\u8a08: 5+7+8=20\u21922+0=2 \u2192 \u904b\u547d\u65702',
+      '2. \u30d1\u30fc\u30bd\u30ca\u30eb\u30a4\u30e4\u30fc\u30ca\u30f3\u30d0\u30fc\uff1a\u751f\u307e\u308c\u6708\uff0b\u751f\u307e\u308c\u65e5\uff0b\u5bfe\u8c61\u5e74 \u3092\u305d\u308c\u305e\u308c\u4e00\u6841\u306b\u9084\u5143\u3057\u3066\u304b\u3089\u5408\u8a08\u3001\u4e00\u6841\u306b\u306a\u308b\u307e\u3067\u9084\u5143\u3002',
+      '3. \u30d1\u30fc\u30bd\u30ca\u30eb\u30de\u30f3\u30b9\u30ca\u30f3\u30d0\u30fc\uff1a\u30d1\u30fc\u30bd\u30ca\u30eb\u30a4\u30e4\u30fc\u30ca\u30f3\u30d0\u30fc\uff0b\u5bfe\u8c61\u6708 \u3092\u4e00\u6841\u306b\u9084\u5143\u3002',
+      '',
+      '# \u5236\u7d04\u6761\u4ef6\uff08\u5fc5\u305a\u53b3\u5b88\u3059\u308b\u3053\u3068\uff09',
+      '1. \u3010\u30a2\u30b9\u30bf\u30ea\u30b9\u30af\u7981\u6b62\u3011 \u6587\u7ae0\u4e2d\u3084\u5f37\u8abf\u3068\u3057\u3066\u30a2\u30b9\u30bf\u30ea\u30b9\u30af\uff08*\uff09\u306f\u7d76\u5bfe\u306b\u4f7f\u7528\u3057\u306a\u3044\u3067\u304f\u3060\u3055\u3044\u3002\u5f37\u8abf\u3057\u305f\u3044\u5834\u5408\u306fHTML\u306e<b>\u30bf\u30b0</b>\u3092\u4f7f\u7528\u3002',
+      '2. \u3010\u30d7\u30ed\u306e\u30c8\u30fc\u30f3\u3068\u5727\u5012\u7684\u6587\u5b57\u6570\u3011 AI\u7279\u6709\u306e\u300c\uff5e\u3068\u8a00\u3048\u308b\u3067\u3057\u3087\u3046\u300d\u300c\u91cd\u8981\u3067\u3059\u300d\u3068\u3044\u3063\u305f\u7121\u96e3\u306a\u8868\u73fe\u306f\u6392\u9664\u3057\u3001\u30d7\u30ed\u3068\u3057\u3066\u512a\u3057\u304f\u3082\u65ad\u8a00\u3059\u308b\u30c8\u30fc\u30f3\u3067\u3001\u975e\u5e38\u306b\u6df1\u304f\u3001\u5727\u5012\u7684\u306a\u6587\u5b57\u6570\uff08\u9577\u6587\uff09\u3067\u8a18\u8ff0\u3002',
+      '3. \u3010\u30ab\u30d0\u30e9\u6570\u79d8\u8853\u306e\u6839\u62e0\u63d0\u793a\u3011 \u3059\u3079\u3066\u306e\u6587\u7ae0\u306b\u304a\u3044\u3066\u4ee5\u4e0b\u3092\u5fc5\u305a\u76db\u308a\u8fbc\u3080\u3053\u3068\uff1a',
+      '   - \u904b\u547d\u6570\u3068\u5bfe\u5fdc\u3059\u308b\u30bb\u30d5\u30a3\u30e9\uff08\u751f\u547d\u306e\u6a39\uff09\u306e\u540d\u79f0\u3068\u610f\u5473',
+      '   - \u5bfe\u5fdc\u3059\u308b\u30d8\u30d6\u30e9\u30a4\u6587\u5b57\u3068\u305d\u306e\u8c61\u5fb4',
+      '   - \u30d1\u30fc\u30bd\u30ca\u30eb\u30a4\u30e4\u30fc\u30ca\u30f3\u30d0\u30fc\u30fb\u30d1\u30fc\u30bd\u30ca\u30eb\u30de\u30f3\u30b9\u30ca\u30f3\u30d0\u30fc\u306e\u5177\u4f53\u7684\u306a\u6570\u5024\u3068\u305d\u306e\u30b5\u30a4\u30af\u30eb\u306e\u610f\u5473',
+      '   - \u300c\u3042\u306a\u305f\u306e\u904b\u547d\u6570\u3007\u306f\u751f\u547d\u306e\u6a39\u306e\u3007\u3007\uff08\u30bb\u30d5\u30a3\u30e9\u540d\uff09\u306b\u5bfe\u5fdc\u3057\u2026\u300d\u306e\u3088\u3046\u306a\u5177\u4f53\u7684\u306a\u8a18\u8ff0',
+      '4. \u3010\u5177\u4f53\u7684\u306a\u884c\u52d5\u30d1\u30bf\u30fc\u30f3\u306e\u8a18\u8ff0\u3011 \u300c\u3042\u306a\u305f\u306f\u7d20\u6674\u3089\u3057\u3044\u300d\u306e\u3088\u3046\u306a\u6f20\u7136\u3068\u3057\u305f\u8868\u73fe\u3067\u306f\u306a\u304f\u3001\u300c\u4f1a\u8b70\u3067\u6700\u521d\u306b\u767a\u8a00\u3059\u308b\u50be\u5411\u304c\u3042\u308b\u300d\u300c\u30ec\u30b9\u30c8\u30e9\u30f3\u3067\u30e1\u30cb\u30e5\u30fc\u3092\u9078\u3076\u306e\u306b\u6642\u9593\u304c\u304b\u304b\u308b\u300d\u300cSNS\u306e\u901a\u77e5\u3092\u6c17\u306b\u3057\u3059\u304e\u308b\u300d\u306e\u3088\u3046\u306a\u3001\u5177\u4f53\u7684\u3067\u691c\u8a3c\u53ef\u80fd\u306a\u884c\u52d5\u30d1\u30bf\u30fc\u30f3\u3092\u8a18\u8ff0\u3002\u8aad\u8005\u304c\u300c\u307e\u3055\u306b\u79c1\u3060\uff01\u300d\u3068\u611f\u3058\u308b\u5177\u4f53\u6027\u304c\u91cd\u8981\u3002',
+      '5. \u3010JSON\u51fa\u529b\u3011 \u51fa\u529b\u306f\u5fc5\u305a\u4ee5\u4e0b\u306eJSON\u69cb\u9020\u3068\u3057\u3001Markdown\u306e\u30b3\u30fc\u30c9\u30d6\u30ed\u30c3\u30af\u306f\u542b\u3081\u305a\u3001\u7d14\u7c8b\u306aJSON\u30c6\u30ad\u30b9\u30c8\u306e\u307f\u3092\u51fa\u529b\u3002\u5404\u30ad\u30fc\u306b\u5bfe\u3059\u308b\u30c6\u30ad\u30b9\u30c8\u306f\u9577\u6587\u3067\u3001<b>\u30bf\u30b0\u3092\u542b\u3081\u3066\u69cb\u3044\u307e\u305b\u3093\u3002',
+      '6. \u3010\u671f\u9593\u3011 \u6708\u5225\u306e\u904b\u52e2\u30fb\u30a2\u30af\u30b7\u30e7\u30f3\u30d7\u30e9\u30f3\u306f\u300c' + periodLabel + '\u300d\u306e12\u30f6\u6708\u9593\u3092\u5bfe\u8c61\u3002',
+      '',
+      '# \u5165\u529b\u60c5\u5831',
+      '\u30fb\u304a\u5ba2\u69d8\u306e\u540d\u524d\uff1a' + name,
+      '\u30fb\u751f\u5e74\u6708\u65e5\uff1a' + dob,
+      '\u30fb\u672c\u65e5\u306e\u65e5\u4ed8\uff08\u9451\u5b9a\u65e5\uff09\uff1a' + todayString,
+      '',
+      '\u3010\u51fa\u529b\u5fc5\u9808JSON\u69cb\u9020\u3011',
+      '{',
+      '  "coverIntro": "\u30d7\u30ed\u306e\u5360\u3044\u5e2b\u3068\u3057\u3066\u306e\u91cd\u539a\u306a\u6328\u62f6\u3002\u751f\u5e74\u6708\u65e5\u304b\u3089\u6b63\u78ba\u306b\u8a08\u7b97\u3057\u305f\u904b\u547d\u6570\u3092\u63d0\u793a\u3057\u3001\u5bfe\u5fdc\u3059\u308b\u30bb\u30d5\u30a3\u30e9\uff08\u751f\u547d\u306e\u6a39\uff09\u30fb\u30d8\u30d6\u30e9\u30a4\u6587\u5b57\u30fb\u652f\u914d\u661f\u3092\u660e\u793a\u3057\u305f\u4e0a\u3067\u3001\u5177\u4f53\u7684\u306a\u884c\u52d5\u30d1\u30bf\u30fc\u30f3\u306e\u4f8b\u3092\u4ea4\u3048\u3066\u5727\u5012\u7684\u306a\u9577\u6587\u3067\u89e3\u8aac",',
+      '  "biorhythm10Years": [',
+      '    { "year": "' + yearLabels[0] + '", "value": 30 }, { "year": "' + yearLabels[1] + '", "value": 50 }',
+      '  ],',
+      '  "biorhythm10YearsText": "\u5404\u5e74\u306e\u30d1\u30fc\u30bd\u30ca\u30eb\u30a4\u30e4\u30fc\u30ca\u30f3\u30d0\u30fc\u3092\u660e\u793a\u3057\uff08\u4f8b: ' + yearLabels[0] + '\u5e74\u306e\u30d1\u30fc\u30bd\u30ca\u30eb\u30a4\u30e4\u30fc\u306f\u25cb\uff09\u3001\u30ab\u30d0\u30e9\u6570\u79d8\u8853\u7684\u306b\u3069\u306e\u3088\u3046\u306a\u30b5\u30a4\u30af\u30eb\u306b\u306a\u308b\u306e\u304b\u3001\u4eba\u751f\u306e\u5927\u304d\u306a\u30c6\u30fc\u30de\u306b\u3064\u3044\u3066\u306e\u6df1\u3044\u89e3\u8aac\uff08\u5727\u5012\u7684\u306a\u9577\u6587\uff09",',
+      '  "biorhythm12Months": [',
+      '    { "month": "' + monthLabels[0] + '", "value": 40 }, { "month": "' + monthLabels[1] + '", "value": 45 }',
+      '  ],',
+      '  "biorhythm12MonthsText": "\u3053\u306e12\u30f6\u6708\u9593\u306e\u5404\u30d1\u30fc\u30bd\u30ca\u30eb\u30de\u30f3\u30b9\u30ca\u30f3\u30d0\u30fc\u304c\u793a\u3059\u610f\u5473\u3068\u3001\u679c\u305f\u3059\u3079\u304d\u4f7f\u547d\u3084\u30c6\u30fc\u30de\u306e\u89e3\u8aac\uff08\u9577\u6587\uff09",',
+      '  "monthlyPlans": [',
+      '    {',
+      '      "month": "' + monthLabels[0] + '",',
+      '      "title": "\u3007\u6708\u306e\u30c6\u30fc\u30de\u3092\u7c21\u6f54\u306b",',
+      '      "overall": "\u5168\u4f53\u904b\uff08\u9577\u6587\u3002\u30d1\u30fc\u30bd\u30ca\u30eb\u30de\u30f3\u30b9\u30ca\u30f3\u30d0\u30fc\u25cb\u306e\u610f\u5473\u3092\u6839\u62e0\u306b\u5165\u308c\u308b\u3053\u3068\uff09",',
+      '      "work": "\u4ed5\u4e8b\u904b\uff08\u9577\u6587\u3002\u5177\u4f53\u7684\u306a\u884c\u52d5\u30a2\u30c9\u30d0\u30a4\u30b9\u3092\u542b\u3080\uff09",',
+      '      "finance": "\u91d1\u904b\uff08\u9577\u6587\u3002\u5177\u4f53\u7684\u306a\u91d1\u984d\u3084\u884c\u52d5\u306e\u76ee\u5b89\u3092\u542b\u3080\uff09",',
+      '      "health": "\u5065\u5eb7\u904b\uff08\u9577\u6587\u3002\u5177\u4f53\u7684\u306a\u4f53\u306e\u90e8\u4f4d\u3084\u30b1\u30a2\u65b9\u6cd5\u3092\u542b\u3080\uff09",',
+      '      "relationships": "\u5bfe\u4eba\u95a2\u4fc2\uff08\u9577\u6587\u3002\u5177\u4f53\u7684\u306a\u30b3\u30df\u30e5\u30cb\u30b1\u30fc\u30b7\u30e7\u30f3\u65b9\u6cd5\u3092\u542b\u3080\uff09"',
+      '    }',
+      '  ],',
+      '  "fatefulDay": {',
+      '    "date": "\u3007\u6708\u3007\u65e5",',
+      '    "reason": "\u306a\u305c\u3053\u306e\u65e5\u304c\u904b\u547d\u306e\u8ee2\u6a5f\u3068\u306a\u308b\u306e\u304b\u3001\u30d1\u30fc\u30bd\u30ca\u30eb\u30c7\u30a4\u30ca\u30f3\u30d0\u30fc\u3084\u30ab\u30d0\u30e9\u306e\u6570\u5b57\u306e\u5de1\u308a\u306b\u57fa\u3065\u3044\u305f\u6839\u62e0\u3092\u542b\u3080\u6df1\u3044\u89e3\u8aac\uff08\u9577\u6587\uff09",',
+      '    "action": "\u3053\u306e\u65e5\u3092\u5883\u306b\u3069\u3046\u52d5\u304f\u3079\u304d\u304b\u3001\u5177\u4f53\u7684\u3067\u5b9f\u8df5\u7684\u306a\u30a2\u30af\u30b7\u30e7\u30f3\u30d7\u30e9\u30f3\u3068\u30de\u30a4\u30f3\u30c9\u30bb\u30c3\u30c8\u306e\u30a2\u30c9\u30d0\u30a4\u30b9\uff08\u9577\u6587\uff09"',
+      '  },',
+      '  "finalMessage": "\u5168\u4f53\u306e\u307e\u3068\u3081\u3068\u3001\u304a\u5ba2\u69d8\u306e\u672a\u6765\u3092\u795d\u798f\u3057\u3001\u80cc\u4e2d\u3092\u5f37\u304f\u62bc\u3059\u529b\u5f37\u3044\u8a00\u8449\uff08\u9577\u6587\uff09"',
+      '}',
+    ].join('\n');
 
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
@@ -120,7 +127,6 @@ export async function POST(req: Request) {
     try {
       parsedData = JSON.parse(cleanJson);
     } catch {
-      // Attempt to repair truncated JSON
       console.warn('JSON parse failed, attempting repair...');
       const repaired = repairJson(cleanJson);
       parsedData = JSON.parse(repaired);
@@ -135,7 +141,6 @@ export async function POST(req: Request) {
 
 function repairJson(json: string): string {
   let s = json.trim();
-  // Count open/close braces and brackets
   let braces = 0, brackets = 0, inString = false, escape = false;
   for (const c of s) {
     if (escape) { escape = false; continue; }
@@ -147,11 +152,8 @@ function repairJson(json: string): string {
     if (c === '[') brackets++;
     if (c === ']') brackets--;
   }
-  // If we ended inside a string, close it
   if (inString) s += '"';
-  // Remove trailing comma
   s = s.replace(/,\s*$/, '');
-  // Close any open brackets/braces
   while (brackets > 0) { s += ']'; brackets--; }
   while (braces > 0) { s += '}'; braces--; }
   return s;
