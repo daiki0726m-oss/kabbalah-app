@@ -115,7 +115,21 @@ function ResultTeaserContent() {
                 <div>
                   <p className={`text-[10px] tracking-[0.15em] ${labelColor} uppercase font-bold mb-1`} style={{ fontFamily: 'Inter, sans-serif' }}>{label}</p>
                   <h3 className="text-base md:text-lg font-medium text-[#F5F0E8] tracking-wider mb-3">{data.label}</h3>
-                  <p className="text-sm text-[#BEB5A5] leading-[2] tracking-wider">{data.description}</p>
+                  <div className="text-sm text-[#BEB5A5] leading-[2.2] tracking-wider space-y-3">
+                    {data.description.split(/(?<=。)(?=.)/g).reduce((acc: string[], sentence: string, idx: number, arr: string[]) => {
+                      // Group every 2-3 sentences into a paragraph for readability
+                      const lastGroup = acc[acc.length - 1];
+                      const sentenceCount = (lastGroup || '').split('。').length - 1;
+                      if (idx === 0 || sentenceCount >= 2) {
+                        acc.push(sentence);
+                      } else {
+                        acc[acc.length - 1] = lastGroup + sentence;
+                      }
+                      return acc;
+                    }, [] as string[]).map((para: string, idx: number) => (
+                      <p key={idx}>{para}</p>
+                    ))}
+                  </div>
                 </div>
               </div>
             </motion.div>
@@ -200,7 +214,7 @@ function ResultTeaserContent() {
                     <span className="text-xl text-[#D4AF37] font-bold">{new Date().getMonth() + 1}月</span>
                     <span className="text-sm text-[#BEB5A5] tracking-wider ml-1">─ {m.title}</span>
                   </div>
-                  <p className="text-sm text-[#BEB5A5] leading-[2] tracking-wider mt-3">{m.overall}</p>
+                  <p className="text-sm text-[#BEB5A5] leading-[2.2] tracking-wider mt-3">{m.overall}</p>
                 </div>
                 <div className="divide-y divide-white/[0.06]">
                   {[
@@ -209,11 +223,11 @@ function ResultTeaserContent() {
                     { icon: <Heart className="w-4 h-4 text-[#D4AF37]" strokeWidth={1.5} />, label: "恋愛運", text: m.love },
                     { icon: <ShieldCheck className="w-4 h-4 text-[#D4AF37]" strokeWidth={1.5} />, label: "健康運", text: m.health },
                   ].map((sub, j) => (
-                    <div key={j} className="px-5 md:px-6 py-4 flex items-start gap-3">
+                    <div key={j} className="px-5 md:px-6 py-5 flex items-start gap-3">
                       <div className="w-8 h-8 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/20 flex items-center justify-center shrink-0 mt-0.5">{sub.icon}</div>
                       <div>
                         <p className="text-[10px] tracking-[0.15em] text-[#D4AF37] uppercase font-bold mb-1" style={{ fontFamily: 'Inter, sans-serif' }}>{sub.label}</p>
-                        <p className="text-sm text-[#BEB5A5] leading-[2] tracking-wider">{sub.text}</p>
+                        <p className="text-sm text-[#BEB5A5] leading-[2.2] tracking-wider">{sub.text}</p>
                       </div>
                     </div>
                   ))}
