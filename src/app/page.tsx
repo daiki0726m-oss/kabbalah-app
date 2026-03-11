@@ -28,8 +28,7 @@ export default function KabbalahLP() {
   const [nameCompleted, setNameCompleted] = useState(false);
   const [dobCompleted, setDobCompleted] = useState(false);
 
-  const [dailyCount, setDailyCount] = useState(0);
-  useEffect(() => { const d = new Date(); setDailyCount(47 + ((d.getDate() + d.getMonth() * 31) % 38)); }, []);
+
 
   const loadingMessages = ["魂の暗号を受信中...", "運命数を算出中...", "鑑定書を編纂中..."];
 
@@ -323,15 +322,15 @@ export default function KabbalahLP() {
           <FadeIn>
             <div className="text-center mb-14">
               <h2 className="text-2xl md:text-3xl font-light text-[#F5F0E8] tracking-widest mb-4" style={{ fontFamily: '"Noto Serif JP", serif' }}>
-                鑑定書が、人生を変えた瞬間。
-              </h2>
+                鑑定書を受け取った方の声
+            </h2>
             </div>
           </FadeIn>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
               { initials: "Y.S", name: "Y.S さん", meta: "34歳 / 会社員", review: "自分のことがここまで正確に描かれていて、読みながら涙が止まりませんでした。特に「影の性質」の部分は、ずっと誰にも言えなかった本音をそのまま言い当てられたような感覚でした。" },
-              { initials: "M.K", name: "M.K さん", meta: "31歳 / フリーランス", review: "転職すべきかずっと悩んでいましたが、鑑定書の内容がまさに今の自分の状況そのもの。背中を押してもらえました。今は新しい職場で充実しています。" },
+              { initials: "M.K", name: "M.K さん", meta: "31歳 / 会社員", review: "転職すべきかずっと悩んでいましたが、鑑定書の内容がまさに今の自分の状況そのもの。背中を押してもらえました。今は新しい職場で充実しています。" },
               { initials: "A.T", name: "A.T さん", meta: "37歳 / 主婦", review: "友人に勧められて半信半疑で試しましたが、読み終わった瞬間に友人にも勧めていました。数万文字の鑑定書は、市販の占い本とは比べ物にならない深さです。" },
             ].map((t, i) => (
               <FadeIn key={i} delay={0.1 * (i + 1)}>
@@ -366,8 +365,8 @@ export default function KabbalahLP() {
         <div className="max-w-md mx-auto relative z-10">
           <FadeIn>
             <div className="flex items-center justify-center gap-2 mb-8 text-xs text-[#7A7068] tracking-widest">
-              <Users className="w-4 h-4 text-[#D4AF37]/60" />
-              本日 <span className="text-[#F5F0E8] font-medium">{dailyCount}名</span> が鑑定を受けました
+              <Shield className="w-4 h-4 text-[#D4AF37]/60" />
+              お一人ずつ<span className="text-[#F5F0E8] font-medium">専用の鑑定書</span>をお作りします
             </div>
 
             <div className="text-center mb-10">

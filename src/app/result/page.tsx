@@ -2,7 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 import { Suspense, useState, useEffect, useMemo } from "react";
-import { Lock, Sparkles, Heart, Briefcase, Star, ShieldCheck, Compass, Sun, Moon, Gem, TrendingUp, Users, ChevronRight, Clock, Crown, Check, X } from "lucide-react";
+import { Lock, Sparkles, Heart, Briefcase, Star, ShieldCheck, Shield, Compass, Sun, Moon, Gem, TrendingUp, ChevronRight, Clock, Crown, Check, X } from "lucide-react";
 import { motion } from "framer-motion";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from "recharts";
 import { calculateLifePathNumber, generateBiorhythm, personalityData } from "@/lib/numerology";
@@ -15,13 +15,10 @@ function ResultTeaserContent() {
   const dob = decodeURIComponent(rawDob);
 
   const [loading, setLoading] = useState(false);
-  const [dailyCount, setDailyCount] = useState(0);
 
   const lifePathNumber = useMemo(() => calculateLifePathNumber(dob), [dob]);
   const profile = personalityData[lifePathNumber] || personalityData[7];
   const biorhythmData = useMemo(() => generateBiorhythm(dob), [dob]);
-
-  useEffect(() => { const d = new Date(); setDailyCount(47 + ((d.getDate() + d.getMonth() * 31) % 38)); }, []);
 
   // Reset loading state when user navigates back from Stripe
   useEffect(() => {
@@ -32,8 +29,7 @@ function ResultTeaserContent() {
     return () => { window.removeEventListener('pageshow', handlePageShow); };
   }, []);
 
-  const [remainingSlots, setRemainingSlots] = useState(0);
-  useEffect(() => { const h = new Date().getHours(); setRemainingSlots(Math.max(3, 30 - Math.floor(h * 1.2))); }, []);
+  const [remainingSlots] = useState(0); // eslint-disable-line @typescript-eslint/no-unused-vars
 
   const handleCheckout = async (plan: 'standard' | 'premium' = 'standard') => {
     try {
@@ -281,7 +277,7 @@ function ResultTeaserContent() {
 
           <div className="text-center mb-8">
             <p className="text-xs text-[#7A7068] tracking-widest">
-              本日の鑑定枠：残り <span className="text-[#F5D76E] font-bold text-sm">{remainingSlots}件</span>
+              鑑定書は<span className="text-[#F5D76E] font-bold">ご購入後すぐに</span>お届けします
             </p>
           </div>
 
@@ -346,8 +342,8 @@ function ResultTeaserContent() {
           <div className="mt-6 space-y-4">
             <div className="text-center">
               <p className="text-xs text-[#7A7068] tracking-widest flex items-center justify-center gap-1.5">
-                <Users className="w-3.5 h-3.5 text-[#D4AF37]" />
-                過去24時間で <span className="text-[#F5F0E8] font-medium">{dailyCount}名</span> の方がこの鑑定書を受け取りました
+                <Shield className="w-3.5 h-3.5 text-[#D4AF37]" />
+                すべての鑑定書は<span className="text-[#F5F0E8] font-medium">お一人ずつ専用</span>に作成されます
               </p>
             </div>
             <div className="bg-white/[0.04] border border-white/[0.08] rounded-sm p-4 flex items-start gap-3">
