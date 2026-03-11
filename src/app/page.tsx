@@ -39,6 +39,10 @@ export default function KabbalahLP() {
     setIsSubmitting(true);
     setLoadingPhase(0);
     const dob = `${birthYear}-${birthMonth.padStart(2, '0')}-${birthDay.padStart(2, '0')}`;
+    // GA4 event
+    if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
+      (window as any).gtag('event', 'generate_lead', { event_category: 'form', event_label: 'free_reading' });
+    }
     setTimeout(() => setLoadingPhase(1), 1200);
     setTimeout(() => setLoadingPhase(2), 2400);
     setTimeout(() => { router.push(`/result?name=${encodeURIComponent(name)}&dob=${encodeURIComponent(dob)}`); }, 3600);

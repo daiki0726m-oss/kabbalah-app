@@ -2,16 +2,22 @@ import type { Metadata } from "next";
 import { Noto_Sans_JP, Noto_Serif_JP } from "next/font/google";
 import "./globals.css";
 
+import Script from "next/script";
+
+const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "G-XXXXXXXXXX";
+
 const notoSansJP = Noto_Sans_JP({
   subsets: ["latin"],
   variable: "--font-noto-sans-jp",
   weight: ["300", "400", "500", "700"],
+  display: "swap",
 });
 
 const notoSerifJP = Noto_Serif_JP({
   subsets: ["latin"],
   variable: "--font-noto-serif-jp",
   weight: ["400", "500", "700"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -32,6 +38,27 @@ export const metadata: Metadata = {
   },
 };
 
+// JSON-LD structured data
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "カバラ数秘術",
+  "description": "4,000年の叡智が、あなたの運命を生年月日から解読。無料で鑑定書を生成します。",
+  "url": "https://kabbalah-app-ruddy.vercel.app",
+  "applicationCategory": "LifestyleApplication",
+  "operatingSystem": "Web",
+  "offers": [
+    { "@type": "Offer", "name": "無料鑑定", "price": "0", "priceCurrency": "JPY" },
+    { "@type": "Offer", "name": "スタンダード鑑定", "price": "980", "priceCurrency": "JPY" },
+    { "@type": "Offer", "name": "プレミアム鑑定", "price": "2980", "priceCurrency": "JPY" }
+  ],
+  "provider": {
+    "@type": "Organization",
+    "name": "株式会社Life Navigation",
+    "address": { "@type": "PostalAddress", "addressCountry": "JP", "addressRegion": "東京都", "addressLocality": "港区南青山" }
+  }
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -39,10 +66,25 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
+      <head>
+        {/* Preconnect for performance */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        {/* JSON-LD */}
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      </head>
       <body
         className={`${notoSansJP.variable} ${notoSerifJP.variable} font-sans antialiased text-[#BEB5A5] bg-[#0C0A14]`}
       >
         {children}
+        {/* Google Analytics */}
+        <Script src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`} strategy="afterInteractive" />
+        <Script id="ga4-init" strategy="afterInteractive">
+          {`window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${GA_MEASUREMENT_ID}');`}
+        </Script>
       </body>
     </html>
   );
