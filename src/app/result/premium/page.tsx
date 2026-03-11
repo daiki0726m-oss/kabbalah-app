@@ -20,8 +20,11 @@ function PremiumLiveContent() {
   const [isUpgrading, setIsUpgrading] = useState(false);
   const [loadingPhase, setLoadingPhase] = useState(0);
 
-  // Lucky Actions
+  // Lucky Actions (loaded separately)
   const [openMonth, setOpenMonth] = useState<number | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [luckyActions, setLuckyActions] = useState<any[] | null>(null);
+  const [luckyLoading, setLuckyLoading] = useState(false);
 
   // Compatibility
   const [compatName, setCompatName] = useState('');
@@ -57,6 +60,15 @@ function PremiumLiveContent() {
         setReport(data.report);
         if (data.plan) setPlan(data.plan);
         if (data.name) setCustomerName(data.name);
+
+        // Load lucky actions in background
+        setLuckyLoading(true);
+        fetch('/api/chat/lucky-actions', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sessionId }) })
+          .then(r => r.json())
+          .then(d => { if (d.luckyActions) setLuckyActions(d.luckyActions); })
+          .catch(() => {})
+          .finally(() => setLuckyLoading(false));
+
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) { setError(err.message); } finally { setLoading(false); clearInterval(interval); }
     };
@@ -272,19 +284,24 @@ function PremiumLiveContent() {
         )}
 
         {/* 5.5 Lucky Actions 365 */}
-        {report.luckyActions && report.luckyActions.length > 0 && (
-          <section className="px-4 py-12 border-b border-white/5">
-            <div className="text-center mb-8">
-              <div className="w-12 h-12 rounded-full border border-[#D4AF37]/30 flex items-center justify-center bg-[#D4AF37]/10 mx-auto mb-4">
-                <Gift className="w-6 h-6 text-[#D4AF37]" strokeWidth={1.5} />
-              </div>
-              <h3 className="text-base font-medium tracking-[0.2em] text-[#F5F0E8] mb-2" style={{ fontFamily: '"Noto Serif JP", serif' }}>ラッキーアクション 365日</h3>
-              <p className="text-xs text-[#7A7068] tracking-wider">毎日の開運アクションがあなたの運気を確実に上昇させます</p>
+        <section className="px-4 py-12 border-b border-white/5">
+          <div className="text-center mb-8">
+            <div className="w-12 h-12 rounded-full border border-[#D4AF37]/30 flex items-center justify-center bg-[#D4AF37]/10 mx-auto mb-4">
+              <Gift className="w-6 h-6 text-[#D4AF37]" strokeWidth={1.5} />
             </div>
+            <h3 className="text-base font-medium tracking-[0.2em] text-[#F5F0E8] mb-2" style={{ fontFamily: '"Noto Serif JP", serif' }}>ラッキーアクション 365日</h3>
+            <p className="text-xs text-[#7A7068] tracking-wider">毎日の開運アクションがあなたの運気を確実に上昇させます</p>
+          </div>
 
+          {luckyLoading ? (
+            <div className="text-center py-8">
+              <div className="w-8 h-8 border-2 border-[#D4AF37]/30 border-t-[#D4AF37] rounded-full animate-spin mx-auto mb-3" />
+              <p className="text-xs text-[#7A7068] tracking-wider">ラッキーアクションを生成中...</p>
+            </div>
+          ) : luckyActions && luckyActions.length > 0 ? (
             <div className="space-y-2">
               {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-              {report.luckyActions.map((month: any, idx: number) => (
+              {luckyActions.map((month: any, idx: number) => (
                 <div key={idx} className="bg-white/[0.03] border border-white/[0.06] rounded-sm overflow-hidden">
                   <button
                     onClick={() => setOpenMonth(openMonth === idx ? null : idx)}
@@ -323,8 +340,10 @@ function PremiumLiveContent() {
                 </div>
               ))}
             </div>
-          </section>
-        )}
+          ) : !luckyLoading ? (
+            <p className="text-center text-xs text-[#7A7068] tracking-wider py-4">ラッキーアクションは準備中です</p>
+          ) : null}
+        </section>
 
         {/* 5.6 Compatibility Diagnosis */}
         {plan === 'premium' && (
@@ -433,46 +452,20 @@ function PremiumLiveContent() {
           </section>
         )}
 
-        {/* 5.7 Follow-up Right */}
-        {(
-          <section className="px-6 py-12 border-b border-white/5">
-            <div className="text-center mb-6">
-              <div className="w-12 h-12 rounded-full border border-[#D4AF37]/30 flex items-center justify-center bg-[#D4AF37]/10 mx-auto mb-4">
-                <Bookmark className="w-6 h-6 text-[#D4AF37]" strokeWidth={1.5} />
-              </div>
-              <h3 className="text-base font-medium tracking-[0.2em] text-[#F5F0E8] mb-2" style={{ fontFamily: '"Noto Serif JP", serif' }}>1年後フォローアップ鑑定権</h3>
-              <p className="text-xs text-[#7A7068] tracking-wider">プレミアム特典として、1年後に無料で再鑑定できます</p>
-            </div>
-
-            <div className="bg-white/[0.04] border border-[#D4AF37]/20 rounded-sm p-6 max-w-sm mx-auto">
-              <div className="space-y-4">
-                <div className="flex items-start gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-[#D4AF37] shrink-0 mt-0.5" />
-                  <div>
-                    <p className="text-sm text-[#F5F0E8] font-medium tracking-wider">再鑑定可能期限</p>
-                    <p className="text-xs text-[#D4AF37] tracking-wider">{new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' })}まで</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-[#D4AF37] shrink-0 mt-0.5" />
-                  <div>
-                    <p className="text-sm text-[#F5F0E8] font-medium tracking-wider">1年間の成長を数秘術で可視化</p>
-                    <p className="text-xs text-[#7A7068] tracking-wider">運命数の影響がどう変化したかを鑑定</p>
-                  </div>
-                </div>
-              </div>
-              <div className="mt-6 pt-4 border-t border-white/10 text-center">
-                <p className="text-[11px] text-[#BEB5A5] tracking-wider leading-relaxed mb-3">このページをブックマークして保存してください。<br />1年後に同じURLからアクセスできます。</p>
-                <button
-                  onClick={() => { if (typeof window !== 'undefined') { alert('ブラウザのブックマーク機能でこのページを保存してください。\n\nURL: ' + window.location.href); } }}
-                  className="w-full py-3 rounded-sm text-sm tracking-widest text-[#D4AF37] border border-[#D4AF37]/30 hover:bg-[#D4AF37]/10 transition-colors flex items-center justify-center gap-2"
-                >
-                  <Bookmark className="w-4 h-4" /> このページをブックマーク
-                </button>
-              </div>
-            </div>
-          </section>
-        )}
+        {/* 5.7 Bookmark Section */}
+        <section className="px-6 py-10 border-b border-white/5">
+          <div className="bg-white/[0.04] border border-[#D4AF37]/20 rounded-sm p-6 max-w-sm mx-auto text-center">
+            <Bookmark className="w-6 h-6 text-[#D4AF37] mx-auto mb-3" strokeWidth={1.5} />
+            <p className="text-sm text-[#F5F0E8] tracking-wider mb-2" style={{ fontFamily: '"Noto Serif JP", serif' }}>鑑定書を保存</p>
+            <p className="text-[11px] text-[#7A7068] tracking-wider leading-relaxed mb-4">このページをブックマークしておけば、いつでも鑑定書を見返せます。</p>
+            <button
+              onClick={() => { if (typeof window !== 'undefined') { alert('ブラウザのブックマーク機能でこのページを保存してください。\n\nURL: ' + window.location.href); } }}
+              className="w-full py-3 rounded-sm text-sm tracking-widest text-[#D4AF37] border border-[#D4AF37]/30 hover:bg-[#D4AF37]/10 transition-colors flex items-center justify-center gap-2"
+            >
+              <Bookmark className="w-4 h-4" /> このページをブックマーク
+            </button>
+          </div>
+        </section>
 
         {/* 6. Conclusion */}
         <section className="px-8 py-14 text-center border-b border-white/5">
