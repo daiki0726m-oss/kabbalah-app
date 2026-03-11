@@ -293,7 +293,7 @@ export default function KabbalahLP() {
                 </p>
                 <p className="text-[10px] tracking-[0.2em] text-[#D4AF37] uppercase font-bold" style={{ fontFamily: 'Inter, sans-serif' }}>Chapter 2: 10年間の人生バイオリズム</p>
                 <p className="text-sm text-[#BEB5A5] leading-[2.2] tracking-wider">
-                  2026年から2035年までの10年間、あなたの人生は大きな波を描きます。まず2027年にかけて、パーソナルイヤーが示す「収穫のサイクル」に入ります。この時期に蓄えた種が…
+                  今後10年間、あなたの人生は大きな波を描きます。直近の数年間にかけて、パーソナルイヤーが示す「収穫のサイクル」に入ります。この時期に蓄えた種が…
                 </p>
               </div>
               <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-[#1A150E] via-[#1A150E]/95 to-transparent flex items-end justify-center pb-8">

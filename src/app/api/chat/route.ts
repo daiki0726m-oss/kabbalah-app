@@ -38,6 +38,20 @@ export async function POST(req: Request) {
 
     const today = new Date();
     const todayString = `${today.getFullYear()}年${today.getMonth() + 1}月${today.getDate()}日`;
+    const currentYear = today.getFullYear();
+    const currentMonth = today.getMonth() + 1; // 1-indexed
+
+    // Generate 12-month labels starting from current month
+    const monthLabels: string[] = [];
+    for (let i = 0; i < 12; i++) {
+      const m = ((currentMonth - 1 + i) % 12) + 1;
+      const y = currentYear + Math.floor((currentMonth - 1 + i) / 12);
+      monthLabels.push(`${y}年${m}月`);
+    }
+    const periodLabel = `${monthLabels[0]}〜${monthLabels[11]}`;
+
+    // Generate 10-year labels
+    const yearLabels = Array.from({ length: 10 }, (_, i) => `${currentYear + i}`);
 
     const prompt = `# 命令書
 あなたは、鑑定歴20年以上の「プロのカバラ数秘術師」であり、卓越した文章力を持つ「プロのライター」です。
@@ -48,6 +62,7 @@ export async function POST(req: Request) {
 2. **【プロのトーンと圧倒的文字数】** AI特有の「～と言えるでしょう」「重要です」といった無難な表現は排除し、プロとして優しくも断言するトーンで、非常に深く、圧倒的な文字数（長文）で記述してください。
 3. **【数秘術の根拠提示】** すべての文章（10年運勢、今年の運勢、毎月の運勢、運命の日）において、「あなたの運命数〇が示す性質によれば…」「今年のパーソナルイヤー〇のサイクルによると…」といったカバラ数秘術の具体的な計算結果を根拠として盛り込んでください。
 4. **【JSON出力】** 出力は必ず以下のJSON構造とし、Markdownのコードブロック (\`\`\`json) は含めず、純粋なJSONテキストのみを出力してください。各キーに対するテキスト（説明文）は長文で、改行（\\n）や<b>タグを含めて構いません。
+5. **【期間】** 月別の運勢・アクションプランは「${periodLabel}」の12ヶ月間を対象としてください。年を跨ぐ場合もあります。
 
 # 入力情報
 ・お客様の名前：${name}
@@ -58,19 +73,19 @@ export async function POST(req: Request) {
 {
   "coverIntro": "プロの占い師としての重厚な挨拶。生年月日から導き出された運命数を提示し、その数字が持つ本質的な宿命を圧倒的な長文で解説。",
   "biorhythm10Years": [
-    // 2026年から2035年までの10年間の運勢の波（0〜100）
-    { "year": "2026", "value": 30 }, { "year": "2027", "value": 50 } // ...計10年分
+    // ${yearLabels[0]}年から${yearLabels[9]}年までの10年間の運勢の波（0〜100）
+    { "year": "${yearLabels[0]}", "value": 30 }, { "year": "${yearLabels[1]}", "value": 50 } // ...計10年分
   ],
   "biorhythm10YearsText": "上記の10年がカバラ数秘術的にどのようなサイクルになるのか、人生の大きなテーマについての深い解説（圧倒的な長文）。",
   "biorhythm12Months": [
-    // 2026年1月〜12月までの12ヶ月の運勢の波（0〜100）
-    { "month": "1月", "value": 40 }, { "month": "2月", "value": 45 } // ...計12ヶ月分
+    // ${periodLabel}の12ヶ月間の運勢の波（0〜100）
+    { "month": "${monthLabels[0]}", "value": 40 }, { "month": "${monthLabels[1]}", "value": 45 } // ...計12ヶ月分
   ],
-  "biorhythm12MonthsText": "今年のパーソナルイヤーが示す意味と、今年果たすべき使命やテーマの解説（長文）。",
+  "biorhythm12MonthsText": "この12ヶ月のパーソナルイヤーが示す意味と、果たすべき使命やテーマの解説（長文）。",
   "monthlyPlans": [
-    // 1月〜12月までの月別アクションプラン（12個のオブジェクト）
+    // ${periodLabel}の12ヶ月間の月別アクションプラン（12個のオブジェクト）
     {
-      "month": 1,
+      "month": "${monthLabels[0]}",
       "title": "〇月のテーマを簡潔に",
       "overall": "全体運（長文。毎月のカバラの数字の巡りも根拠に入れること）",
       "work": "仕事運（長文）",
@@ -80,14 +95,14 @@ export async function POST(req: Request) {
     }
   ],
   "fatefulDay": {
-    "date": "10月24日", // 本日の日付より未来の具体的な日付を指定
+    "date": "〇月〇日", // 本日の日付より未来で、上記12ヶ月以内の具体的な日付を指定
     "reason": "なぜこの日が起点となるのか、数秘術の根拠をもとに熱く深く語る（長文）",
     "action": "この日を境にどう動くべきか、具体的で実践的なアクションプランとマインドセットのアドバイス（長文）"
   },
   "luckyActions": [
-    // 1月〜12月まで12個のオブジェクト。各月に28〜31日分の開運アクションを含む。
+    // ${periodLabel}の12ヶ月間。各月に28〜31日分の開運アクションを含む。
     {
-      "monthLabel": "1月",
+      "monthLabel": "${monthLabels[0]}",
       "actions": [
         // その月の1日〜末日まで、1日1つの具体的な開運アクション
         { "day": 1, "action": "具体的かつ実践的な開運アクション（10〜30文字程度）" },

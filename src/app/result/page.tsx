@@ -114,7 +114,7 @@ function ResultTeaserContent() {
         <motion.section initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5, duration: 0.8 }} className="mt-16">
           <div className="text-center mb-6">
             <h2 className="text-lg md:text-xl font-light text-[#F5F0E8] tracking-widest mb-2" style={{ fontFamily: '"Noto Serif JP", serif' }}>
-              2026年の運勢バイオリズム
+              今後12ヶ月の運勢バイオリズム
             </h2>
             <p className="text-xs text-[#7A7068] tracking-widest">あなたの運気の波を可視化</p>
           </div>
@@ -144,7 +144,7 @@ function ResultTeaserContent() {
         <motion.section initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7, duration: 0.8 }} className="mt-16">
           <div className="text-center mb-8">
             <h2 className="text-lg md:text-xl font-light text-[#F5F0E8] tracking-widest mb-2" style={{ fontFamily: '"Noto Serif JP", serif' }}>
-              あなたの2026年 ─ 月別運勢
+              あなたの今後12ヶ月 ─ 月別運勢
             </h2>
             <p className="text-xs text-[#7A7068] tracking-widest">1月の詳細鑑定結果をお見せします</p>
           </div>
@@ -154,7 +154,7 @@ function ResultTeaserContent() {
               <div key={m.month} className="bg-white/[0.04] backdrop-blur-sm border border-white/[0.08] rounded-sm overflow-hidden">
                 <div className="bg-white/[0.03] px-5 md:px-6 py-4 border-b border-white/[0.06]">
                   <div className="flex items-center gap-3">
-                    <span className="text-[10px] font-bold tracking-widest text-[#7A7068] uppercase" style={{ fontFamily: 'Inter, sans-serif' }}>2026</span>
+                    <span className="text-[10px] font-bold tracking-widest text-[#7A7068] uppercase" style={{ fontFamily: 'Inter, sans-serif' }}>{new Date().getFullYear()}</span>
                     <span className="text-xl text-[#D4AF37] font-bold">{m.month}月</span>
                     <span className="text-sm text-[#BEB5A5] tracking-wider ml-1">─ {m.title}</span>
                   </div>

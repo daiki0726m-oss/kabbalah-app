@@ -134,7 +134,7 @@ function PremiumLiveContent() {
         <section className="py-12 border-b border-white/5">
           <div className="px-6 mb-6 text-center">
             <h3 className="text-sm font-medium tracking-[0.2em] text-[#D4AF37] mb-3 flex items-center justify-center gap-2">
-              <Compass className="w-4 h-4" /> 2026年以降の10年の運勢バイオリズム
+              <Compass className="w-4 h-4" /> {new Date().getFullYear()}年以降の10年の運勢バイオリズム
             </h3>
             <p className="text-xs text-[#7A7068] tracking-wider">点線の位置が標準的なニュートラルラインとなります。</p>
           </div>
@@ -161,7 +161,7 @@ function PremiumLiveContent() {
         <section className="bg-[#151221] py-12 border-b border-white/5">
           <div className="px-6 mb-6 text-center">
             <h3 className="text-sm font-medium tracking-[0.2em] text-[#D4AF37] mb-3 flex items-center justify-center gap-2">
-              <Star className="w-4 h-4" /> 2026年 1年間の運勢バイオリズム
+              <Star className="w-4 h-4" /> 今後12ヶ月の運勢バイオリズム
             </h3>
           </div>
           <div className="h-[200px] w-full px-2 mb-8 mx-4 w-[calc(100%-2rem)] bg-white/[0.03] py-4 rounded-sm border border-white/[0.06]">
@@ -187,7 +187,7 @@ function PremiumLiveContent() {
         <section className="px-4 py-12">
           <div className="text-center mb-10 px-2 border-b border-[#D4AF37]/30 pb-4 mx-auto w-full max-w-[80%]">
             <h3 className="text-base font-medium tracking-[0.2em] text-[#F5F0E8] flex items-center justify-center gap-2" style={{ fontFamily: '"Noto Serif JP", serif' }}>
-              <CalendarDays className="w-5 h-5 text-[#D4AF37]" /> 2026年 毎月の詳細鑑定
+              <CalendarDays className="w-5 h-5 text-[#D4AF37]" /> 今後12ヶ月 毎月の詳細鑑定
             </h3>
           </div>
 
