@@ -482,11 +482,8 @@ function PremiumLiveContent() {
               </h3>
               <p className="text-[11px] text-[#7A7068] tracking-wider">プレミアム限定 ─ あなたの人生を豊かにする処方箋</p>
             </div>
-            <div className="relative">
-              <div className="absolute top-0 left-0 w-[2px] h-full bg-gradient-to-b from-[#D4AF37]/50 via-[#D4AF37]/20 to-transparent rounded-r ml-6"></div>
-              <div className="pl-4">
-                <div className="text-[14px] leading-[2.2] text-[#BEB5A5] tracking-wider html-content" dangerouslySetInnerHTML={{ __html: report.comprehensiveAdvice?.replace(/\n/g, '<br/>') || '' }} />
-              </div>
+            <div>
+              <div className="text-[14px] leading-[2.2] text-[#BEB5A5] tracking-wider html-content" dangerouslySetInnerHTML={{ __html: report.comprehensiveAdvice?.replace(/\n/g, '<br/>') || '' }} />
             </div>
           </section>
         )}
