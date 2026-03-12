@@ -29,110 +29,12 @@ function ResultTeaserContent() {
     return () => { window.removeEventListener('pageshow', handlePageShow); };
   }, []);
 
-  // Load PAY.JP script
-  useEffect(() => {
-    if (typeof window !== 'undefined' && !(window as any).Payjp) {
-      const script = document.createElement('script');
-      script.src = 'https://js.pay.jp/v2/pay.js';
-      script.async = true;
-      document.head.appendChild(script);
+  const handleCheckout = (plan: 'standard' | 'premium' = 'standard') => {
+    setLoading(true);
+    if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
+      (window as any).gtag('event', 'begin_checkout', { currency: 'JPY', value: plan === 'premium' ? 2980 : 980, items: [{ item_name: plan }] });
     }
-  }, []);
-
-  const handleCheckout = async (plan: 'standard' | 'premium' = 'standard') => {
-    try {
-      setLoading(true);
-      if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
-        (window as any).gtag('event', 'begin_checkout', { currency: 'JPY', value: plan === 'premium' ? 2980 : 980, items: [{ item_name: plan }] });
-      }
-
-      // Initialize PAY.JP
-      const payjpPublicKey = process.env.NEXT_PUBLIC_PAYJP_PUBLIC_KEY || 'pk_test_8ff4badd38c79af98456cbed';
-      const payjpInstance = (window as any).Payjp(payjpPublicKey);
-      
-      // Open PAY.JP Checkout modal
-      const elements = payjpInstance.elements();
-      
-      // Use a simpler approach: create a token via PAY.JP Checkout widget
-      await new Promise<void>((resolve, reject) => {
-        // Create a temporary form with PAY.JP Checkout
-        const checkoutScript = document.createElement('script');
-        checkoutScript.src = 'https://checkout.pay.jp/';
-        checkoutScript.className = 'payjp-button';
-        checkoutScript.setAttribute('data-key', payjpPublicKey);
-        checkoutScript.setAttribute('data-text', `${plan === 'premium' ? 'プレミアム' : 'スタンダード'}鑑定を購入`);
-        checkoutScript.setAttribute('data-submit-text', '支払う');
-        checkoutScript.setAttribute('data-partial', 'true');
-        checkoutScript.setAttribute('data-name-placeholder', 'カード名義');
-
-        // Create a hidden form
-        const tempForm = document.createElement('form');
-        tempForm.style.position = 'fixed';
-        tempForm.style.top = '0';
-        tempForm.style.left = '0';
-        tempForm.style.width = '100%';
-        tempForm.style.height = '100%';
-        tempForm.style.zIndex = '99999';
-        tempForm.style.display = 'flex';
-        tempForm.style.alignItems = 'center';
-        tempForm.style.justifyContent = 'center';
-        tempForm.style.backgroundColor = 'rgba(0,0,0,0.7)';
-
-        tempForm.onsubmit = async (e) => {
-          e.preventDefault();
-          const tokenInput = tempForm.querySelector('input[name="payjp-token"]') as HTMLInputElement;
-          if (tokenInput && tokenInput.value) {
-            // Send token to our API
-            try {
-              const res = await fetch("/api/checkout", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, dob, plan, token: tokenInput.value })
-              });
-              const data = await res.json();
-              if (data.url) {
-                window.location.href = data.url;
-                resolve();
-              } else {
-                alert(data.error || "決済に失敗しました。");
-                reject(new Error(data.error));
-              }
-            } catch (err) {
-              alert("通信エラーが発生しました。");
-              reject(err);
-            }
-          }
-          tempForm.remove();
-        };
-
-        // Add close button
-        const closeBtn = document.createElement('button');
-        closeBtn.type = 'button';
-        closeBtn.textContent = '✕';
-        closeBtn.style.cssText = 'position:fixed;top:16px;right:16px;z-index:100000;color:white;font-size:24px;background:none;border:none;cursor:pointer;';
-        closeBtn.onclick = () => { tempForm.remove(); setLoading(false); reject(new Error('cancelled')); };
-        tempForm.appendChild(closeBtn);
-        tempForm.appendChild(checkoutScript);
-        document.body.appendChild(tempForm);
-
-        // Auto-click the PAY.JP button after it's loaded
-        const waitForButton = setInterval(() => {
-          const btn = tempForm.querySelector('.payjp-button') as HTMLElement;
-          if (btn) {
-            clearInterval(waitForButton);
-            btn.click();
-          }
-        }, 200);
-
-        // Timeout after 30s
-        setTimeout(() => { clearInterval(waitForButton); }, 30000);
-      });
-    } catch (err: any) {
-      if (err?.message !== 'cancelled') {
-        alert("通信エラーが発生しました。");
-      }
-      setLoading(false);
-    }
+    window.location.href = `/checkout?name=${encodeURIComponent(name)}&dob=${encodeURIComponent(dob)}&plan=${plan}`;
   };
 
   const cardVariants = { hidden: { opacity: 0, y: 20 }, visible: (i: number) => ({ opacity: 1, y: 0, transition: { delay: 0.15 * i, duration: 0.6 } }) };
