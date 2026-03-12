@@ -145,7 +145,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ report: parsedData, plan, name });
   } catch (error: any) {
     console.error('Error generating AI report:', error);
-    return NextResponse.json({ error: 'Failed to generate report. Please try again later.' }, { status: 500 });
+    return NextResponse.json({ error: `Report generation failed: ${error.message || 'Unknown error'}` }, { status: 500 });
   }
 }
 

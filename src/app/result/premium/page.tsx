@@ -58,7 +58,7 @@ function PremiumLiveContent() {
     const fetchReport = async () => {
       try {
         const res = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sessionId, name: urlName, dob: urlDob, plan: urlPlan }) });
-        if (!res.ok) throw new Error('鑑定書の生成に失敗しました。');
+        if (!res.ok) { const errData = await res.json().catch(() => ({})); throw new Error(errData.error || '鑑定書の生成に失敗しました。'); }
         const data = await res.json();
         setReport(data.report);
         if (data.plan) setPlan(data.plan);
