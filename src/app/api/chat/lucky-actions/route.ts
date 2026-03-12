@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { stripe } from '@/lib/stripe';
+import payjp from '@/lib/payjp';
 import { GoogleGenAI } from '@google/genai';
 
 const ai = new GoogleGenAI({
@@ -26,12 +26,13 @@ export async function POST(req: Request) {
         dob = parts[4] || '1990-01-01';
       }
     } else {
-      const session = await stripe.checkout.sessions.retrieve(sessionId);
-      if (session.payment_status !== 'paid') {
+      const charge = await payjp.charges.retrieve(sessionId);
+      if (!charge.paid) {
         return NextResponse.json({ error: 'Payment not completed' }, { status: 403 });
       }
-      name = session.metadata?.name || 'ゲスト';
-      dob = session.metadata?.dob || '不明';
+      const meta = charge.metadata as Record<string, string> | null;
+      name = meta?.name || 'ゲスト';
+      dob = meta?.dob || '不明';
     }
 
     const today = new Date();

@@ -29,7 +29,7 @@ export default function TokushouhouPage() {
             { label: 'サービス名', value: 'カバラ数秘術 プレミアム鑑定' },
             { label: '販売価格', value: 'スタンダード鑑定: ¥980（税込）/ プレミアム鑑定: ¥2,980（税込）' },
             { label: '商品代金以外の必要料金', value: 'なし' },
-            { label: '支払方法', value: 'クレジットカード（VISA, MasterCard, JCB, AMEX）※Stripe社の決済システムを利用' },
+            { label: '支払方法', value: 'クレジットカード（VISA, MasterCard, JCB, AMEX）※PAY.JP社の決済システムを利用' },
             { label: '支払時期', value: 'ご注文時に即時決済' },
             { label: '商品の引渡時期', value: '決済完了後、即時にWebページ上で鑑定書をお届けします（通常20〜40秒）' },
             { label: '返品・キャンセルについて', value: 'デジタルコンテンツという商品の性質上、鑑定書の生成・閲覧後の返品・キャンセルはお受けできません。ただし、鑑定書が正常に生成されなかった場合には全額返金いたします。' },

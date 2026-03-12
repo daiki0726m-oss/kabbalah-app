@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
-import { stripe } from '@/lib/stripe';
+import payjp from '@/lib/payjp';
 
 export async function POST(req: Request) {
   try {
-    const { name, dob, plan = 'standard' } = await req.json();
+    const { name, dob, plan = 'standard', token } = await req.json();
 
     if (!name || !dob) {
       return NextResponse.json(
@@ -12,43 +12,43 @@ export async function POST(req: Request) {
       );
     }
 
-    // Select price based on plan
-    const priceId = plan === 'premium'
-      ? process.env.STRIPE_PREMIUM_PRICE_ID
-      : process.env.STRIPE_STANDARD_PRICE_ID;
-
-    if (!priceId) {
+    if (!token) {
       return NextResponse.json(
-        { error: `Price ID not configured for plan: ${plan}. Please set STRIPE_${plan.toUpperCase()}_PRICE_ID environment variable.` },
-        { status: 500 }
+        { error: 'Payment token is required.' },
+        { status: 400 }
       );
     }
 
-    // Creating a Checkout Session
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
-      line_items: [
-        {
-          price: priceId,
-          quantity: 1,
-        },
-      ],
-      mode: 'payment',
-      // Metadata allows us to pass custom information (like user data) through the Stripe flow
-      // so we can access it on the webhook when the payment succeeds.
+    // Select price based on plan
+    const amount = plan === 'premium' ? 2980 : 980;
+
+    // Create a charge with PAY.JP
+    const charge = await payjp.charges.create({
+      amount,
+      currency: 'jpy',
+      card: token,
+      description: `カバラ数秘術 ${plan === 'premium' ? 'プレミアム' : 'スタンダード'}鑑定 - ${name}`,
       metadata: {
         name,
         dob,
         plan,
       },
-      // IMPORTANT: Redirect URLs after checkout.
-      success_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/result/premium?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/result?name=${encodeURIComponent(name)}&dob=${encodeURIComponent(dob)}&canceled=true`,
     });
 
-    return NextResponse.json({ url: session.url });
+    if (!charge.paid) {
+      return NextResponse.json(
+        { error: '決済に失敗しました。' },
+        { status: 400 }
+      );
+    }
+
+    // Return charge ID so frontend can redirect to premium page
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    const successUrl = `${baseUrl}/result/premium?session_id=${charge.id}`;
+
+    return NextResponse.json({ url: successUrl, chargeId: charge.id });
   } catch (error: any) {
-    console.error('Error creating Stripe checkout session:', error);
+    console.error('Error creating PAY.JP charge:', error);
     return NextResponse.json(
       { error: error.message || 'Internal Server Error' },
       { status: 500 }
