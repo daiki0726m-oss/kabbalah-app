@@ -16,6 +16,7 @@ function CheckoutContent() {
   const [error, setError] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
   const [scriptLoaded, setScriptLoaded] = useState(false);
+  const [tokenReady, setTokenReady] = useState(false);
 
   // Load PAY.JP Checkout script
   useEffect(() => {
@@ -23,8 +24,8 @@ function CheckoutContent() {
     script.src = "https://checkout.pay.jp/";
     script.className = "payjp-button";
     script.setAttribute("data-key", process.env.NEXT_PUBLIC_PAYJP_PUBLIC_KEY || "pk_test_8ff4badd38c79af98456cbed");
-    script.setAttribute("data-text", `¥${amount.toLocaleString()} を支払う`);
-    script.setAttribute("data-submit-text", "支払いを確定する");
+    script.setAttribute("data-text", `カード情報を入力する`);
+    script.setAttribute("data-submit-text", "カード情報を送信");
     script.setAttribute("data-partial", "true");
     script.setAttribute("data-name-placeholder", "カード名義");
     script.onload = () => setScriptLoaded(true);
@@ -33,8 +34,30 @@ function CheckoutContent() {
       formRef.current.appendChild(script);
     }
 
+    // Watch for token being set by PAY.JP
+    const observer = new MutationObserver(() => {
+      const tokenInput = formRef.current?.querySelector('input[name="payjp-token"]') as HTMLInputElement;
+      if (tokenInput && tokenInput.value) {
+        setTokenReady(true);
+      }
+    });
+    if (formRef.current) {
+      observer.observe(formRef.current, { childList: true, subtree: true, attributes: true, characterData: true });
+    }
+
+    // Also poll for token (backup)
+    const pollInterval = setInterval(() => {
+      const tokenInput = formRef.current?.querySelector('input[name="payjp-token"]') as HTMLInputElement;
+      if (tokenInput && tokenInput.value) {
+        setTokenReady(true);
+        clearInterval(pollInterval);
+      }
+    }, 500);
+
     return () => {
       script.remove();
+      observer.disconnect();
+      clearInterval(pollInterval);
     };
   }, [amount]);
 
@@ -96,25 +119,36 @@ function CheckoutContent() {
           {/* PAY.JP Checkout Form */}
           <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
             {/* PAY.JP script will be injected here, creating a button */}
-            <div className="flex justify-center py-4">
+            <div className="flex justify-center py-2">
               {!scriptLoaded && (
                 <div className="text-sm text-[#7A7068] tracking-wider animate-pulse">
                   決済フォームを読み込み中...
                 </div>
               )}
             </div>
+
+            {/* Submit button - appears after card info is entered */}
+            {tokenReady && !processing && (
+              <button
+                type="submit"
+                className="w-full py-4 rounded-sm font-bold tracking-widest text-sm transition-all text-[#0C0A14] mt-4"
+                style={{ background: 'linear-gradient(135deg, #D4AF37, #F5D76E)', boxShadow: '0 0 20px rgba(212,175,55,0.3)' }}
+              >
+                ¥{amount.toLocaleString()} を支払う
+              </button>
+            )}
+
+            {processing && (
+              <div className="flex items-center justify-center gap-2 text-sm text-[#D4AF37] tracking-wider py-4">
+                <div className="w-4 h-4 border-2 border-[#D4AF37] border-t-transparent rounded-full animate-spin"></div>
+                決済処理中...
+              </div>
+            )}
           </form>
 
           {error && (
             <div className="mt-4 p-3 bg-red-500/10 border border-red-500/20 rounded text-xs text-red-400 text-center tracking-wider">
               {error}
-            </div>
-          )}
-
-          {processing && (
-            <div className="mt-4 flex items-center justify-center gap-2 text-sm text-[#D4AF37] tracking-wider">
-              <div className="w-4 h-4 border-2 border-[#D4AF37] border-t-transparent rounded-full animate-spin"></div>
-              決済処理中...
             </div>
           )}
         </div>
