@@ -43,7 +43,8 @@ export async function POST(req: Request) {
     }
 
     // Return charge ID so frontend can redirect to premium page
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    const origin = req.headers.get('origin') || req.headers.get('referer') || '';
+    const baseUrl = origin ? new URL(origin).origin : (process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000');
     const successUrl = `${baseUrl}/result/premium?session_id=${charge.id}`;
 
     return NextResponse.json({ url: successUrl, chargeId: charge.id });
