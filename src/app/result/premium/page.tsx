@@ -9,6 +9,9 @@ import { Compass, Briefcase, Heart, ShieldCheck, Users, Sparkles, Star, Calendar
 function PremiumLiveContent() {
   const searchParams = useSearchParams();
   const sessionId = searchParams.get('session_id');
+  const urlName = searchParams.get('name');
+  const urlDob = searchParams.get('dob');
+  const urlPlan = searchParams.get('plan');
 
   const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -54,7 +57,7 @@ function PremiumLiveContent() {
 
     const fetchReport = async () => {
       try {
-        const res = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sessionId }) });
+        const res = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sessionId, name: urlName, dob: urlDob, plan: urlPlan }) });
         if (!res.ok) throw new Error('鑑定書の生成に失敗しました。');
         const data = await res.json();
         setReport(data.report);
@@ -63,7 +66,7 @@ function PremiumLiveContent() {
 
         // Load lucky actions in background
         setLuckyLoading(true);
-        fetch('/api/chat/lucky-actions', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sessionId }) })
+        fetch('/api/chat/lucky-actions', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sessionId, name: urlName, dob: urlDob }) })
           .then(r => r.json())
           .then(d => { if (d.luckyActions) setLuckyActions(d.luckyActions); })
           .catch(() => {})

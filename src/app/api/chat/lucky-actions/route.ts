@@ -10,14 +10,15 @@ export const maxDuration = 120;
 
 export async function POST(req: Request) {
   try {
-    const { sessionId } = await req.json();
+    const body = await req.json();
+    const { sessionId } = body;
 
     if (!sessionId) {
       return NextResponse.json({ error: 'Session ID required' }, { status: 400 });
     }
 
-    let name = 'ゲスト';
-    let dob = '不明';
+    let name = body.name || 'ゲスト';
+    let dob = body.dob || '不明';
 
     if (sessionId.startsWith('cs_test_dummy')) {
       const parts = sessionId.split('_');
@@ -30,9 +31,11 @@ export async function POST(req: Request) {
       if (!charge.paid) {
         return NextResponse.json({ error: 'Payment not completed' }, { status: 403 });
       }
-      const meta = charge.metadata as Record<string, string> | null;
-      name = meta?.name || 'ゲスト';
-      dob = meta?.dob || '不明';
+      if (!body.name || !body.dob) {
+        const meta = charge.metadata as Record<string, string> | null;
+        if (meta?.name) name = meta.name;
+        if (meta?.dob) dob = meta.dob;
+      }
     }
 
     const today = new Date();

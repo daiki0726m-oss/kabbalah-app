@@ -10,15 +10,17 @@ export const maxDuration = 120;
 
 export async function POST(req: Request) {
   try {
-    const { sessionId } = await req.json();
+    const body = await req.json();
+    const { sessionId } = body;
 
     if (!sessionId) {
       return NextResponse.json({ error: 'Session ID required' }, { status: 400 });
     }
 
-    let name = '\u30b2\u30b9\u30c8';
-    let dob = '\u4e0d\u660e';
-    let plan = 'standard';
+    // Get name/dob/plan from request body (passed via URL params from checkout)
+    let name = body.name || '\u30b2\u30b9\u30c8';
+    let dob = body.dob || '\u4e0d\u660e';
+    let plan = body.plan || 'standard';
 
     if (sessionId.startsWith('cs_test_dummy')) {
       const parts = sessionId.split('_');
@@ -27,14 +29,18 @@ export async function POST(req: Request) {
         dob = parts[4] || '1990-01-01';
       }
     } else {
+      // Verify payment is completed
       const charge = await payjp.charges.retrieve(sessionId);
       if (!charge.paid) {
         return NextResponse.json({ error: 'Payment not completed or invalid session' }, { status: 403 });
       }
-      const meta = charge.metadata as Record<string, string> | null;
-      name = meta?.name || '\u30b2\u30b9\u30c8';
-      dob = meta?.dob || '\u4e0d\u660e';
-      plan = meta?.plan || 'standard';
+      // Use metadata as fallback if not provided in body
+      if (!body.name || !body.dob) {
+        const meta = charge.metadata as Record<string, string> | null;
+        if (meta?.name) name = meta.name;
+        if (meta?.dob) dob = meta.dob;
+        if (meta?.plan) plan = meta.plan;
+      }
     }
 
     const today = new Date();
