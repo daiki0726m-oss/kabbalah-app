@@ -98,15 +98,9 @@ export async function POST(req: Request) {
       '  ],',
       '  "biorhythm12MonthsText": "\u3053\u306e12\u30f6\u6708\u9593\u306e\u5404\u30d1\u30fc\u30bd\u30ca\u30eb\u30de\u30f3\u30b9\u30ca\u30f3\u30d0\u30fc\u304c\u793a\u3059\u610f\u5473\u3068\u3001\u679c\u305f\u3059\u3079\u304d\u4f7f\u547d\u3084\u30c6\u30fc\u30de\u306e\u89e3\u8aac\uff08\u9577\u6587\uff09",',
       '  "monthlyPlans": [',
-      '    {',
-      '      "month": "' + monthLabels[0] + '",',
-      '      "title": "\u3007\u6708\u306e\u30c6\u30fc\u30de\u3092\u7c21\u6f54\u306b",',
-      '      "overall": "\u5168\u4f53\u904b\uff08\u9577\u6587\u3002\u30d1\u30fc\u30bd\u30ca\u30eb\u30de\u30f3\u30b9\u30ca\u30f3\u30d0\u30fc\u25cb\u306e\u610f\u5473\u3092\u6839\u62e0\u306b\u5165\u308c\u308b\u3053\u3068\uff09",',
-      '      "work": "\u4ed5\u4e8b\u904b\uff08\u9577\u6587\u3002\u5177\u4f53\u7684\u306a\u884c\u52d5\u30a2\u30c9\u30d0\u30a4\u30b9\u3092\u542b\u3080\uff09",',
-      '      "finance": "\u91d1\u904b\uff08\u9577\u6587\u3002\u5177\u4f53\u7684\u306a\u91d1\u984d\u3084\u884c\u52d5\u306e\u76ee\u5b89\u3092\u542b\u3080\uff09",',
-      '      "health": "\u5065\u5eb7\u904b\uff08\u9577\u6587\u3002\u5177\u4f53\u7684\u306a\u4f53\u306e\u90e8\u4f4d\u3084\u30b1\u30a2\u65b9\u6cd5\u3092\u542b\u3080\uff09",',
-      '      "relationships": "\u5bfe\u4eba\u95a2\u4fc2\uff08\u9577\u6587\u3002\u5177\u4f53\u7684\u306a\u30b3\u30df\u30e5\u30cb\u30b1\u30fc\u30b7\u30e7\u30f3\u65b9\u6cd5\u3092\u542b\u3080\uff09"',
-      '    }',
+      ...monthLabels.map((label, i) => 
+        `    { "month": "${label}", "title": "${label}のテーマ", "overall": "全体運（3〜5行程度）", "work": "仕事運（2〜3行）", "finance": "金運（2〜3行）", "health": "健康運（2〜3行）", "relationships": "対人関係（2〜3行）" }${i < 11 ? ',' : ''}`
+      ),
       '  ],',
       '  "fatefulDay": {',
       '    "date": "\u3007\u6708\u3007\u65e5",',
