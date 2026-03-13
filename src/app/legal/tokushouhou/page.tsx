@@ -21,10 +21,10 @@ export default function TokushouhouPage() {
 
         <div className="space-y-8 text-sm leading-[2] tracking-wider">
           {[
-            { label: '販売事業者', value: '株式会社Life Navigation' },
+            { label: '販売事業者', value: '森本　大生（個人事業主）' },
             { label: '運営統括責任者', value: '森本　大生' },
-            { label: '所在地', value: '〒107-0062 東京都港区南青山三丁目1番36号 青山丸竹ビル6階' },
-            { label: '電話番号', value: '※お問い合わせはメールにて承ります' },
+            { label: '所在地', value: '〒120-0021 東京都足立区日ノ出町35-13214号' },
+            { label: '電話番号', value: '080-6121-7156（お問い合わせはメールにて承ります）' },
             { label: 'メールアドレス', value: 'info@life-navigation.co.jp' },
             { label: 'サービス名', value: 'カバラ数秘術 プレミアム鑑定' },
             { label: '販売価格', value: 'スタンダード鑑定: ¥980（税込）/ プレミアム鑑定: ¥2,980（税込）' },
