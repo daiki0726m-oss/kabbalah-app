@@ -30,11 +30,7 @@ function ResultTeaserContent() {
   }, []);
 
   const handleCheckout = (plan: 'standard' | 'premium' = 'standard') => {
-    setLoading(true);
-    if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
-      (window as any).gtag('event', 'begin_checkout', { currency: 'JPY', value: plan === 'premium' ? 2980 : 980, items: [{ item_name: plan }] });
-    }
-    window.location.href = `/checkout?name=${encodeURIComponent(name)}&dob=${encodeURIComponent(dob)}&plan=${plan}`;
+    alert('現在、決済システムのメンテナンス中です。\n近日中にサービスを開始いたしますので、今しばらくお待ちください。');
   };
 
   const cardVariants = { hidden: { opacity: 0, y: 20 }, visible: (i: number) => ({ opacity: 1, y: 0, transition: { delay: 0.15 * i, duration: 0.6 } }) };
