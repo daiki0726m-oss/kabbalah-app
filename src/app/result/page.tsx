@@ -347,6 +347,20 @@ function ResultTeaserContent() {
             </div>
           </div>
         </motion.section>
+
+        {/* Subscription CTA */}
+        <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.6 }}
+          className="mt-10 bg-gradient-to-br from-[#D4AF37]/10 to-transparent border border-[#D4AF37]/20 rounded-sm p-6 md:p-8 text-center">
+          <p className="text-[10px] text-[#D4AF37] tracking-[0.2em] uppercase mb-3" style={{ fontFamily: 'Inter, sans-serif' }}>MONTHLY MEMBERSHIP</p>
+          <h3 className="text-base md:text-lg text-[#F5F0E8] tracking-widest mb-2" style={{ fontFamily: '"Noto Serif JP", serif' }}>毎日の運勢を知りたい方へ</h3>
+          <p className="text-xs text-[#7A7068] tracking-wider mb-4 leading-relaxed">デイリー運勢 × 相性診断無制限 × 月間レポート</p>
+          <a href={`/subscribe?dob=${encodeURIComponent(dob)}`}
+            className="inline-flex items-center gap-1.5 px-6 py-3 rounded-sm text-sm tracking-widest text-[#0C0A14] font-bold"
+            style={{ background: 'linear-gradient(135deg, #D4AF37, #F5D76E)', boxShadow: '0 0 20px rgba(212,175,55,0.15)' }}>
+            ✦ 月額¥480で始める
+          </a>
+          <p className="mt-2 text-[10px] text-[#7A7068] tracking-wider">いつでも解約可能</p>
+        </motion.section>
       </div>
 
       <footer className="bg-[#0C0A14] py-8 text-center border-t border-white/5">
