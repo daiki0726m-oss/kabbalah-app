@@ -438,7 +438,11 @@ export default function KabbalahLP() {
 
       {/* ── FOOTER ── */}
       <footer className="bg-[#0C0A14] py-10 pb-24 md:pb-10 text-center border-t border-white/5">
-        <div className="flex items-center justify-center gap-4 mb-3">
+        <div className="flex items-center justify-center gap-4 mb-3 flex-wrap">
+          <a href="/members/daily" className="text-[10px] text-[#7A7068] tracking-wider hover:text-[#D4AF37] transition-colors">今日の運勢</a>
+          <span className="text-[#7A7068]/30">|</span>
+          <a href="/subscribe" className="text-[10px] text-[#7A7068] tracking-wider hover:text-[#D4AF37] transition-colors">月額プラン</a>
+          <span className="text-[#7A7068]/30">|</span>
           <a href="/legal/tokushouhou" className="text-[10px] text-[#7A7068] tracking-wider hover:text-[#D4AF37] transition-colors">特定商取引法に基づく表記</a>
           <span className="text-[#7A7068]/30">|</span>
           <a href="/legal/privacy" className="text-[10px] text-[#7A7068] tracking-wider hover:text-[#D4AF37] transition-colors">プライバシーポリシー</a>
