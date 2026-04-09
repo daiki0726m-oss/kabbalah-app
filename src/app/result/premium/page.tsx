@@ -109,10 +109,35 @@ function PremiumLiveContent() {
   }
 
   if (error || !report) {
+    const isServerBusy = error?.includes('503') || error?.includes('混雑') || error?.includes('UNAVAILABLE') || error?.includes('high demand');
     return (
       <div className="min-h-screen bg-[#0C0A14] flex flex-col items-center justify-center p-6 text-center">
-        <h2 className="text-xl text-[#E8656C] mb-4" style={{ fontFamily: '"Noto Serif JP", serif' }}>エラーが発生しました</h2>
-        <p className="text-sm text-[#7A7068]">{error || "データが見つかりませんでした。"}</p>
+        <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-[#D4AF37]/10 flex items-center justify-center border border-[#D4AF37]/20">
+          <Sparkles className="w-7 h-7 text-[#D4AF37]" strokeWidth={1.5} />
+        </div>
+        <h2 className="text-lg text-[#F5F0E8] tracking-widest mb-3" style={{ fontFamily: '"Noto Serif JP", serif' }}>
+          {isServerBusy ? '鑑定書の生成に時間がかかっています' : '鑑定書を生成できませんでした'}
+        </h2>
+        <p className="text-sm text-[#7A7068] tracking-wider mb-6 max-w-xs leading-relaxed">
+          {isServerBusy
+            ? 'ただいまアクセスが集中しております。\nしばらくお待ちいただき、下のボタンから再度お試しください。'
+            : 'お手数ですが、下のボタンから再度お試しください。\n解決しない場合はお問い合わせください。'}
+        </p>
+        <button
+          onClick={() => window.location.reload()}
+          className="px-8 py-3 rounded-sm font-bold tracking-widest text-sm text-[#0C0A14] mb-4"
+          style={{ background: 'linear-gradient(135deg, #D4AF37, #F5D76E)', boxShadow: '0 0 20px rgba(212,175,55,0.2)' }}
+        >
+          ✦ もう一度試す
+        </button>
+        <div className="space-y-2">
+          <a href="/contact" className="block text-xs text-[#7A7068] tracking-wider hover:text-[#D4AF37] transition-colors">
+            お問い合わせはこちら →
+          </a>
+          <a href="/" className="block text-xs text-[#7A7068] tracking-wider hover:text-[#D4AF37] transition-colors">
+            ← トップページに戻る
+          </a>
+        </div>
       </div>
     );
   }
