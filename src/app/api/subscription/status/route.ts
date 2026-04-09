@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import payjp from '@/lib/payjp';
 
 export async function GET(req: Request) {
   try {
@@ -11,25 +10,22 @@ export async function GET(req: Request) {
       })
     );
 
-    const customerId = cookies['sub_customer_id'];
+    const memberId = cookies['sub_member_id'];
+    const memberExpiry = cookies['sub_member_expiry'];
 
-    if (!customerId) {
+    if (!memberId || !memberExpiry) {
       return NextResponse.json({ active: false });
     }
 
-    // Check subscription status via PAY.JP
-    const subscriptions = await payjp.customers.retrieve(customerId).then(
-      (customer: any) => customer.subscriptions?.data || []
-    );
-
-    const activeSub = subscriptions.find(
-      (s: any) => s.status === 'active' || s.status === 'trial'
-    );
+    // Check if membership is still valid
+    const expiryDate = new Date(memberExpiry);
+    const now = new Date();
+    const isActive = expiryDate > now;
 
     return NextResponse.json({
-      active: !!activeSub,
-      status: activeSub?.status || 'none',
-      currentPeriodEnd: activeSub?.current_period_end || null,
+      active: isActive,
+      status: isActive ? 'active' : 'expired',
+      currentPeriodEnd: memberExpiry,
     });
   } catch (error: any) {
     console.error('Subscription status check error:', error);

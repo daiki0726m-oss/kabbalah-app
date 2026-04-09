@@ -1,8 +1,21 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { Suspense, useState, useEffect, useRef } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { ShieldCheck, Sparkles } from "lucide-react";
+
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'komoju-fields': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement> & {
+        'session-id'?: string;
+        'publishable-key'?: string;
+        'payment-type'?: string;
+        locale?: string;
+      }, HTMLElement>;
+    }
+  }
+}
 
 function CheckoutContent() {
   const searchParams = useSearchParams();
@@ -12,83 +25,45 @@ function CheckoutContent() {
   const amount = plan === "premium" ? 2980 : 980;
   const planLabel = plan === "premium" ? "プレミアム鑑定" : "スタンダード鑑定";
 
-  const [processing, setProcessing] = useState(false);
+  const [sessionId, setSessionId] = useState("");
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const formRef = useRef<HTMLFormElement>(null);
-  const [scriptLoaded, setScriptLoaded] = useState(false);
-  const [tokenReady, setTokenReady] = useState(false);
 
-  // Load PAY.JP Checkout script
   useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://checkout.pay.jp/";
-    script.className = "payjp-button";
-    script.setAttribute("data-key", process.env.NEXT_PUBLIC_PAYJP_PUBLIC_KEY || "pk_test_8ff4badd38c79af98456cbed");
-    script.setAttribute("data-text", `カード情報を入力する`);
-    script.setAttribute("data-submit-text", "カード情報を送信");
-    script.setAttribute("data-partial", "true");
-    script.setAttribute("data-name-placeholder", "カード名義");
-    script.onload = () => setScriptLoaded(true);
-
-    if (formRef.current) {
-      formRef.current.appendChild(script);
+    // Load KOMOJU fields script
+    if (!document.querySelector('script[src*="multipay.komoju.com"]')) {
+      const script = document.createElement("script");
+      script.src = "https://multipay.komoju.com/fields.js";
+      script.type = "module";
+      document.head.appendChild(script);
     }
 
-    // Watch for token being set by PAY.JP
-    const observer = new MutationObserver(() => {
-      const tokenInput = formRef.current?.querySelector('input[name="payjp-token"]') as HTMLInputElement;
-      if (tokenInput && tokenInput.value) {
-        setTokenReady(true);
-      }
-    });
-    if (formRef.current) {
-      observer.observe(formRef.current, { childList: true, subtree: true, attributes: true, characterData: true });
-    }
-
-    // Also poll for token (backup)
-    const pollInterval = setInterval(() => {
-      const tokenInput = formRef.current?.querySelector('input[name="payjp-token"]') as HTMLInputElement;
-      if (tokenInput && tokenInput.value) {
-        setTokenReady(true);
-        clearInterval(pollInterval);
-      }
-    }, 500);
-
-    return () => {
-      script.remove();
-      observer.disconnect();
-      clearInterval(pollInterval);
-    };
-  }, [amount]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setProcessing(true);
-    setError("");
-
-    const tokenInput = formRef.current?.querySelector('input[name="payjp-token"]') as HTMLInputElement;
-    if (!tokenInput || !tokenInput.value) {
-      setError("カード情報の取得に失敗しました。もう一度お試しください。");
-      setProcessing(false);
-      return;
-    }
-
-    try {
-      const res = await fetch("/api/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, dob, plan, token: tokenInput.value }),
+    // Create session
+    fetch("/api/checkout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, dob, plan }),
+    })
+      .then(r => r.json())
+      .then(data => {
+        if (data.sessionId) {
+          setSessionId(data.sessionId);
+        } else {
+          setError(data.error || "セッションの作成に失敗しました。");
+        }
+        setLoading(false);
+      })
+      .catch(() => {
+        setError("通信エラーが発生しました。");
+        setLoading(false);
       });
-      const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        setError(data.error || "決済に失敗しました。");
-        setProcessing(false);
-      }
-    } catch {
-      setError("通信エラーが発生しました。もう一度お試しください。");
-      setProcessing(false);
+  }, [name, dob, plan]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const fields = document.querySelector('komoju-fields');
+    if (fields && 'submit' in fields && typeof (fields as any).submit === 'function') {
+      (fields as any).submit();
     }
   };
 
@@ -116,47 +91,42 @@ function CheckoutContent() {
             </span>
           </div>
 
-          {/* PAY.JP Checkout Form */}
-          <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
-            {/* PAY.JP script will be injected here, creating a button */}
-            <div className="flex justify-center py-2">
-              {!scriptLoaded && (
-                <div className="text-sm text-[#7A7068] tracking-wider animate-pulse">
-                  決済フォームを読み込み中...
-                </div>
-              )}
+          {loading && (
+            <div className="flex items-center justify-center gap-2 py-8 text-sm text-[#7A7068] tracking-wider">
+              <div className="w-4 h-4 border-2 border-[#D4AF37] border-t-transparent rounded-full animate-spin" />
+              決済フォームを準備中...
             </div>
+          )}
 
-            {/* Submit button - appears after card info is entered */}
-            {tokenReady && !processing && (
+          {error && (
+            <div className="p-3 bg-red-500/10 border border-red-500/20 rounded text-xs text-red-400 text-center tracking-wider">
+              {error}
+            </div>
+          )}
+
+          {sessionId && (
+            <form onSubmit={handleSubmit}>
+              <komoju-fields
+                session-id={sessionId}
+                publishable-key={process.env.NEXT_PUBLIC_KOMOJU_PUBLISHABLE_KEY || ''}
+                payment-type="credit_card"
+                locale="ja"
+              />
               <button
                 type="submit"
-                className="w-full py-4 rounded-sm font-bold tracking-widest text-sm transition-all text-[#0C0A14] mt-4"
+                className="w-full py-4 rounded-sm font-bold tracking-widest text-sm transition-all text-[#0C0A14] mt-6"
                 style={{ background: 'linear-gradient(135deg, #D4AF37, #F5D76E)', boxShadow: '0 0 20px rgba(212,175,55,0.3)' }}
               >
                 ¥{amount.toLocaleString()} を支払う
               </button>
-            )}
-
-            {processing && (
-              <div className="flex items-center justify-center gap-2 text-sm text-[#D4AF37] tracking-wider py-4">
-                <div className="w-4 h-4 border-2 border-[#D4AF37] border-t-transparent rounded-full animate-spin"></div>
-                決済処理中...
-              </div>
-            )}
-          </form>
-
-          {error && (
-            <div className="mt-4 p-3 bg-red-500/10 border border-red-500/20 rounded text-xs text-red-400 text-center tracking-wider">
-              {error}
-            </div>
+            </form>
           )}
         </div>
 
         {/* Security Badge */}
         <div className="text-center space-y-3">
           <p className="text-[11px] text-[#7A7068] tracking-wider flex items-center justify-center gap-1">
-            <ShieldCheck className="w-3 h-3" />安全なSSL暗号化決済
+            <ShieldCheck className="w-3 h-3" />安全なSSL暗号化決済（KOMOJU）
           </p>
           <a href={`/result?name=${encodeURIComponent(name)}&dob=${encodeURIComponent(dob)}`}
             className="text-[11px] text-[#7A7068] tracking-wider hover:text-[#D4AF37] transition-colors">
@@ -167,7 +137,7 @@ function CheckoutContent() {
 
       <style dangerouslySetInnerHTML={{ __html: `
         @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500&family=Inter:wght@400;600;700&display=swap');
-        .payjp-button { display: block !important; margin: 0 auto !important; }
+        komoju-fields { display: block; }
       `}} />
     </main>
   );

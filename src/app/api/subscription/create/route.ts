@@ -1,77 +1,35 @@
 import { NextResponse } from 'next/server';
-import payjp from '@/lib/payjp';
-
-const PLAN_ID = 'pln_monthly_480';
-const PLAN_AMOUNT = 480;
-
-async function ensurePlanExists() {
-  try {
-    await payjp.plans.retrieve(PLAN_ID);
-  } catch {
-    await payjp.plans.create({
-      id: PLAN_ID,
-      amount: PLAN_AMOUNT,
-      currency: 'jpy',
-      interval: 'month',
-      name: 'カバラ数秘術 月額プラン',
-    });
-  }
-}
+import { createSession } from '@/lib/komoju';
 
 export async function POST(req: Request) {
   try {
-    const { token, dob } = await req.json();
+    const { dob } = await req.json();
 
-    if (!token) {
-      return NextResponse.json({ error: 'カード情報が必要です。' }, { status: 400 });
-    }
     if (!dob) {
       return NextResponse.json({ error: '生年月日が必要です。' }, { status: 400 });
     }
 
-    // Ensure the monthly plan exists
-    await ensurePlanExists();
+    const origin = req.headers.get('origin') || req.headers.get('referer') || '';
+    const baseUrl = origin ? new URL(origin).origin : (process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000');
 
-    // Create customer with card token
-    const customer = await payjp.customers.create({
-      card: token,
-      description: `月額会員 DOB:${dob}`,
+    const session = await createSession({
+      amount: 480,
+      return_url: `${baseUrl}/subscribe/complete?dob=${encodeURIComponent(dob)}`,
+      metadata: {
+        dob,
+        product: 'カバラ数秘術 月額メンバーシップ',
+        type: 'subscription',
+      },
     });
 
-    // Create subscription
-    const subscription = await payjp.subscriptions.create({
-      customer: customer.id,
-      plan: PLAN_ID,
+    return NextResponse.json({
+      sessionId: session.id,
+      url: session.session_url,
     });
-
-    // Set cookie with customer ID (no personal data stored on server)
-    const response = NextResponse.json({
-      success: true,
-      customerId: customer.id,
-      subscriptionId: subscription.id,
-    });
-
-    response.cookies.set('sub_customer_id', customer.id, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 400, // ~13 months
-      path: '/',
-    });
-
-    response.cookies.set('sub_dob', dob, {
-      httpOnly: false,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 400,
-      path: '/',
-    });
-
-    return response;
   } catch (error: any) {
-    console.error('Subscription creation error:', error);
+    console.error('Subscription session error:', error);
     return NextResponse.json(
-      { error: error.message || 'サブスクリプションの作成に失敗しました。' },
+      { error: error.message || 'セッションの作成に失敗しました。' },
       { status: 500 }
     );
   }

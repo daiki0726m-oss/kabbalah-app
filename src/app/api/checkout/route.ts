@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
-import payjp from '@/lib/payjp';
+import { createSession } from '@/lib/komoju';
 
 export async function POST(req: Request) {
   try {
-    const { name, dob, plan = 'standard', token } = await req.json();
+    const { name, dob, plan = 'standard' } = await req.json();
 
     if (!name || !dob) {
       return NextResponse.json(
@@ -12,44 +12,29 @@ export async function POST(req: Request) {
       );
     }
 
-    if (!token) {
-      return NextResponse.json(
-        { error: 'Payment token is required.' },
-        { status: 400 }
-      );
-    }
-
-    // Select price based on plan
     const amount = plan === 'premium' ? 2980 : 980;
+    const planLabel = plan === 'premium' ? 'プレミアム鑑定' : 'スタンダード鑑定';
 
-    // Create a charge with PAY.JP
-    const charge = await payjp.charges.create({
+    const origin = req.headers.get('origin') || req.headers.get('referer') || '';
+    const baseUrl = origin ? new URL(origin).origin : (process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000');
+
+    const session = await createSession({
       amount,
-      currency: 'jpy',
-      card: token,
-      description: `カバラ数秘術 ${plan === 'premium' ? 'プレミアム' : 'スタンダード'}鑑定 - ${name}`,
+      return_url: `${baseUrl}/result/premium?name=${encodeURIComponent(name)}&dob=${encodeURIComponent(dob)}&plan=${plan}`,
       metadata: {
         name,
         dob,
         plan,
+        product: `カバラ数秘術 ${planLabel}`,
       },
     });
 
-    if (!charge.paid) {
-      return NextResponse.json(
-        { error: '決済に失敗しました。' },
-        { status: 400 }
-      );
-    }
-
-    // Return charge ID so frontend can redirect to premium page
-    const origin = req.headers.get('origin') || req.headers.get('referer') || '';
-    const baseUrl = origin ? new URL(origin).origin : (process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000');
-    const successUrl = `${baseUrl}/result/premium?session_id=${charge.id}&name=${encodeURIComponent(name)}&dob=${encodeURIComponent(dob)}&plan=${plan}`;
-
-    return NextResponse.json({ url: successUrl, chargeId: charge.id });
+    return NextResponse.json({
+      sessionId: session.id,
+      url: session.session_url,
+    });
   } catch (error: any) {
-    console.error('Error creating PAY.JP charge:', error);
+    console.error('Error creating KOMOJU session:', error);
     return NextResponse.json(
       { error: error.message || 'Internal Server Error' },
       { status: 500 }

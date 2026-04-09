@@ -1,100 +1,80 @@
 'use client';
 
-import { Suspense, useState, useEffect, useRef } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { ShieldCheck, Sparkles, Crown, Check, Star, Calendar, Heart, Briefcase, Coins, Activity } from 'lucide-react';
+import { ShieldCheck, Sparkles, Crown, Check, Star, Calendar, Heart } from 'lucide-react';
+
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'komoju-fields': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement> & {
+        'session-id'?: string;
+        'publishable-key'?: string;
+        'payment-type'?: string;
+        locale?: string;
+      }, HTMLElement>;
+    }
+  }
+}
 
 function SubscribeContent() {
   const searchParams = useSearchParams();
   const dobParam = searchParams.get('dob') || '';
   const [dob, setDob] = useState(dobParam);
-  const [processing, setProcessing] = useState(false);
+  const [sessionId, setSessionId] = useState('');
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
-  const formRef = useRef<HTMLFormElement>(null);
-  const [tokenReady, setTokenReady] = useState(false);
 
   useEffect(() => {
-    const script = document.createElement('script');
-    script.src = 'https://checkout.pay.jp/';
-    script.className = 'payjp-button';
-    script.setAttribute('data-key', process.env.NEXT_PUBLIC_PAYJP_PUBLIC_KEY || 'pk_test_8ff4badd38c79af98456cbed');
-    script.setAttribute('data-text', 'カード情報を入力する');
-    script.setAttribute('data-submit-text', 'カード情報を送信');
-    script.setAttribute('data-partial', 'true');
-    script.setAttribute('data-name-placeholder', 'カード名義');
-    script.onload = () => {};
-
-    if (formRef.current) {
-      formRef.current.appendChild(script);
+    // Load KOMOJU fields script
+    if (!document.querySelector('script[src*="multipay.komoju.com"]')) {
+      const script = document.createElement('script');
+      script.src = 'https://multipay.komoju.com/fields.js';
+      script.type = 'module';
+      document.head.appendChild(script);
     }
 
-    const pollInterval = setInterval(() => {
-      const tokenInput = formRef.current?.querySelector('input[name="payjp-token"]') as HTMLInputElement;
-      if (tokenInput && tokenInput.value) {
-        setTokenReady(true);
-        clearInterval(pollInterval);
-      }
-    }, 500);
+    // Restore DOB from localStorage
+    if (!dobParam) {
+      const savedDob = localStorage.getItem('kabbalah_dob');
+      if (savedDob) setDob(savedDob);
+    }
+  }, [dobParam]);
 
-    return () => {
-      script.remove();
-      clearInterval(pollInterval);
-    };
-  }, []);
-
-  const handleSubscribe = async () => {
+  const handleCreateSession = async () => {
     if (!dob) {
       setError('生年月日を入力してください。');
       return;
     }
-    const tokenInput = formRef.current?.querySelector('input[name="payjp-token"]') as HTMLInputElement;
-    if (!tokenInput?.value) {
-      setError('カード情報を入力してください。');
-      return;
-    }
 
-    setProcessing(true);
+    setLoading(true);
     setError('');
 
     try {
       const res = await fetch('/api/subscription/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: tokenInput.value, dob }),
+        body: JSON.stringify({ dob }),
       });
-
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
 
-      // Store DOB in localStorage for daily fortune access
       localStorage.setItem('kabbalah_dob', dob);
-      setSuccess(true);
-
-      // Redirect to members page
-      setTimeout(() => {
-        window.location.href = '/members/daily';
-      }, 2000);
+      setSessionId(data.sessionId);
     } catch (err: any) {
       setError(err.message || 'エラーが発生しました。');
     } finally {
-      setProcessing(false);
+      setLoading(false);
     }
   };
 
-  if (success) {
-    return (
-      <main className="min-h-screen bg-[#0C0A14] text-[#BEB5A5] flex items-center justify-center">
-        <div className="text-center px-6">
-          <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-[#D4AF37]/20 flex items-center justify-center border border-[#D4AF37]/40">
-            <Check className="w-8 h-8 text-[#D4AF37]" />
-          </div>
-          <h1 className="text-xl text-[#F5F0E8] tracking-widest mb-3" style={{ fontFamily: '"Noto Serif JP", serif' }}>登録完了</h1>
-          <p className="text-sm text-[#BEB5A5] tracking-wider">月額プランへようこそ！<br />会員ページに移動します...</p>
-        </div>
-      </main>
-    );
-  }
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const fields = document.querySelector('komoju-fields');
+    if (fields && 'submit' in fields && typeof (fields as any).submit === 'function') {
+      (fields as any).submit();
+    }
+  };
 
   return (
     <main className="min-h-screen bg-[#0C0A14] text-[#BEB5A5] selection:bg-[#D4AF37]/30 selection:text-white">
@@ -146,41 +126,61 @@ function SubscribeContent() {
           ))}
         </div>
 
-        {/* DOB Input */}
-        <div className="mb-6">
-          <label className="block text-xs text-[#7A7068] tracking-wider mb-2">生年月日</label>
-          <input
-            type="date"
-            value={dob}
-            onChange={(e) => setDob(e.target.value)}
-            className="w-full bg-white/[0.06] border border-white/10 rounded-sm px-4 py-3 text-[#F5F0E8] text-sm tracking-wider focus:outline-none focus:border-[#D4AF37]/50"
-          />
-        </div>
+        {/* Step 1: DOB Input (if no session yet) */}
+        {!sessionId && (
+          <>
+            <div className="mb-6">
+              <label className="block text-xs text-[#7A7068] tracking-wider mb-2">生年月日</label>
+              <input
+                type="date"
+                value={dob}
+                onChange={(e) => setDob(e.target.value)}
+                className="w-full bg-white/[0.06] border border-white/10 rounded-sm px-4 py-3 text-[#F5F0E8] text-sm tracking-wider focus:outline-none focus:border-[#D4AF37]/50"
+              />
+            </div>
 
-        {/* PAY.JP Form */}
-        <form ref={formRef} className="mb-4">
-          {/* PAY.JP checkout script appended here */}
-        </form>
+            {error && (
+              <div className="mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-sm">
+                <p className="text-xs text-red-400 tracking-wider">{error}</p>
+              </div>
+            )}
 
-        {error && (
-          <div className="mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-sm">
-            <p className="text-xs text-red-400 tracking-wider">{error}</p>
-          </div>
+            <button
+              onClick={handleCreateSession}
+              disabled={loading}
+              className="w-full py-4 rounded-sm font-bold tracking-widest text-sm transition-all disabled:opacity-30 text-[#0C0A14] flex justify-center items-center"
+              style={{ background: 'linear-gradient(135deg, #D4AF37, #F5D76E)', boxShadow: '0 0 20px rgba(212,175,55,0.2)' }}
+            >
+              {loading ? (
+                <div className="w-5 h-5 border-2 border-[#0C0A14] border-t-transparent rounded-full animate-spin" />
+              ) : (
+                '✦ お支払いに進む'
+              )}
+            </button>
+          </>
         )}
 
-        {/* Subscribe Button */}
-        <button
-          onClick={handleSubscribe}
-          disabled={processing || !tokenReady}
-          className="w-full py-4 rounded-sm font-bold tracking-widest text-sm transition-all disabled:opacity-30 disabled:cursor-not-allowed text-[#0C0A14] flex justify-center items-center"
-          style={{ background: tokenReady ? 'linear-gradient(135deg, #D4AF37, #F5D76E)' : '#333', boxShadow: tokenReady ? '0 0 20px rgba(212,175,55,0.2)' : 'none' }}
-        >
-          {processing ? (
-            <div className="w-5 h-5 border-2 border-[#0C0A14] border-t-transparent rounded-full animate-spin" />
-          ) : (
-            '✦ 月額メンバーになる'
-          )}
-        </button>
+        {/* Step 2: KOMOJU Payment Form */}
+        {sessionId && (
+          <div className="bg-white/[0.04] border border-white/[0.08] rounded-sm p-6">
+            <p className="text-xs text-[#7A7068] tracking-wider mb-4 text-center">クレジットカード情報を入力してください</p>
+            <form onSubmit={handleSubmit}>
+              <komoju-fields
+                session-id={sessionId}
+                publishable-key={process.env.NEXT_PUBLIC_KOMOJU_PUBLISHABLE_KEY || ''}
+                payment-type="credit_card"
+                locale="ja"
+              />
+              <button
+                type="submit"
+                className="w-full py-4 rounded-sm font-bold tracking-widest text-sm transition-all text-[#0C0A14] mt-4"
+                style={{ background: 'linear-gradient(135deg, #D4AF37, #F5D76E)', boxShadow: '0 0 20px rgba(212,175,55,0.2)' }}
+              >
+                ¥480 を支払う
+              </button>
+            </form>
+          </div>
+        )}
 
         <p className="mt-3 text-center text-[10px] text-[#7A7068] tracking-wider flex items-center justify-center gap-1" style={{ fontFamily: 'Inter, sans-serif' }}>
           <ShieldCheck className="w-3 h-3 inline -mt-0.5" />いつでも解約可能・SSL暗号化決済
@@ -195,7 +195,10 @@ function SubscribeContent() {
         <p className="text-[10px] text-[#7A7068] tracking-[0.2em] uppercase" style={{ fontFamily: 'Inter, sans-serif' }}>&copy; 2026 Kabbalah</p>
       </footer>
 
-      <style dangerouslySetInnerHTML={{ __html: `@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500&family=Inter:wght@400;600;700&display=swap');` }} />
+      <style dangerouslySetInnerHTML={{ __html: `
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500&family=Inter:wght@400;600;700&display=swap');
+        komoju-fields { display: block; }
+      `}} />
     </main>
   );
 }

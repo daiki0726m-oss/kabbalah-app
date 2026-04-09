@@ -30,7 +30,8 @@ function ResultTeaserContent() {
   }, []);
 
   const handleCheckout = (plan: 'standard' | 'premium' = 'standard') => {
-    alert('現在、決済システムのメンテナンス中です。\n近日中にサービスを開始いたしますので、今しばらくお待ちください。');
+    setLoading(true);
+    window.location.href = `/checkout?name=${encodeURIComponent(name)}&dob=${encodeURIComponent(dob)}&plan=${plan}`;
   };
 
   const cardVariants = { hidden: { opacity: 0, y: 20 }, visible: (i: number) => ({ opacity: 1, y: 0, transition: { delay: 0.15 * i, duration: 0.6 } }) };
