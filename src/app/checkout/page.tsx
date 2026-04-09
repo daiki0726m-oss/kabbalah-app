@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { Suspense, useState, useEffect } from "react";
+import { Suspense, useState, useEffect, useRef } from "react";
 import { ShieldCheck, Sparkles } from "lucide-react";
 
 function CheckoutContent() {
@@ -15,6 +15,7 @@ function CheckoutContent() {
   const [sessionId, setSessionId] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const fieldsContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Load KOMOJU fields script
@@ -46,10 +47,25 @@ function CheckoutContent() {
       });
   }, [name, dob, plan]);
 
+  // Render KOMOJU fields when sessionId is available
+  useEffect(() => {
+    if (!sessionId || !fieldsContainerRef.current) return;
+
+    const container = fieldsContainerRef.current;
+    container.innerHTML = '';
+
+    const fields = document.createElement('komoju-fields');
+    fields.setAttribute('session-id', sessionId);
+    fields.setAttribute('publishable-key', process.env.NEXT_PUBLIC_KOMOJU_PUBLISHABLE_KEY || '');
+    fields.setAttribute('payment-type', 'credit_card');
+    fields.setAttribute('locale', 'ja');
+    container.appendChild(fields);
+  }, [sessionId]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const fields = document.querySelector('komoju-fields');
-    if (fields && 'submit' in fields && typeof (fields as any).submit === 'function') {
+    if (fields && typeof (fields as any).submit === 'function') {
       (fields as any).submit();
     }
   };
@@ -57,7 +73,6 @@ function CheckoutContent() {
   return (
     <main className="min-h-screen bg-[#0C0A14] text-[#BEB5A5] flex items-center justify-center px-6">
       <div className="w-full max-w-md">
-        {/* Header */}
         <div className="text-center mb-10">
           <div className="flex items-center justify-center gap-2 mb-4">
             <Sparkles className="w-5 h-5 text-[#D4AF37]" strokeWidth={1.5} />
@@ -69,7 +84,6 @@ function CheckoutContent() {
           <p className="text-sm text-[#7A7068] tracking-wider">{name} 様の鑑定書</p>
         </div>
 
-        {/* Price Card */}
         <div className="bg-white/[0.04] border border-white/[0.08] rounded-sm p-8 mb-6">
           <div className="flex items-center justify-between mb-6 pb-4 border-b border-white/10">
             <span className="text-sm text-[#BEB5A5] tracking-wider">{planLabel}</span>
@@ -93,12 +107,7 @@ function CheckoutContent() {
 
           {sessionId && (
             <form onSubmit={handleSubmit}>
-              <komoju-fields
-                session-id={sessionId}
-                publishable-key={process.env.NEXT_PUBLIC_KOMOJU_PUBLISHABLE_KEY || ''}
-                payment-type="credit_card"
-                locale="ja"
-              />
+              <div ref={fieldsContainerRef} />
               <button
                 type="submit"
                 className="w-full py-4 rounded-sm font-bold tracking-widest text-sm transition-all text-[#0C0A14] mt-6"
@@ -110,7 +119,6 @@ function CheckoutContent() {
           )}
         </div>
 
-        {/* Security Badge */}
         <div className="text-center space-y-3">
           <p className="text-[11px] text-[#7A7068] tracking-wider flex items-center justify-center gap-1">
             <ShieldCheck className="w-3 h-3" />安全なSSL暗号化決済（KOMOJU）

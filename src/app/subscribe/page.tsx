@@ -1,8 +1,8 @@
 'use client';
 
-import { Suspense, useState, useEffect } from 'react';
+import { Suspense, useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { ShieldCheck, Sparkles, Crown, Check, Star, Calendar, Heart } from 'lucide-react';
+import { ShieldCheck, Sparkles, Crown, Star, Calendar, Heart } from 'lucide-react';
 
 function SubscribeContent() {
   const searchParams = useSearchParams();
@@ -11,6 +11,7 @@ function SubscribeContent() {
   const [sessionId, setSessionId] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const fieldsContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Load KOMOJU fields script
@@ -27,6 +28,21 @@ function SubscribeContent() {
       if (savedDob) setDob(savedDob);
     }
   }, [dobParam]);
+
+  // Render KOMOJU fields when sessionId is available
+  useEffect(() => {
+    if (!sessionId || !fieldsContainerRef.current) return;
+
+    const container = fieldsContainerRef.current;
+    container.innerHTML = '';
+
+    const fields = document.createElement('komoju-fields');
+    fields.setAttribute('session-id', sessionId);
+    fields.setAttribute('publishable-key', process.env.NEXT_PUBLIC_KOMOJU_PUBLISHABLE_KEY || '');
+    fields.setAttribute('payment-type', 'credit_card');
+    fields.setAttribute('locale', 'ja');
+    container.appendChild(fields);
+  }, [sessionId]);
 
   const handleCreateSession = async () => {
     if (!dob) {
@@ -58,7 +74,7 @@ function SubscribeContent() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const fields = document.querySelector('komoju-fields');
-    if (fields && 'submit' in fields && typeof (fields as any).submit === 'function') {
+    if (fields && typeof (fields as any).submit === 'function') {
       (fields as any).submit();
     }
   };
@@ -75,7 +91,6 @@ function SubscribeContent() {
       <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-[#D4AF37]/30 to-transparent" />
 
       <div className="max-w-lg mx-auto px-6 py-12">
-        {/* Header */}
         <div className="text-center mb-10">
           <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-[#D4AF37]/15 flex items-center justify-center border border-[#D4AF37]/30">
             <Crown className="w-7 h-7 text-[#D4AF37]" strokeWidth={1.5} />
@@ -86,7 +101,6 @@ function SubscribeContent() {
           <p className="text-xs text-[#7A7068] tracking-wider">毎日の運勢 × 相性診断 × 月間レポート</p>
         </div>
 
-        {/* Price */}
         <div className="text-center mb-8 bg-white/[0.04] border border-[#D4AF37]/20 rounded-sm p-6">
           <p className="text-3xl text-[#F5F0E8] font-medium mb-1" style={{ fontFamily: 'Inter, sans-serif' }}>
             ¥480<span className="text-sm text-[#7A7068] font-normal">/月（税込）</span>
@@ -94,7 +108,6 @@ function SubscribeContent() {
           <p className="text-xs text-[#D4AF37] tracking-wider">☕ コーヒー1杯分で、毎日の運命がわかる</p>
         </div>
 
-        {/* Features */}
         <div className="space-y-3 mb-8">
           {[
             { icon: Star, label: '毎日のパーソナル運勢', desc: '運命数×日付で毎日変わるあなた専用の運勢' },
@@ -113,7 +126,6 @@ function SubscribeContent() {
           ))}
         </div>
 
-        {/* Step 1: DOB Input (if no session yet) */}
         {!sessionId && (
           <>
             <div className="mb-6">
@@ -147,17 +159,11 @@ function SubscribeContent() {
           </>
         )}
 
-        {/* Step 2: KOMOJU Payment Form */}
         {sessionId && (
           <div className="bg-white/[0.04] border border-white/[0.08] rounded-sm p-6">
             <p className="text-xs text-[#7A7068] tracking-wider mb-4 text-center">クレジットカード情報を入力してください</p>
             <form onSubmit={handleSubmit}>
-              <komoju-fields
-                session-id={sessionId}
-                publishable-key={process.env.NEXT_PUBLIC_KOMOJU_PUBLISHABLE_KEY || ''}
-                payment-type="credit_card"
-                locale="ja"
-              />
+              <div ref={fieldsContainerRef} />
               <button
                 type="submit"
                 className="w-full py-4 rounded-sm font-bold tracking-widest text-sm transition-all text-[#0C0A14] mt-4"
