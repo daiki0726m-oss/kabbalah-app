@@ -118,26 +118,30 @@ function PremiumLiveContent() {
         <h2 className="text-lg text-[#F5F0E8] tracking-widest mb-3" style={{ fontFamily: '"Noto Serif JP", serif' }}>
           {isServerBusy ? '鑑定書の生成に時間がかかっています' : '鑑定書を生成できませんでした'}
         </h2>
-        <p className="text-sm text-[#7A7068] tracking-wider mb-6 max-w-xs leading-relaxed">
+        <p className="text-sm text-[#7A7068] tracking-wider mb-6 max-w-xs leading-relaxed whitespace-pre-line">
           {isServerBusy
-            ? 'ただいまアクセスが集中しております。\nしばらくお待ちいただき、下のボタンから再度お試しください。'
-            : 'お手数ですが、下のボタンから再度お試しください。\n解決しない場合はお問い合わせください。'}
+            ? 'ただいまアクセスが集中しております。\nしばらくお待ちいただき、下のボタンから\n再度お試しください。'
+            : 'お手数ですが、下のボタンから\n再度お試しください。'}
         </p>
         <button
           onClick={() => window.location.reload()}
-          className="px-8 py-3 rounded-sm font-bold tracking-widest text-sm text-[#0C0A14] mb-4"
+          className="px-8 py-3 rounded-sm font-bold tracking-widest text-sm text-[#0C0A14] mb-6"
           style={{ background: 'linear-gradient(135deg, #D4AF37, #F5D76E)', boxShadow: '0 0 20px rgba(212,175,55,0.2)' }}
         >
           ✦ もう一度試す
         </button>
-        <div className="space-y-2">
-          <a href="/contact" className="block text-xs text-[#7A7068] tracking-wider hover:text-[#D4AF37] transition-colors">
-            お問い合わせはこちら →
-          </a>
-          <a href="/" className="block text-xs text-[#7A7068] tracking-wider hover:text-[#D4AF37] transition-colors">
-            ← トップページに戻る
-          </a>
+        <div className="bg-white/[0.04] border border-white/10 rounded-sm p-4 max-w-xs mb-4">
+          <p className="text-[11px] text-[#BEB5A5] tracking-wider leading-relaxed">
+            ⚠️ お支払い済みの方へ<br />
+            このページを閉じずに「もう一度試す」を<br />
+            押してください。ページのURLが<br />
+            お支払い確認になりますので、<br />
+            念のためブックマークをお願いします。
+          </p>
         </div>
+        <a href="/contact" className="text-xs text-[#7A7068] tracking-wider hover:text-[#D4AF37] transition-colors">
+          解決しない場合はお問い合わせください →
+        </a>
       </div>
     );
   }
