@@ -117,15 +117,33 @@ export async function POST(req: Request) {
       '}',
     ].join('\n');
 
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: prompt,
-      config: {
-        temperature: 0.85,
-        maxOutputTokens: 65536,
-        responseMimeType: "application/json",
+    // Retry with exponential backoff for API rate limits / 503 errors
+    let response;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        response = await ai.models.generateContent({
+          model: 'gemini-2.5-flash',
+          contents: prompt,
+          config: {
+            temperature: 0.85,
+            maxOutputTokens: 65536,
+            responseMimeType: "application/json",
+          }
+        });
+        break; // Success
+      } catch (retryError: any) {
+        if (attempt < 2 && (retryError.message?.includes('503') || retryError.message?.includes('UNAVAILABLE') || retryError.message?.includes('high demand'))) {
+          const waitMs = (attempt + 1) * 3000; // 3s, 6s
+          await new Promise(resolve => setTimeout(resolve, waitMs));
+          continue;
+        }
+        throw retryError;
       }
-    });
+    }
+
+    if (!response) {
+      return NextResponse.json({ error: 'AIサーバーが混雑しています。しばらく時間をおいて再度お試しください。' }, { status: 503 });
+    }
 
     const reportJson = response.text || "{}";
     const cleanJson = reportJson.replace(/```json\n|\n```/g, '');
