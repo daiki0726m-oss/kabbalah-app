@@ -4,19 +4,6 @@ import { Suspense, useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { ShieldCheck, Sparkles, Crown, Check, Star, Calendar, Heart } from 'lucide-react';
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      'komoju-fields': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement> & {
-        'session-id'?: string;
-        'publishable-key'?: string;
-        'payment-type'?: string;
-        locale?: string;
-      }, HTMLElement>;
-    }
-  }
-}
-
 function SubscribeContent() {
   const searchParams = useSearchParams();
   const dobParam = searchParams.get('dob') || '';

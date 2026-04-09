@@ -4,19 +4,6 @@ import { useSearchParams } from "next/navigation";
 import { Suspense, useState, useEffect } from "react";
 import { ShieldCheck, Sparkles } from "lucide-react";
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      'komoju-fields': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement> & {
-        'session-id'?: string;
-        'publishable-key'?: string;
-        'payment-type'?: string;
-        locale?: string;
-      }, HTMLElement>;
-    }
-  }
-}
-
 function CheckoutContent() {
   const searchParams = useSearchParams();
   const name = searchParams.get("name") || "ゲスト";
