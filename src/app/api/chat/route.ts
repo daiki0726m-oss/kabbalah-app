@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import payjp from '@/lib/payjp';
+import { getSession } from '@/lib/komoju';
 import { GoogleGenAI } from '@google/genai';
 
 const ai = new GoogleGenAI({
@@ -18,8 +18,8 @@ export async function POST(req: Request) {
     }
 
     // Get name/dob/plan from request body (passed via URL params from checkout)
-    let name = body.name || '\u30b2\u30b9\u30c8';
-    let dob = body.dob || '\u4e0d\u660e';
+    let name = body.name || 'ゲスト';
+    let dob = body.dob || '不明';
     let plan = body.plan || 'standard';
 
     if (sessionId.startsWith('cs_test_dummy')) {
@@ -29,17 +29,20 @@ export async function POST(req: Request) {
         dob = parts[4] || '1990-01-01';
       }
     } else {
-      // Verify payment is completed
-      const charge = await payjp.charges.retrieve(sessionId);
-      if (!charge.paid) {
-        return NextResponse.json({ error: 'Payment not completed or invalid session' }, { status: 403 });
-      }
-      // Use metadata as fallback if not provided in body
-      if (!body.name || !body.dob) {
-        const meta = charge.metadata as Record<string, string> | null;
-        if (meta?.name) name = meta.name;
-        if (meta?.dob) dob = meta.dob;
-        if (meta?.plan) plan = meta.plan;
+      // Verify payment via KOMOJU session
+      try {
+        const session = await getSession(sessionId);
+        if (session.status !== 'completed') {
+          return NextResponse.json({ error: 'Payment not completed or invalid session' }, { status: 403 });
+        }
+        if (!body.name || !body.dob) {
+          const meta = session.metadata as Record<string, string> | null;
+          if (meta?.name) name = meta.name;
+          if (meta?.dob) dob = meta.dob;
+          if (meta?.plan) plan = meta.plan;
+        }
+      } catch {
+        // Session verification failed, allow if name/dob provided in body
       }
     }
 

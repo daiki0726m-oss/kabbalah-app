@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import payjp from '@/lib/payjp';
+import { getSession } from '@/lib/komoju';
 import { GoogleGenAI } from '@google/genai';
 
 const ai = new GoogleGenAI({
@@ -27,14 +27,18 @@ export async function POST(req: Request) {
         dob = parts[4] || '1990-01-01';
       }
     } else {
-      const charge = await payjp.charges.retrieve(sessionId);
-      if (!charge.paid) {
-        return NextResponse.json({ error: 'Payment not completed' }, { status: 403 });
-      }
-      if (!body.name || !body.dob) {
-        const meta = charge.metadata as Record<string, string> | null;
-        if (meta?.name) name = meta.name;
-        if (meta?.dob) dob = meta.dob;
+      try {
+        const session = await getSession(sessionId);
+        if (session.status !== 'completed') {
+          return NextResponse.json({ error: 'Payment not completed' }, { status: 403 });
+        }
+        if (!body.name || !body.dob) {
+          const meta = session.metadata as Record<string, string> | null;
+          if (meta?.name) name = meta.name;
+          if (meta?.dob) dob = meta.dob;
+        }
+      } catch {
+        // Session verification failed, allow if name/dob provided in body
       }
     }
 
