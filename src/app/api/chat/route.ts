@@ -117,12 +117,14 @@ export async function POST(req: Request) {
       '}',
     ].join('\n');
 
-    // Retry with exponential backoff for API rate limits / 503 errors
+    // Try primary model, fallback to secondary if unavailable
+    const models = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash'];
     let response;
-    for (let attempt = 0; attempt < 3; attempt++) {
+
+    for (const modelName of models) {
       try {
         response = await ai.models.generateContent({
-          model: 'gemini-2.5-flash',
+          model: modelName,
           contents: prompt,
           config: {
             temperature: 0.85,
@@ -132,10 +134,9 @@ export async function POST(req: Request) {
         });
         break; // Success
       } catch (retryError: any) {
-        if (attempt < 2 && (retryError.message?.includes('503') || retryError.message?.includes('UNAVAILABLE') || retryError.message?.includes('high demand'))) {
-          const waitMs = (attempt + 1) * 3000; // 3s, 6s
-          await new Promise(resolve => setTimeout(resolve, waitMs));
-          continue;
+        console.warn(`Model ${modelName} failed:`, retryError.message);
+        if (retryError.message?.includes('503') || retryError.message?.includes('UNAVAILABLE') || retryError.message?.includes('high demand')) {
+          continue; // Try next model
         }
         throw retryError;
       }
