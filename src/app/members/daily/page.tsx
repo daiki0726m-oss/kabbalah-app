@@ -62,6 +62,30 @@ export default function DailyPage() {
 
   useEffect(() => {
     if (!dob) { setLoading(false); return; }
+
+    const today = new Date().toISOString().split('T')[0];
+    const cacheKey = `kabbalah_daily_${dob}_${today}`;
+
+    // Check localStorage cache first
+    const cached = localStorage.getItem(cacheKey);
+    if (cached) {
+      try {
+        setFortune(JSON.parse(cached));
+        setLoading(false);
+        return;
+      } catch {
+        localStorage.removeItem(cacheKey);
+      }
+    }
+
+    // Clean old cache entries (different dates)
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key?.startsWith('kabbalah_daily_') && !key.endsWith(today)) {
+        localStorage.removeItem(key);
+      }
+    }
+
     setLoading(true);
     fetch('/api/daily-fortune', {
       method: 'POST',
@@ -69,7 +93,11 @@ export default function DailyPage() {
       body: JSON.stringify({ dob }),
     })
       .then(r => r.json())
-      .then(data => { setFortune(data); setLoading(false); })
+      .then(data => {
+        setFortune(data);
+        try { localStorage.setItem(cacheKey, JSON.stringify(data)); } catch { /* storage full */ }
+        setLoading(false);
+      })
       .catch(() => setLoading(false));
   }, [dob]);
 
