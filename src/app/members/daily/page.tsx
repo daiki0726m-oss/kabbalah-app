@@ -209,11 +209,11 @@ export default function DailyPage() {
                   <div className="w-12 h-12 rounded-full bg-[#D4AF37]/10 flex items-center justify-center border border-[#D4AF37]/30 mb-3">
                     <Lock className="w-5 h-5 text-[#D4AF37]" />
                   </div>
-                  <p className="text-sm text-[#F5F0E8] tracking-wider mb-1">詳しい運勢は月額メンバー限定</p>
+                  <p className="text-sm text-[#F5F0E8] tracking-wider mb-1">詳しい運勢はメンバー限定</p>
                   <p className="text-xs text-[#7A7068] tracking-wider mb-4">恋愛・仕事・金運・健康運 + 開運アクション</p>
                   <a href="/subscribe" className="px-6 py-2.5 rounded-sm text-sm tracking-widest text-[#0C0A14] font-bold inline-flex items-center gap-1"
                     style={{ background: 'linear-gradient(135deg, #D4AF37, #F5D76E)' }}>
-                    <Crown className="w-3.5 h-3.5" />月額¥480で全て見る
+                    <Crown className="w-3.5 h-3.5" />¥480で30日間利用する
                   </a>
                 </div>
               </div>

@@ -441,7 +441,7 @@ export default function KabbalahLP() {
         <div className="flex items-center justify-center gap-4 mb-3 flex-wrap">
           <a href="/members/daily" className="text-[10px] text-[#7A7068] tracking-wider hover:text-[#D4AF37] transition-colors">今日の運勢</a>
           <span className="text-[#7A7068]/30">|</span>
-          <a href="/subscribe" className="text-[10px] text-[#7A7068] tracking-wider hover:text-[#D4AF37] transition-colors">月額プラン</a>
+          <a href="/subscribe" className="text-[10px] text-[#7A7068] tracking-wider hover:text-[#D4AF37] transition-colors">30日間プラン</a>
           <span className="text-[#7A7068]/30">|</span>
           <a href="/legal/tokushouhou" className="text-[10px] text-[#7A7068] tracking-wider hover:text-[#D4AF37] transition-colors">特定商取引法に基づく表記</a>
           <span className="text-[#7A7068]/30">|</span>

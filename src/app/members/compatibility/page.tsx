@@ -59,7 +59,7 @@ export default function CompatibilityPage() {
 
     // Non-members: limit to 1 free check
     if (!isMember && checkCount >= 1) {
-      setError('無料での相性診断は1回までです。月額メンバーに登録すると無制限でご利用いただけます。');
+      setError('無料での相性診断は1回までです。メンバーに登録すると無制限でご利用いただけます。');
       return;
     }
 
@@ -141,7 +141,7 @@ export default function CompatibilityPage() {
           <div className="mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-sm">
             <p className="text-xs text-red-400 tracking-wider">{error}</p>
             {!isMember && checkCount >= 1 && (
-              <a href="/subscribe" className="inline-block mt-2 text-xs text-[#D4AF37] tracking-wider underline">月額メンバーに登録する →</a>
+              <a href="/subscribe" className="inline-block mt-2 text-xs text-[#D4AF37] tracking-wider underline">メンバーに登録する →</a>
             )}
           </div>
         )}
@@ -154,7 +154,7 @@ export default function CompatibilityPage() {
 
         {!isMember && (
           <p className="text-center text-[10px] text-[#7A7068] tracking-wider mt-2">
-            無料: あと{Math.max(0, 1 - checkCount)}回 ｜ <a href="/subscribe" className="text-[#D4AF37]">月額メンバーなら無制限</a>
+            無料: あと{Math.max(0, 1 - checkCount)}回 ｜ <a href="/subscribe" className="text-[#D4AF37]">メンバーなら無制限</a>
           </p>
         )}
 
@@ -201,9 +201,9 @@ export default function CompatibilityPage() {
                 </div>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
                   <Lock className="w-5 h-5 text-[#D4AF37] mb-2" />
-                  <p className="text-sm text-[#F5F0E8] tracking-wider mb-3">詳しいアドバイスは月額メンバー限定</p>
+                  <p className="text-sm text-[#F5F0E8] tracking-wider mb-3">詳しいアドバイスはメンバー限定</p>
                   <a href="/subscribe" className="px-5 py-2 rounded-sm text-xs tracking-widest text-[#0C0A14] font-bold"
-                    style={{ background: 'linear-gradient(135deg, #D4AF37, #F5D76E)' }}>月額¥480で全て見る</a>
+                    style={{ background: 'linear-gradient(135deg, #D4AF37, #F5D76E)' }}>¥480で30日間利用する</a>
                 </div>
               </div>
             )}

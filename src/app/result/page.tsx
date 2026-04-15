@@ -358,7 +358,7 @@ function ResultTeaserContent() {
           <a href={`/subscribe?dob=${encodeURIComponent(dob)}`}
             className="inline-flex items-center gap-1.5 px-6 py-3 rounded-sm text-sm tracking-widest text-[#0C0A14] font-bold"
             style={{ background: 'linear-gradient(135deg, #D4AF37, #F5D76E)', boxShadow: '0 0 20px rgba(212,175,55,0.15)' }}>
-            ✦ 月額¥480で始める
+            ✦ ¥480で30日間プランを始める
           </a>
           <p className="mt-2 text-[10px] text-[#7A7068] tracking-wider">30日間有効・自動更新なし</p>
         </motion.section>
