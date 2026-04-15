@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server';
-import { GoogleGenAI } from '@google/genai';
+import { generateWithFallback } from '@/lib/gemini';
 import { calculateLifePathNumber } from '@/lib/numerology';
-
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
 
 // Simple in-memory cache for daily fortunes (key: dob+date)
 const cache = new Map<string, { data: any; timestamp: number }>();
@@ -55,9 +53,11 @@ export async function POST(req: Request) {
 
 JSONのみを出力してください。`;
 
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.0-flash',
-      contents: prompt,
+    const response = await generateWithFallback({
+      prompt,
+      temperature: 0.85,
+      maxOutputTokens: 4096,
+      jsonMode: true,
     });
 
     let text = response.text || '';

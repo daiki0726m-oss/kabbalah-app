@@ -1,9 +1,5 @@
 import { NextResponse } from 'next/server';
-import { GoogleGenAI } from '@google/genai';
-
-const ai = new GoogleGenAI({
-    apiKey: process.env.GEMINI_API_KEY || 'dummy_api_key',
-});
+import { generateWithFallback } from '@/lib/gemini';
 
 export const maxDuration = 60;
 
@@ -49,14 +45,11 @@ export async function POST(req: Request) {
 }
 `;
 
-        const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
-            contents: prompt,
-            config: {
-                temperature: 0.85,
-                maxOutputTokens: 4096,
-                responseMimeType: "application/json",
-            }
+        const response = await generateWithFallback({
+            prompt,
+            temperature: 0.85,
+            maxOutputTokens: 4096,
+            jsonMode: true,
         });
 
         const reportJson = response.text || "{}";

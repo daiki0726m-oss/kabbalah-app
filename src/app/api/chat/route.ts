@@ -1,10 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/komoju';
-import { GoogleGenAI } from '@google/genai';
-
-const ai = new GoogleGenAI({
-  apiKey: process.env.GEMINI_API_KEY || 'dummy_api_key',
-});
+import { generateWithFallback } from '@/lib/gemini';
 
 export const maxDuration = 120;
 
@@ -117,34 +113,12 @@ export async function POST(req: Request) {
       '}',
     ].join('\n');
 
-    // Try primary model, fallback to secondary if unavailable
-    const models = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash'];
-    let response;
-
-    for (const modelName of models) {
-      try {
-        response = await ai.models.generateContent({
-          model: modelName,
-          contents: prompt,
-          config: {
-            temperature: 0.85,
-            maxOutputTokens: 65536,
-            responseMimeType: "application/json",
-          }
-        });
-        break; // Success
-      } catch (retryError: any) {
-        console.warn(`Model ${modelName} failed:`, retryError.message);
-        if (retryError.message?.includes('503') || retryError.message?.includes('UNAVAILABLE') || retryError.message?.includes('high demand')) {
-          continue; // Try next model
-        }
-        throw retryError;
-      }
-    }
-
-    if (!response) {
-      return NextResponse.json({ error: 'AIサーバーが混雑しています。しばらく時間をおいて再度お試しください。' }, { status: 503 });
-    }
+    const response = await generateWithFallback({
+      prompt,
+      temperature: 0.85,
+      maxOutputTokens: 65536,
+      jsonMode: true,
+    });
 
     const reportJson = response.text || "{}";
     const cleanJson = reportJson.replace(/```json\n|\n```/g, '');
