@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/komoju';
 import { generateWithFallback } from '@/lib/gemini';
+import { sendPaymentConfirmation } from '@/lib/email';
 
 export const maxDuration = 120;
 
@@ -131,6 +132,19 @@ export async function POST(req: Request) {
       const repaired = repairJson(cleanJson);
       parsedData = JSON.parse(repaired);
     }
+
+    // Send email notification in background (don't block response)
+    const amount = plan === 'premium' ? 2980 : 980;
+    const origin = req.headers.get('origin') || req.headers.get('referer') || '';
+    const baseUrl = origin ? new URL(origin).origin : 'https://kabbalah-app-ruddy.vercel.app';
+    const reportUrl = `${baseUrl}/result/premium?session_id=${sessionId}&name=${encodeURIComponent(name)}&dob=${encodeURIComponent(dob)}&plan=${plan}`;
+
+    sendPaymentConfirmation({
+      customerName: name,
+      plan,
+      amount,
+      reportUrl,
+    }).catch(() => {}); // Fire and forget
 
     return NextResponse.json({ report: parsedData, plan, name });
   } catch (error: any) {

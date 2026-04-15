@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getSession } from '@/lib/komoju';
 import { createSignedCookie } from '@/lib/auth';
+import { sendMembershipConfirmation } from '@/lib/email';
 
 export async function POST(req: Request) {
   try {
@@ -55,6 +56,12 @@ export async function POST(req: Request) {
         sameSite: 'lax',
       });
     }
+
+    // Send membership notification in background
+    sendMembershipConfirmation({
+      dob: dob || '',
+      expiresAt: expiryStr,
+    }).catch(() => {});
 
     return response;
   } catch (error: any) {
