@@ -21,28 +21,36 @@ function CompleteContent() {
       return;
     }
 
-    // Call server API to verify payment and set signed httpOnly cookies
-    fetch('/api/subscription/activate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ sessionId, dob }),
-    })
-      .then(r => r.json())
-      .then(data => {
+    // Retry activation with delay (KOMOJU may take a moment to finalize)
+    const activate = async (attempt = 1): Promise<void> => {
+      try {
+        const res = await fetch('/api/subscription/activate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sessionId, dob }),
+        });
+        const data = await res.json();
         if (data.success) {
           setStatus('success');
-          // Redirect to members page after delay
-          setTimeout(() => {
-            window.location.href = '/members/daily';
-          }, 3000);
+          setTimeout(() => { window.location.href = '/members/daily'; }, 3000);
+        } else if (attempt < 3) {
+          // Wait and retry (KOMOJU payment may still be processing)
+          await new Promise(r => setTimeout(r, attempt * 2000));
+          return activate(attempt + 1);
         } else {
-          console.error('Activation failed:', data.error);
+          console.error('Activation failed after retries:', data.error);
           setStatus('error');
         }
-      })
-      .catch(() => {
+      } catch {
+        if (attempt < 3) {
+          await new Promise(r => setTimeout(r, attempt * 2000));
+          return activate(attempt + 1);
+        }
         setStatus('error');
-      });
+      }
+    };
+
+    activate();
   }, [dob, sessionId]);
 
   return (

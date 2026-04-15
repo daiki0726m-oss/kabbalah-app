@@ -16,26 +16,20 @@ export async function POST(req: Request) {
     let name = body.name || 'ゲスト';
     let dob = body.dob || '不明';
 
-    if (sessionId.startsWith('cs_test_dummy')) {
-      const parts = sessionId.split('_');
-      if (parts.length > 3) {
-        name = decodeURIComponent(parts[3]);
-        dob = parts[4] || '1990-01-01';
+    // Verify payment via KOMOJU session
+    try {
+      const session = await getSession(sessionId);
+      if (session.status !== 'completed') {
+        return NextResponse.json({ error: 'Payment not completed' }, { status: 403 });
       }
-    } else {
-      try {
-        const session = await getSession(sessionId);
-        if (session.status !== 'completed') {
-          return NextResponse.json({ error: 'Payment not completed' }, { status: 403 });
-        }
-        if (!body.name || !body.dob) {
-          const meta = session.metadata as Record<string, string> | null;
-          if (meta?.name) name = meta.name;
-          if (meta?.dob) dob = meta.dob;
-        }
-      } catch {
-        // Session verification failed, allow if name/dob provided in body
-      }
+      const meta = session.metadata as Record<string, string> | null;
+      if (meta?.name) name = meta.name;
+      if (meta?.dob) dob = meta.dob;
+      if (body.name) name = body.name;
+      if (body.dob) dob = body.dob;
+    } catch (verifyErr: any) {
+      console.error('KOMOJU verification failed:', verifyErr.message);
+      return NextResponse.json({ error: '決済の確認に失敗しました。' }, { status: 500 });
     }
 
     const today = new Date();

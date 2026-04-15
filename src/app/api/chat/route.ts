@@ -19,28 +19,24 @@ export async function POST(req: Request) {
     let dob = body.dob || '不明';
     let plan = body.plan || 'standard';
 
-    if (sessionId.startsWith('cs_test_dummy')) {
-      const parts = sessionId.split('_');
-      if (parts.length > 3) {
-        name = decodeURIComponent(parts[3]);
-        dob = parts[4] || '1990-01-01';
+    // Verify payment via KOMOJU session
+    try {
+      const session = await getSession(sessionId);
+      if (session.status !== 'completed') {
+        return NextResponse.json({ error: 'Payment not completed or invalid session' }, { status: 403 });
       }
-    } else {
-      // Verify payment via KOMOJU session
-      try {
-        const session = await getSession(sessionId);
-        if (session.status !== 'completed') {
-          return NextResponse.json({ error: 'Payment not completed or invalid session' }, { status: 403 });
-        }
-        if (!body.name || !body.dob) {
-          const meta = session.metadata as Record<string, string> | null;
-          if (meta?.name) name = meta.name;
-          if (meta?.dob) dob = meta.dob;
-          if (meta?.plan) plan = meta.plan;
-        }
-      } catch {
-        // Session verification failed, allow if name/dob provided in body
-      }
+      // Use metadata from KOMOJU session if not provided in body
+      const meta = session.metadata as Record<string, string> | null;
+      if (meta?.name) name = meta.name;
+      if (meta?.dob) dob = meta.dob;
+      if (meta?.plan) plan = meta.plan;
+      // Override with body params if explicitly provided
+      if (body.name) name = body.name;
+      if (body.dob) dob = body.dob;
+      if (body.plan) plan = body.plan;
+    } catch (verifyErr: any) {
+      console.error('KOMOJU session verification failed:', verifyErr.message);
+      return NextResponse.json({ error: '決済の確認に失敗しました。しばらくしてから再度お試しください。' }, { status: 500 });
     }
 
     const today = new Date();

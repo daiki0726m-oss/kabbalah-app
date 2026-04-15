@@ -71,8 +71,12 @@ function SubscribeContent() {
     }
   };
 
+  const [submitting, setSubmitting] = useState(false);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (submitting) return;
+    setSubmitting(true);
     const fields = document.querySelector('komoju-fields');
     if (fields && typeof (fields as any).submit === 'function') {
       (fields as any).submit();
@@ -166,10 +170,11 @@ function SubscribeContent() {
               <div ref={fieldsContainerRef} />
               <button
                 type="submit"
-                className="w-full py-4 rounded-sm font-bold tracking-widest text-sm transition-all text-[#0C0A14] mt-4"
+                disabled={submitting}
+                className="w-full py-4 rounded-sm font-bold tracking-widest text-sm transition-all text-[#0C0A14] mt-4 disabled:opacity-50 flex items-center justify-center gap-2"
                 style={{ background: 'linear-gradient(135deg, #D4AF37, #F5D76E)', boxShadow: '0 0 20px rgba(212,175,55,0.2)' }}
               >
-                ¥480 を支払う
+                {submitting ? <><div className="w-4 h-4 border-2 border-[#0C0A14] border-t-transparent rounded-full animate-spin" />処理中...</> : '¥480 を支払う'}
               </button>
             </form>
           </div>

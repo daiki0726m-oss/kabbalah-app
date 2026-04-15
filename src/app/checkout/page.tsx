@@ -2,7 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 import { Suspense, useState, useEffect, useRef } from "react";
-import { ShieldCheck, Sparkles } from "lucide-react";
+import { ShieldCheck, Sparkles, Loader2 } from "lucide-react";
 
 function CheckoutContent() {
   const searchParams = useSearchParams();
@@ -62,8 +62,12 @@ function CheckoutContent() {
     container.appendChild(fields);
   }, [sessionId]);
 
+  const [submitting, setSubmitting] = useState(false);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (submitting) return;
+    setSubmitting(true);
     const fields = document.querySelector('komoju-fields');
     if (fields && typeof (fields as any).submit === 'function') {
       (fields as any).submit();
@@ -110,10 +114,11 @@ function CheckoutContent() {
               <div ref={fieldsContainerRef} />
               <button
                 type="submit"
-                className="w-full py-4 rounded-sm font-bold tracking-widest text-sm transition-all text-[#0C0A14] mt-6"
+                disabled={submitting}
+                className="w-full py-4 rounded-sm font-bold tracking-widest text-sm transition-all text-[#0C0A14] mt-6 disabled:opacity-50 flex items-center justify-center gap-2"
                 style={{ background: 'linear-gradient(135deg, #D4AF37, #F5D76E)', boxShadow: '0 0 20px rgba(212,175,55,0.3)' }}
               >
-                ¥{amount.toLocaleString()} を支払う
+                {submitting ? <><Loader2 className="w-4 h-4 animate-spin" />処理中...</> : `¥${amount.toLocaleString()} を支払う`}
               </button>
             </form>
           )}

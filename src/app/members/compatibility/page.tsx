@@ -32,7 +32,9 @@ function ScoreBar({ label, score, color }: { label: string; score: number; color
 export default function CompatibilityPage() {
   const [isMember, setIsMember] = useState<boolean | null>(null);
   const [myDob, setMyDob] = useState('');
+  const [myName, setMyName] = useState('');
   const [partnerDob, setPartnerDob] = useState('');
+  const [partnerName, setPartnerName] = useState('');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<CompatibilityResult | null>(null);
   const [error, setError] = useState('');
@@ -71,7 +73,7 @@ export default function CompatibilityPage() {
       const res = await fetch('/api/compatibility', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name1: 'あなた', dob1: myDob, name2: '相手', dob2: partnerDob }),
+        body: JSON.stringify({ name1: myName || 'あなた', dob1: myDob, name2: partnerName || '相手', dob2: partnerDob }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
@@ -126,9 +128,19 @@ export default function CompatibilityPage() {
         {/* Input Form */}
         <div className="space-y-4 mb-6">
           <div>
+            <label className="block text-xs text-[#7A7068] tracking-wider mb-1.5">あなたの名前</label>
+            <input type="text" value={myName} onChange={(e) => setMyName(e.target.value)} placeholder="例: 太郎"
+              className="w-full bg-white/[0.06] border border-white/10 rounded-sm px-4 py-3 text-[#F5F0E8] text-sm tracking-wider placeholder:text-[#7A7068]/50 focus:outline-none focus:border-[#D4AF37]/50" />
+          </div>
+          <div>
             <label className="block text-xs text-[#7A7068] tracking-wider mb-1.5">あなたの生年月日</label>
             <input type="date" value={myDob} onChange={(e) => setMyDob(e.target.value)}
               className="w-full bg-white/[0.06] border border-white/10 rounded-sm px-4 py-3 text-[#F5F0E8] text-sm tracking-wider focus:outline-none focus:border-[#D4AF37]/50" />
+          </div>
+          <div className="pt-2 border-t border-white/5">
+            <label className="block text-xs text-[#7A7068] tracking-wider mb-1.5">相手の名前</label>
+            <input type="text" value={partnerName} onChange={(e) => setPartnerName(e.target.value)} placeholder="例: 花子"
+              className="w-full bg-white/[0.06] border border-white/10 rounded-sm px-4 py-3 text-[#F5F0E8] text-sm tracking-wider placeholder:text-[#7A7068]/50 focus:outline-none focus:border-[#D4AF37]/50" />
           </div>
           <div>
             <label className="block text-xs text-[#7A7068] tracking-wider mb-1.5">相手の生年月日</label>

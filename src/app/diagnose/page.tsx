@@ -59,7 +59,7 @@ export default function DiagnosePage() {
         clearInterval(interval);
         setTimeout(() => {
           // Redirect to the freemium result page instead of showing an alert
-          router.push(`/result?name=${encodeURIComponent(formData.name)}`);
+          router.push(`/result?name=${encodeURIComponent(formData.name)}&dob=${encodeURIComponent(formData.dob)}`);
         }, 1000);
       }
     }, 1500);
