@@ -52,6 +52,23 @@ function PremiumLiveContent() {
     setMounted(true);
     if (!sessionId) { setError('セッションIDが見つかりません。'); setLoading(false); return; }
 
+    // Check localStorage cache first
+    const cacheKey = `kabbalah_report_${sessionId}`;
+    const cached = localStorage.getItem(cacheKey);
+    if (cached) {
+      try {
+        const cachedData = JSON.parse(cached);
+        setReport(cachedData.report);
+        if (cachedData.plan) setPlan(cachedData.plan);
+        if (cachedData.name) setCustomerName(cachedData.name);
+        if (cachedData.luckyActions) setLuckyActions(cachedData.luckyActions);
+        setLoading(false);
+        return;
+      } catch {
+        localStorage.removeItem(cacheKey);
+      }
+    }
+
     // Cycle through loading messages
     const interval = setInterval(() => { setLoadingPhase(p => (p + 1) % loadingMessages.length); }, 4000);
 
@@ -64,12 +81,25 @@ function PremiumLiveContent() {
         if (data.plan) setPlan(data.plan);
         if (data.name) setCustomerName(data.name);
 
+        // Save report to localStorage
+        const saveData: any = { report: data.report, plan: data.plan, name: data.name, savedAt: new Date().toISOString() };
+
         // Load lucky actions in background
         setLuckyLoading(true);
         fetch('/api/chat/lucky-actions', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sessionId, name: urlName, dob: urlDob }) })
           .then(r => r.json())
-          .then(d => { if (d.luckyActions) setLuckyActions(d.luckyActions); })
-          .catch(() => {})
+          .then(d => {
+            if (d.luckyActions) {
+              setLuckyActions(d.luckyActions);
+              saveData.luckyActions = d.luckyActions;
+            }
+            // Save everything (including lucky actions) to cache
+            try { localStorage.setItem(cacheKey, JSON.stringify(saveData)); } catch { /* storage full */ }
+          })
+          .catch(() => {
+            // Save report without lucky actions
+            try { localStorage.setItem(cacheKey, JSON.stringify(saveData)); } catch { /* storage full */ }
+          })
           .finally(() => setLuckyLoading(false));
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
