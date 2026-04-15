@@ -11,28 +11,38 @@ function CompleteContent() {
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
 
   useEffect(() => {
-    // Store membership info
+    // Store DOB in localStorage for daily fortune
     if (dob) {
       localStorage.setItem('kabbalah_dob', dob);
     }
 
-    // Set membership cookies (30 days)
-    const expiry = new Date();
-    expiry.setDate(expiry.getDate() + 30);
-    const expiryStr = expiry.toISOString();
-
-    document.cookie = `sub_member_id=${sessionId || 'member_' + Date.now()};path=/;max-age=${60 * 60 * 24 * 30};samesite=lax`;
-    document.cookie = `sub_member_expiry=${expiryStr};path=/;max-age=${60 * 60 * 24 * 30};samesite=lax`;
-    if (dob) {
-      document.cookie = `sub_dob=${dob};path=/;max-age=${60 * 60 * 24 * 400};samesite=lax`;
+    if (!sessionId) {
+      setStatus('error');
+      return;
     }
 
-    setStatus('success');
-
-    // Redirect to members page after delay
-    setTimeout(() => {
-      window.location.href = '/members/daily';
-    }, 3000);
+    // Call server API to verify payment and set signed httpOnly cookies
+    fetch('/api/subscription/activate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sessionId, dob }),
+    })
+      .then(r => r.json())
+      .then(data => {
+        if (data.success) {
+          setStatus('success');
+          // Redirect to members page after delay
+          setTimeout(() => {
+            window.location.href = '/members/daily';
+          }, 3000);
+        } else {
+          console.error('Activation failed:', data.error);
+          setStatus('error');
+        }
+      })
+      .catch(() => {
+        setStatus('error');
+      });
   }, [dob, sessionId]);
 
   return (

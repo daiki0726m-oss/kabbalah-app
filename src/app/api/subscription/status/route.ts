@@ -1,20 +1,25 @@
 import { NextResponse } from 'next/server';
+import { verifySignedCookie, parseCookies } from '@/lib/auth';
 
 export async function GET(req: Request) {
   try {
     const cookieHeader = req.headers.get('cookie') || '';
-    const cookies = Object.fromEntries(
-      cookieHeader.split(';').map(c => {
-        const [key, ...val] = c.trim().split('=');
-        return [key, val.join('=')];
-      })
-    );
+    const cookies = parseCookies(cookieHeader);
 
-    const memberId = cookies['sub_member_id'];
-    const memberExpiry = cookies['sub_member_expiry'];
+    const signedMemberId = cookies['sub_member_id'];
+    const signedExpiry = cookies['sub_member_expiry'];
+
+    if (!signedMemberId || !signedExpiry) {
+      return NextResponse.json({ active: false });
+    }
+
+    // Verify HMAC signatures
+    const memberId = verifySignedCookie(decodeURIComponent(signedMemberId));
+    const memberExpiry = verifySignedCookie(decodeURIComponent(signedExpiry));
 
     if (!memberId || !memberExpiry) {
-      return NextResponse.json({ active: false });
+      // Invalid signature = tampered cookies
+      return NextResponse.json({ active: false, reason: 'invalid_signature' });
     }
 
     // Check if membership is still valid
