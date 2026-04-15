@@ -47,7 +47,7 @@ function CompleteContent() {
               <Check className="w-8 h-8 text-[#D4AF37]" />
             </div>
             <h1 className="text-xl text-[#F5F0E8] tracking-widest mb-3" style={{ fontFamily: '"Noto Serif JP", serif' }}>登録完了</h1>
-            <p className="text-sm text-[#BEB5A5] tracking-wider mb-2">月額メンバーシップへようこそ！</p>
+            <p className="text-sm text-[#BEB5A5] tracking-wider mb-2">30日間メンバーシップへようこそ！</p>
             <p className="text-xs text-[#7A7068] tracking-wider">会員ページに移動します...</p>
           </>
         )}

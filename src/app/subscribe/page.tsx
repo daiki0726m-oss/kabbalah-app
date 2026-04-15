@@ -96,7 +96,7 @@ function SubscribeContent() {
             <Crown className="w-7 h-7 text-[#D4AF37]" strokeWidth={1.5} />
           </div>
           <h1 className="text-lg md:text-xl font-light text-[#F5F0E8] tracking-widest mb-2" style={{ fontFamily: '"Noto Serif JP", serif' }}>
-            月額メンバーシップ
+            30日間メンバーシップ
           </h1>
           <p className="text-xs text-[#7A7068] tracking-wider">毎日の運勢 × 相性診断 × 月間レポート</p>
         </div>
@@ -176,7 +176,7 @@ function SubscribeContent() {
         )}
 
         <p className="mt-3 text-center text-[10px] text-[#7A7068] tracking-wider flex items-center justify-center gap-1" style={{ fontFamily: 'Inter, sans-serif' }}>
-          <ShieldCheck className="w-3 h-3 inline -mt-0.5" />いつでも解約可能・SSL暗号化決済
+          <ShieldCheck className="w-3 h-3 inline -mt-0.5" />自動更新なし・SSL暗号化決済
         </p>
 
         <div className="mt-8 text-center">

@@ -360,7 +360,7 @@ function ResultTeaserContent() {
             style={{ background: 'linear-gradient(135deg, #D4AF37, #F5D76E)', boxShadow: '0 0 20px rgba(212,175,55,0.15)' }}>
             ✦ 月額¥480で始める
           </a>
-          <p className="mt-2 text-[10px] text-[#7A7068] tracking-wider">いつでも解約可能</p>
+          <p className="mt-2 text-[10px] text-[#7A7068] tracking-wider">30日間有効・自動更新なし</p>
         </motion.section>
       </div>
 

@@ -17,7 +17,7 @@ export async function POST(req: Request) {
       return_url: `${baseUrl}/subscribe/complete?dob=${encodeURIComponent(dob)}`,
       metadata: {
         dob,
-        product: 'カバラ数秘術 月額メンバーシップ',
+        product: 'カバラ数秘術 30日間メンバーシップ',
         type: 'subscription',
       },
     });
