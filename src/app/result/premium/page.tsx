@@ -6,6 +6,16 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { motion, AnimatePresence } from "framer-motion";
 import { Compass, Briefcase, Heart, ShieldCheck, Users, Sparkles, Star, CalendarDays, Coins, CheckCircle2, Crown, ArrowRight, ChevronDown, Gift, Bookmark, Calendar } from "lucide-react";
 
+// Convert newlines to HTML with proper paragraph spacing
+function formatText(text: string | undefined | null): string {
+  if (!text) return '';
+  return text
+    .replace(/\n\n/g, '</p><p style="margin-top:1em">')
+    .replace(/\n/g, '<br/>')
+    .replace(/^/, '<p>')
+    .replace(/$/, '</p>');
+}
+
 function PremiumLiveContent() {
   const searchParams = useSearchParams();
   const sessionId = searchParams.get('session_id');
@@ -200,7 +210,7 @@ function PremiumLiveContent() {
             </h1>
           </motion.div>
           <div className="mt-8 pt-6 border-t border-dashed border-white/10">
-            <div className="text-[14px] leading-[2] text-[#BEB5A5] tracking-wider html-content" dangerouslySetInnerHTML={{ __html: report.coverIntro?.replace(/\n/g, '<br/>') || '' }} />
+            <div className="text-[14px] leading-[2] text-[#BEB5A5] tracking-wider html-content" dangerouslySetInnerHTML={{ __html: report.coverIntro?.replace(/\n\n/g, '</p><p style="margin-top:1em">').replace(/\n/g, '<br/>') || '' }} />
           </div>
         </section>
 
@@ -226,7 +236,7 @@ function PremiumLiveContent() {
           <div className="px-6 relative">
             <div className="absolute top-0 left-0 w-[2px] h-full bg-gradient-to-b from-[#D4AF37]/50 to-transparent rounded-r ml-6"></div>
             <div className="pl-4">
-              <div className="text-[14px] leading-[2] text-[#BEB5A5] tracking-wider html-content" dangerouslySetInnerHTML={{ __html: report.biorhythm10YearsText?.replace(/\n/g, '<br/>') || '' }} />
+              <div className="text-[14px] leading-[2] text-[#BEB5A5] tracking-wider html-content" dangerouslySetInnerHTML={{ __html: report.biorhythm10YearsText?.replace(/\n\n/g, '</p><p style="margin-top:1em">').replace(/\n/g, '<br/>') || '' }} />
             </div>
           </div>
         </section>
@@ -252,7 +262,7 @@ function PremiumLiveContent() {
           <div className="px-6 relative">
             <div className="absolute top-0 left-0 w-[2px] h-full bg-gradient-to-b from-[#D4AF37]/50 to-transparent rounded-r ml-6"></div>
             <div className="pl-4">
-              <div className="text-[14px] leading-[2] text-[#BEB5A5] tracking-wider html-content" dangerouslySetInnerHTML={{ __html: report.biorhythm12MonthsText?.replace(/\n/g, '<br/>') || '' }} />
+              <div className="text-[14px] leading-[2] text-[#BEB5A5] tracking-wider html-content" dangerouslySetInnerHTML={{ __html: report.biorhythm12MonthsText?.replace(/\n\n/g, '</p><p style="margin-top:1em">').replace(/\n/g, '<br/>') || '' }} />
             </div>
           </div>
         </section>
@@ -285,7 +295,7 @@ function PremiumLiveContent() {
                       <Sparkles className="w-3 h-3" />全体運
                     </div>
                     <div className="pt-6 pb-4 px-5 border border-white/[0.08] rounded-sm bg-white/[0.02] relative">
-                      <div className="text-[13.5px] text-[#BEB5A5] leading-[2] tracking-wider html-content" dangerouslySetInnerHTML={{ __html: plan.overall?.replace(/\n/g, '<br/>') || '' }} />
+                      <div className="text-[13.5px] text-[#BEB5A5] leading-[2] tracking-wider html-content" dangerouslySetInnerHTML={{ __html: plan.overall?.replace(/\n\n/g, '</p><p style="margin-top:1em">').replace(/\n/g, '<br/>') || '' }} />
                     </div>
                   </div>
 
@@ -299,7 +309,7 @@ function PremiumLiveContent() {
                         {sub.icon}{sub.label}
                       </div>
                       <div className="pt-5 pb-4 px-4 border border-dashed border-white/[0.08] rounded-sm bg-white/[0.02] relative">
-                        <div className="text-[13px] text-[#BEB5A5] leading-[2] tracking-wider html-content" dangerouslySetInnerHTML={{ __html: sub.content?.replace(/\n/g, '<br/>') || '' }} />
+                        <div className="text-[13px] text-[#BEB5A5] leading-[2] tracking-wider html-content" dangerouslySetInnerHTML={{ __html: sub.content?.replace(/\n\n/g, '</p><p style="margin-top:1em">').replace(/\n/g, '<br/>') || '' }} />
                       </div>
                     </div>
                   ))}
@@ -313,7 +323,7 @@ function PremiumLiveContent() {
                         {sub.icon}{sub.label}
                       </div>
                       <div className="pt-5 pb-4 px-4 border border-dashed border-white/[0.08] rounded-sm bg-white/[0.02] relative">
-                        <div className="text-[13px] text-[#BEB5A5] leading-[2] tracking-wider html-content" dangerouslySetInnerHTML={{ __html: sub.content?.replace(/\n/g, '<br/>') || '' }} />
+                        <div className="text-[13px] text-[#BEB5A5] leading-[2] tracking-wider html-content" dangerouslySetInnerHTML={{ __html: sub.content?.replace(/\n\n/g, '</p><p style="margin-top:1em">').replace(/\n/g, '<br/>') || '' }} />
                       </div>
                     </div>
                   ))}
@@ -335,11 +345,11 @@ function PremiumLiveContent() {
             <div className="space-y-6 text-[14px] leading-[2] text-[#BEB5A5] tracking-wider html-content">
               <div>
                 <h4 className="text-[#D4AF37] font-bold mb-2 flex items-center gap-2"><Sparkles className="w-4 h-4" />なぜこの日が起点となるのか</h4>
-                <div dangerouslySetInnerHTML={{ __html: report.fatefulDay.reason?.replace(/\n/g, '<br/>') || '' }} />
+                <div dangerouslySetInnerHTML={{ __html: report.fatefulDay.reason?.replace(/\n\n/g, '</p><p style="margin-top:1em">').replace(/\n/g, '<br/>') || '' }} />
               </div>
               <div className="bg-white/[0.04] border border-[#D4AF37]/20 p-4 rounded-sm mt-4">
                 <h4 className="text-[#D4AF37] font-bold mb-2">この日を境にどう動くべきか</h4>
-                <div dangerouslySetInnerHTML={{ __html: report.fatefulDay.action?.replace(/\n/g, '<br/>') || '' }} />
+                <div dangerouslySetInnerHTML={{ __html: report.fatefulDay.action?.replace(/\n\n/g, '</p><p style="margin-top:1em">').replace(/\n/g, '<br/>') || '' }} />
               </div>
             </div>
           </section>
@@ -506,7 +516,7 @@ function PremiumLiveContent() {
                 ].map((sec, i) => (
                   <div key={i} className="bg-white/[0.03] border border-white/[0.06] rounded-sm p-5">
                     <p className="text-[10px] tracking-[0.15em] text-[#D4AF37] uppercase font-bold mb-2" style={{ fontFamily: 'Inter, sans-serif' }}>{sec.label}</p>
-                    <p className="text-[13px] text-[#BEB5A5] leading-[2] tracking-wider" dangerouslySetInnerHTML={{ __html: (sec.content || '').replace(/\n/g, '<br/>') }} />
+                    <p className="text-[13px] text-[#BEB5A5] leading-[2] tracking-wider" dangerouslySetInnerHTML={{ __html: (sec.content || '').replace(/\n\n/g, '</p><p style="margin-top:1em">').replace(/\n/g, '<br/>') }} />
                   </div>
                 ))}
               </motion.div>
@@ -542,7 +552,7 @@ function PremiumLiveContent() {
               <p className="text-[11px] text-[#7A7068] tracking-wider">プレミアム限定 ─ あなたの人生を豊かにする処方箋</p>
             </div>
             <div>
-              <div className="text-[14px] leading-[2.2] text-[#BEB5A5] tracking-wider html-content" dangerouslySetInnerHTML={{ __html: report.comprehensiveAdvice?.replace(/\n/g, '<br/>') || '' }} />
+              <div className="text-[14px] leading-[2.2] text-[#BEB5A5] tracking-wider html-content" dangerouslySetInnerHTML={{ __html: report.comprehensiveAdvice?.replace(/\n\n/g, '</p><p style="margin-top:1em">').replace(/\n/g, '<br/>') || '' }} />
             </div>
           </section>
         )}
@@ -555,7 +565,7 @@ function PremiumLiveContent() {
             </div>
           </div>
           <h3 className="text-base font-medium tracking-[0.2em] text-[#F5F0E8] mb-6" style={{ fontFamily: '"Noto Serif JP", serif' }}>鑑定師からのメッセージ</h3>
-          <div className="text-[14px] leading-[2.0] text-[#BEB5A5] mb-8 tracking-wider html-content" dangerouslySetInnerHTML={{ __html: report.finalMessage?.replace(/\n/g, '<br/>') || '' }} />
+          <div className="text-[14px] leading-[2.0] text-[#BEB5A5] mb-8 tracking-wider html-content" dangerouslySetInnerHTML={{ __html: report.finalMessage?.replace(/\n\n/g, '</p><p style="margin-top:1em">').replace(/\n/g, '<br/>') || '' }} />
           <div className="mt-8"><span className="block w-4 h-4 border-b border-r border-[#D4AF37]/30 rotate-45 mx-auto"></span></div>
         </section>
 
@@ -626,6 +636,14 @@ function PremiumLiveContent() {
           background: linear-gradient(to top, rgba(212, 175, 55, 0.15) 0%, transparent 100%);
           padding: 0 2px;
           margin: 0 1px;
+        }
+        .html-content p {
+          margin-bottom: 1.2em;
+        }
+        .html-content br + br {
+          content: '';
+          display: block;
+          margin-top: 0.8em;
         }
       `}} />
     </div>
