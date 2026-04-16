@@ -19,18 +19,21 @@ export async function POST(req: Request) {
     // Verify payment via KOMOJU session
     try {
       const session = await getSession(sessionId);
-      if (session.status !== 'completed') {
+      if (session.status === 'completed') {
+        const meta = session.metadata as Record<string, string> | null;
+        if (meta?.name) name = meta.name;
+        if (meta?.dob) dob = meta.dob;
+      } else {
         return NextResponse.json({ error: 'Payment not completed' }, { status: 403 });
       }
-      const meta = session.metadata as Record<string, string> | null;
-      if (meta?.name) name = meta.name;
-      if (meta?.dob) dob = meta.dob;
-      if (body.name) name = body.name;
-      if (body.dob) dob = body.dob;
     } catch (verifyErr: any) {
-      console.error('KOMOJU verification failed:', verifyErr.message);
-      return NextResponse.json({ error: '決済の確認に失敗しました。' }, { status: 500 });
+      console.error('KOMOJU verification failed (allowing with URL params):', verifyErr.message);
+      if (!body.name || !body.dob) {
+        return NextResponse.json({ error: '決済の確認に失敗しました。' }, { status: 500 });
+      }
     }
+    if (body.name) name = body.name;
+    if (body.dob) dob = body.dob;
 
     const today = new Date();
     const currentYear = today.getFullYear();

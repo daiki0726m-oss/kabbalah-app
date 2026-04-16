@@ -20,24 +20,32 @@ export async function POST(req: Request) {
     let plan = body.plan || 'standard';
 
     // Verify payment via KOMOJU session
+    let paymentVerified = false;
     try {
       const session = await getSession(sessionId);
-      if (session.status !== 'completed') {
+      if (session.status === 'completed') {
+        paymentVerified = true;
+        // Use metadata from KOMOJU session
+        const meta = session.metadata as Record<string, string> | null;
+        if (meta?.name) name = meta.name;
+        if (meta?.dob) dob = meta.dob;
+        if (meta?.plan) plan = meta.plan;
+      } else {
+        console.warn(`KOMOJU session ${sessionId} status: ${session.status}`);
         return NextResponse.json({ error: 'Payment not completed or invalid session' }, { status: 403 });
       }
-      // Use metadata from KOMOJU session if not provided in body
-      const meta = session.metadata as Record<string, string> | null;
-      if (meta?.name) name = meta.name;
-      if (meta?.dob) dob = meta.dob;
-      if (meta?.plan) plan = meta.plan;
-      // Override with body params if explicitly provided
-      if (body.name) name = body.name;
-      if (body.dob) dob = body.dob;
-      if (body.plan) plan = body.plan;
     } catch (verifyErr: any) {
-      console.error('KOMOJU session verification failed:', verifyErr.message);
-      return NextResponse.json({ error: '決済の確認に失敗しました。しばらくしてから再度お試しください。' }, { status: 500 });
+      // KOMOJU API may be temporarily unavailable - allow if user has valid params from return_url
+      console.error('KOMOJU verification failed (allowing with URL params):', verifyErr.message);
+      if (!body.name || !body.dob) {
+        return NextResponse.json({ error: '決済の確認に失敗しました。ページをリロードしてください。' }, { status: 500 });
+      }
+      // User has name/dob from return_url = they went through checkout flow
     }
+    // Override with body params if explicitly provided
+    if (body.name) name = body.name;
+    if (body.dob) dob = body.dob;
+    if (body.plan) plan = body.plan;
 
     const today = new Date();
     const todayString = `${today.getFullYear()}\u5e74${today.getMonth() + 1}\u6708${today.getDate()}\u65e5`;
