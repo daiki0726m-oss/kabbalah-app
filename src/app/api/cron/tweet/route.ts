@@ -2,12 +2,14 @@ import { NextResponse } from 'next/server';
 import { TwitterApi } from 'twitter-api-v2';
 import { GoogleGenAI } from '@google/genai';
 
-const twitterClient = new TwitterApi({
-  appKey: process.env.TWITTER_API_KEY || '',
-  appSecret: process.env.TWITTER_API_SECRET || '',
-  accessToken: process.env.TWITTER_ACCESS_TOKEN || '',
-  accessSecret: process.env.TWITTER_ACCESS_SECRET || '',
-});
+function getTwitterClient() {
+  return new TwitterApi({
+    appKey: process.env.TWITTER_API_KEY || '',
+    appSecret: process.env.TWITTER_API_SECRET || '',
+    accessToken: process.env.TWITTER_ACCESS_TOKEN || '',
+    accessSecret: process.env.TWITTER_ACCESS_SECRET || '',
+  });
+}
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
 const SITE_URL = 'https://kabbalah-app-ruddy.vercel.app';
@@ -213,7 +215,7 @@ export async function GET(req: Request) {
     const tweetText = await generateTweet(todayNumber, dayOfYear, hour);
 
     // Post to X
-    const result = await twitterClient.v2.tweet(tweetText);
+    const result = await getTwitterClient().v2.tweet(tweetText);
 
     return NextResponse.json({
       success: true,
