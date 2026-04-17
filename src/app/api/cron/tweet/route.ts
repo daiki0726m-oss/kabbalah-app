@@ -12,7 +12,8 @@ const twitterClient = new TwitterApi({
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
 const SITE_URL = 'https://kabbalah-app-ruddy.vercel.app';
 
-// Calculate today's numerology number from date
+// ── Numerology helpers ──
+
 function getTodayNumber(): number {
   const today = new Date();
   const dateStr = `${today.getFullYear()}${(today.getMonth() + 1).toString().padStart(2, '0')}${today.getDate().toString().padStart(2, '0')}`;
@@ -23,143 +24,181 @@ function getTodayNumber(): number {
   return sum;
 }
 
-// Get current hour in JST
 function getJSTHour(): number {
   const now = new Date();
   const jst = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Tokyo' }));
   return jst.getHours();
 }
 
-// Content categories based on time
-function getCategory(hour: number): string {
-  if (hour < 9) return 'daily_energy';       // 7:00 - 今日の数秘エネルギー
-  if (hour < 12) return 'what_is';           // 10:00 - 数秘術とは
-  if (hour < 15) return 'trivia';            // 13:00 - 数秘トリビア
-  if (hour < 19) return 'destiny_number';    // 17:00 - 運命数解説
-  return 'cta';                               // 21:00 - 診断CTA
+function getDayOfYear(): number {
+  const now = new Date();
+  const start = new Date(now.getFullYear(), 0, 0);
+  return Math.floor((now.getTime() - start.getTime()) / 86400000);
 }
 
-// Generate tweet content using Gemini
-async function generateTweet(category: string, todayNumber: number): Promise<string> {
+// ── 20+ diverse content angles (rotated daily to prevent repetition/ban) ──
+
+const CONTENT_ANGLES = [
+  // 🔮 Daily fortune variations
+  { angle: 'morning_oracle', emoji: '🌅', hook: '今朝のオラクルメッセージ' },
+  { angle: 'daily_number', emoji: '🔮', hook: '今日の数秘エネルギー' },
+  { angle: 'evening_reflect', emoji: '🌙', hook: '今夜の振り返り数秘' },
+
+  // 📖 Educational (different each time)
+  { angle: 'history_deep', emoji: '📜', hook: '数秘術4000年の秘密' },
+  { angle: 'pythagoras', emoji: '🏛️', hook: 'ピタゴラスの教え' },
+  { angle: 'kabbalah_origin', emoji: '✡️', hook: 'カバラの語源' },
+  { angle: 'number_vibration', emoji: '〰️', hook: '数の振動とは' },
+
+  // 💡 Trivia & fun facts
+  { angle: 'celeb_number', emoji: '🌟', hook: 'あの有名人の運命数' },
+  { angle: 'tesla_369', emoji: '⚡', hook: 'テスラの3-6-9理論' },
+  { angle: 'world_numerology', emoji: '🌍', hook: '世界の数秘術事情' },
+  { angle: 'number_in_life', emoji: '🔢', hook: '身近な数字の意味' },
+
+  // 🧠 Personality & self-discovery
+  { angle: 'strength', emoji: '💪', hook: '運命数別・隠された才能' },
+  { angle: 'weakness', emoji: '🪞', hook: '運命数別・気をつけたいこと' },
+  { angle: 'love_style', emoji: '💕', hook: '運命数別・恋愛のクセ' },
+  { angle: 'work_style', emoji: '💼', hook: '運命数別・仕事スタイル' },
+  { angle: 'money_style', emoji: '💰', hook: '運命数別・お金の使い方' },
+
+  // 📊 Rankings & lists
+  { angle: 'weekly_ranking', emoji: '🏆', hook: '今週の運勢ランキング' },
+  { angle: 'compatibility', emoji: '❤️‍🔥', hook: '相性がいい運命数の組み合わせ' },
+
+  // 🤔 Questions & engagement
+  { angle: 'question', emoji: '🤔', hook: '数秘クイズ' },
+  { angle: 'poll_style', emoji: '📊', hook: 'あなたはどっち？' },
+  { angle: 'confession', emoji: '🫣', hook: '運命数○○の人あるある' },
+
+  // ✨ Motivational
+  { angle: 'affirmation', emoji: '🕊️', hook: '今日のアファメーション' },
+  { angle: 'turning_point', emoji: '🔄', hook: '人生の転機を数秘で読む' },
+  { angle: 'personal_year', emoji: '📅', hook: 'パーソナルイヤーの話' },
+];
+
+// ── Format variations (structure changes to avoid pattern detection) ──
+
+const FORMAT_INSTRUCTIONS = [
+  '短文3行で。1行目にフック、2行目に気づき、3行目にCTA。',
+  '問いかけから始めて、答えを提示し、最後にCTAを入れる。',
+  '「実は…」で始まる意外な事実を冒頭に。その後解説。',
+  'リスト形式（①②③）で3つのポイントを紹介。',
+  'ストーリー調で。「ある人が○○して…」という語り口。',
+  '数字データから始める。「○○%の人が…」という切り口。',
+  '対比構造で。「○○だと思ってませんか？実は…」',
+  '箇条書きなし。詩のような語り口で、余韻を残す。',
+  '冒頭に衝撃的な一言。その後に解説を続ける。',
+  '友達に話しかけるようなカジュアルなトーンで。',
+];
+
+// ── CTA variations ──
+
+const CTA_VARIANTS = [
+  `✦ あなたの運命数は？→ ${SITE_URL}`,
+  `✦ 30秒で無料鑑定 → ${SITE_URL}`,
+  `✦ 運命数を調べる → ${SITE_URL}`,
+  `👇 生年月日だけで鑑定\n${SITE_URL}`,
+  `✦ あなたの数字を知る → ${SITE_URL}`,
+  `→ 無料で運命を読み解く\n${SITE_URL}`,
+];
+
+// ── Content generation ──
+
+function pickAngle(dayOfYear: number, hour: number): typeof CONTENT_ANGLES[0] {
+  // Different angle for each time slot, rotated daily
+  const slotIndex = Math.floor(hour / 5); // 0-4 time slots
+  const idx = (dayOfYear * 5 + slotIndex) % CONTENT_ANGLES.length;
+  return CONTENT_ANGLES[idx];
+}
+
+function pickFormat(dayOfYear: number, hour: number): string {
+  const idx = (dayOfYear * 3 + hour) % FORMAT_INSTRUCTIONS.length;
+  return FORMAT_INSTRUCTIONS[idx];
+}
+
+function pickCTA(dayOfYear: number): string {
+  return CTA_VARIANTS[dayOfYear % CTA_VARIANTS.length];
+}
+
+async function generateTweet(todayNumber: number, dayOfYear: number, hour: number): Promise<string> {
+  const angle = pickAngle(dayOfYear, hour);
+  const format = pickFormat(dayOfYear, hour);
+  const cta = pickCTA(dayOfYear);
   const today = new Date();
   const dateStr = `${today.getMonth() + 1}月${today.getDate()}日`;
+  const randomNum = Math.floor(Math.random() * 9) + 1;
 
-  const prompts: Record<string, string> = {
-    daily_energy: `あなたはカバラ数秘術のプロです。今日は${dateStr}、数秘術的なエネルギーの数字は【${todayNumber}】です。
-この数字のエネルギーに基づいた「今日のメッセージ」をX(Twitter)投稿用に書いてください。
-条件：
-- 冒頭に「🔮 ${dateStr}の数秘エネルギー【${todayNumber}】」と入れる
-- 全員に当てはまる内容にする（特定の運命数の人向けにしない）
-- 具体的なアクションを1つ提案する
-- 最後に改行して「✦ あなたの運命数は？→ ${SITE_URL}」を入れる
-- 全体で240文字以内（URL含む）
-- ハッシュタグは入れない
-- アスタリスク(*)は使わない`,
+  const prompt = `あなたはカバラ数秘術の専門家で、X(Twitter)でフォロワー5万人の人気アカウントを運営しています。
 
-    what_is: `あなたはカバラ数秘術のプロです。「数秘術とは何か」をX(Twitter)投稿用に書いてください。
-以下のテーマからランダムに1つ選んで書いてください：
-- カバラの語源と意味
-- 数秘術の4000年の歴史
-- ピタゴラスと数秘術の関係
-- 「数の振動」という概念
-- 運命数とは何か
-- パーソナルイヤーの仕組み
-- 数秘術と占星術の違い
-条件：
-- 冒頭に「📖 数秘術の世界」と入れる
-- 初心者にも分かりやすく
-- 興味を引く事実を1つ含める
-- 最後に改行して「✦ 30秒で無料鑑定 → ${SITE_URL}」を入れる
-- 全体で240文字以内
-- ハッシュタグは入れない
-- アスタリスク(*)は使わない`,
+## 今回の投稿テーマ
+- アングル: ${angle.hook}
+- 今日の日付: ${dateStr}
+- 今日の数秘エネルギー: ${todayNumber}
+- ランダム運命数（必要なら使用）: ${randomNum}
 
-    trivia: `あなたはカバラ数秘術のプロです。数秘術に関するトリビア（雑学）をX(Twitter)投稿用に書いてください。
-以下のテーマからランダムに1つ選んで書いてください：
-- 有名人の運命数と成功の関係
-- ニコラ・テスラの3・6・9への執着
-- 古代バビロニアでの数秘術の使われ方
-- マスターナンバー11と22の特別さ
-- 日本の有名人の運命数
-- 数秘術が当たる科学的な理由
-- 世界中で使われている数秘術
-条件：
-- 冒頭に「💡 数秘トリビア」と入れる
-- 「へぇ！」と思える意外な事実を含む
-- 最後に改行して「✦ あなたの数字を知る → ${SITE_URL}」を入れる
-- 全体で240文字以内
-- ハッシュタグは入れない
-- アスタリスク(*)は使わない`,
+## フォーマット指示
+${format}
 
-    destiny_number: `あなたはカバラ数秘術のプロです。運命数1〜9のうちランダムに1つ選び、その特徴をX(Twitter)投稿用に書いてください。
-条件：
-- 冒頭に「🔢 運命数○の人」と入れる（○は選んだ数字）
-- その数字の本質的な性格を2〜3個紹介
-- ポジティブな内容が中心だが、注意点も1つ入れる
-- 「あなたの運命数は○ですか？」と問いかける
-- 最後に改行して「✦ 運命数を調べる → ${SITE_URL}」を入れる
-- 全体で240文字以内
-- ハッシュタグは入れない
-- アスタリスク(*)は使わない`,
+## ルール（厳守）
+1. 冒頭に「${angle.emoji} ${angle.hook}」を入れる
+2. 最後に改行して以下のCTAを入れる: ${cta}
+3. 全体で240文字以内（CTA含む）
+4. ハッシュタグは入れない
+5. アスタリスク(*)は絶対に使わない
+6. 前回と全く違う切り口・構成で書く
+7. 占い特有の神秘的すぎる表現は避け、日常的で親しみやすいトーンにする
+8. 具体的で行動に移せるメッセージを含める
+9. 「数秘術」という言葉を毎回使わない。「カバラ」「運命数」「数の力」など表現を変える
 
-    cta: `あなたはカバラ数秘術のプロです。サイトへの誘導ツイートをX(Twitter)投稿用に書いてください。
-条件：
-- 冒頭に「✦ 今夜、自分と向き合う時間を」のような感情に訴えるフレーズ
-- カバラ数秘術の無料鑑定で分かることを簡潔に紹介
-- 「光と影」「才能」「10年バイオリズム」などの魅力的なキーワードを含む
-- 最後に改行して「👇 30秒で鑑定書を受け取る\n${SITE_URL}」を入れる
-- 全体で240文字以内
-- 毎回異なる切り口で書く
-- ハッシュタグは入れない
-- アスタリスク(*)は使わない`,
-  };
+## 参考：バズりやすい占いツイートの特徴
+- 「○○な人は△△」という断定的な書き出し
+- 自分に当てはまるか確認したくなる内容
+- 思わず友達にシェアしたくなる意外性
+- 短い文で余韻を残す
+- 「あるある」的な共感ポイント
 
-  const prompt = prompts[category] || prompts.cta;
+この条件で投稿文だけを出力してください。説明や前置きは不要。`;
 
   try {
     const response = await ai.models.generateContent({
       model: 'gemini-2.0-flash',
       contents: prompt,
+      config: {
+        temperature: 1.2, // High creativity for diversity
+        topP: 0.95,
+      },
     });
-    return (response.text || '').trim();
+    let text = (response.text || '').trim();
+    // Clean up any markdown artifacts
+    text = text.replace(/\*\*/g, '').replace(/\*/g, '').replace(/^["「]|["」]$/g, '');
+    return text;
   } catch {
-    // Fallback pre-written tweets when Gemini is unavailable
-    return getFallbackTweet(category, todayNumber);
+    return getFallbackTweet(dayOfYear, todayNumber);
   }
 }
 
-const fallbackTweets: Record<string, string[]> = {
-  daily_energy: [
-    `🔮 今日の数秘エネルギー\n\n今日はあなたの直感が冴える日。ふと浮かんだアイデアを大切にしてください。小さな「気になる」が大きな転機につながるかもしれません。\n\n✦ あなたの運命数は？→ ${SITE_URL}`,
-    `🔮 今日の数秘エネルギー\n\n今日は人とのつながりが幸運を呼ぶ日。普段話さない人に声をかけてみて。思わぬ良い出会いがあるかもしれません。\n\n✦ あなたの運命数は？→ ${SITE_URL}`,
-    `🔮 今日の数秘エネルギー\n\n今日は内省の日。5分でいいので静かに自分と向き合う時間を作ってみてください。答えはいつも自分の中にあります。\n\n✦ あなたの運命数は？→ ${SITE_URL}`,
-  ],
-  what_is: [
-    `📖 数秘術の世界\n\n「カバラ」はヘブライ語で「受け取られたもの」という意味。4000年前のバビロニアで生まれたこの叡智は、口伝として秘密裏に受け継がれてきました。\n\n✦ 30秒で無料鑑定 → ${SITE_URL}`,
-    `📖 数秘術の世界\n\n数秘術では、生年月日を一桁に還元した「運命数」があなたの本質を表すと考えます。1〜9、そして特別な11と22。あなたの数字は何でしょう？\n\n✦ 30秒で無料鑑定 → ${SITE_URL}`,
-  ],
-  trivia: [
-    `💡 数秘トリビア\n\n天才発明家ニコラ・テスラは「3・6・9の数字の壮大さが分かれば、宇宙への鍵を手にする」と語りました。彼はホテルの部屋番号も3で割り切れる数を選んでいたそうです。\n\n✦ あなたの数字を知る → ${SITE_URL}`,
-    `💡 数秘トリビア\n\nピタゴラスは数学者であると同時に神秘家でもありました。「万物は数なり」と説き、数が持つ振動が人間の運命に影響を与えると確信していたのです。\n\n✦ あなたの数字を知る → ${SITE_URL}`,
-  ],
-  destiny_number: [
-    `🔢 運命数7の人\n\n物事の本質を見抜く鋭い洞察力の持ち主。科学と神秘の両方に惹かれる探究者タイプです。ただし、考えすぎて行動が遅れることも。\n\nあなたの運命数は7ですか？\n\n✦ 運命数を調べる → ${SITE_URL}`,
-    `🔢 運命数1の人\n\n生まれながらのリーダー。自分の信念を貫く強さと、新しいことに挑戦する勇気を持っています。ただし、頑固になりすぎないよう注意。\n\nあなたの運命数は1ですか？\n\n✦ 運命数を調べる → ${SITE_URL}`,
-  ],
-  cta: [
-    `✦ 夜のひととき、自分と向き合ってみませんか？\n\nカバラ数秘術は4000年の叡智。あなたの「光」と「影」、隠された才能、10年間のバイオリズムまで、生年月日だけで読み解きます。\n\n👇 30秒で鑑定書を受け取る\n${SITE_URL}`,
-    `✦ あなたの生年月日には、運命の暗号が刻まれています\n\n性格の本質、才能、人生の転機…カバラ数秘術が4000年かけて体系化した「数の法則」で無料鑑定。\n\n👇 30秒で鑑定書を受け取る\n${SITE_URL}`,
-  ],
-};
+// ── Fallback tweets (diverse pool) ──
 
-function getFallbackTweet(category: string, todayNumber: number): string {
-  const tweets = fallbackTweets[category] || fallbackTweets.cta;
-  const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000);
-  return tweets[dayOfYear % tweets.length];
+const FALLBACK_POOL = [
+  `🌅 今朝のオラクルメッセージ\n\n今日は「始まり」のエネルギーが強い日。\n\n小さくてもいいから、何か新しいことを1つ始めてみて。朝のコーヒーを違うカップで飲む、それだけでも流れが変わります。\n\n✦ あなたの運命数は？→ ${SITE_URL}`,
+  `💪 運命数別・隠された才能\n\n運命数3の人は「言葉の魔術師」。\n\n何気ない一言で人を笑顔にできる天性の才能があります。でも本人は気づいていないことが多い。\n\nあなたの運命数は3ですか？\n\n✦ 30秒で無料鑑定 → ${SITE_URL}`,
+  `🫣 運命数7の人あるある\n\n・考えすぎて3時間溶ける\n・「なんでそんなこと知ってるの？」と言われがち\n・一人の時間が最高のご褒美\n\n当てはまった？\n\n✦ 運命数を調べる → ${SITE_URL}`,
+  `⚡ テスラの3-6-9理論\n\n天才発明家テスラは言いました。\n「3,6,9の壮大さを知れば、宇宙の鍵を手にする」\n\nホテルの部屋は必ず3で割れる番号。食事も3回噛み直す。\n偏執か、真理か。\n\n✦ あなたの数字を知る → ${SITE_URL}`,
+  `💕 運命数別・恋愛のクセ\n\n運命数2の人は「察する天才」。\n\n相手の気持ちを言葉にされる前に感じ取れる。ただし、察しすぎて自分の気持ちを後回しにする傾向も。\n\n→ 無料で運命を読み解く\n${SITE_URL}`,
+  `🔮 今日の数秘エネルギー\n\n今日は直感が冴える日。\n\nふと目に入った本、たまたま聞こえた曲、偶然の出会い。今日の「たまたま」は、たまたまじゃないかも。\n\n✦ あなたの運命数は？→ ${SITE_URL}`,
+  `🤔 数秘クイズ\n\nQ. 次のうち、運命数「1」の有名人は？\n\nA) 孫正義\nB) イチロー\nC) 松本人志\n\n正解は…Aの孫正義。\n「1」は生まれながらのパイオニア。\n\n✦ 30秒で無料鑑定 → ${SITE_URL}`,
+  `🌙 今夜の振り返り数秘\n\n今日、何か「違和感」を感じた瞬間はありましたか？\n\n数秘術では、違和感は「魂のナビ」。見て見ぬふりをせず、その感覚を信じてみてください。\n\n✦ あなたの運命数は？→ ${SITE_URL}`,
+];
+
+function getFallbackTweet(dayOfYear: number, _todayNumber: number): string {
+  return FALLBACK_POOL[dayOfYear % FALLBACK_POOL.length];
 }
 
+// ── Cron handler ──
+
 export async function GET(req: Request) {
-  // Verify cron secret (Vercel sends this header)
   const authHeader = req.headers.get('authorization');
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -167,18 +206,20 @@ export async function GET(req: Request) {
 
   try {
     const hour = getJSTHour();
-    const category = getCategory(hour);
     const todayNumber = getTodayNumber();
+    const dayOfYear = getDayOfYear();
+    const angle = pickAngle(dayOfYear, hour);
 
-    const tweetText = await generateTweet(category, todayNumber);
+    const tweetText = await generateTweet(todayNumber, dayOfYear, hour);
 
     // Post to X
     const result = await twitterClient.v2.tweet(tweetText);
 
     return NextResponse.json({
       success: true,
-      category,
+      angle: angle.hook,
       todayNumber,
+      dayOfYear,
       tweetId: result.data.id,
       text: tweetText,
     });
