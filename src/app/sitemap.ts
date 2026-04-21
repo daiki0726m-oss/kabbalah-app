@@ -30,7 +30,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  // Destiny number deep-dive articles (1-9)
+  // Destiny number deep-dive articles (blog)
   const destinyArticles: MetadataRoute.Sitemap = Array.from({ length: 9 }, (_, i) => ({
     url: `${BASE_URL}/blog/destiny-number/${i + 1}`,
     lastModified: now,
@@ -38,5 +38,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  return [...mainPages, ...blogArticles, ...destinyArticles];
+  // Destiny number SEO pages (high priority)
+  const destinyNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 22, 33];
+  const destinySeoPages: MetadataRoute.Sitemap = destinyNumbers.map((num) => ({
+    url: `${BASE_URL}/destiny/${num}`,
+    lastModified: now,
+    changeFrequency: 'monthly' as const,
+    priority: 0.9,
+  }));
+
+  return [...mainPages, ...blogArticles, ...destinyArticles, ...destinySeoPages];
 }

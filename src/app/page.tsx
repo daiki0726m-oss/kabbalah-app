@@ -353,6 +353,38 @@ export default function KabbalahLP() {
           </div>
         </div>
       </section>
+      {/* ═══════════════════════════════════════════ */}
+      {/* ═══ ⑤.5 DESTINY NUMBERS GRID ═══ */}
+      {/* ═══════════════════════════════════════════ */}
+      <section className="w-full py-24 px-6 bg-[#0C0A14]">
+        <div className="max-w-4xl mx-auto">
+          <FadeIn>
+            <div className="text-center mb-14">
+              <p className="text-xs text-[#D4AF37] tracking-[0.25em] uppercase font-bold mb-4" style={{ fontFamily: 'Inter, sans-serif' }}>Destiny Numbers</p>
+              <h2 className="text-2xl md:text-3xl font-light text-[#F5F0E8] tracking-widest mb-4" style={{ fontFamily: '"Noto Serif JP", serif' }}>
+                12の運命数を知る
+              </h2>
+              <p className="text-sm text-[#7A7068] tracking-widest">あなたの運命数はどれ？ 各数字の性格・才能・相性を詳しく解説</p>
+            </div>
+          </FadeIn>
+
+          <div className="grid grid-cols-3 md:grid-cols-4 gap-4">
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 22, 33].map((num, i) => (
+              <FadeIn key={num} delay={0.05 * (i + 1)}>
+                <a href={`/destiny/${num}`} className="group block bg-white/[0.03] border border-white/[0.08] rounded-sm p-4 md:p-5 text-center hover:border-[#D4AF37]/40 hover:bg-[#D4AF37]/5 transition-all duration-300">
+                  <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/20 flex items-center justify-center group-hover:border-[#D4AF37]/50 transition-colors">
+                    <span className="text-lg font-light text-[#D4AF37]" style={{ fontFamily: '"Noto Serif JP", serif' }}>{num}</span>
+                  </div>
+                  <p className="text-xs text-[#F5F0E8] tracking-wider mb-1">運命数{num}</p>
+                  <p className="text-[10px] text-[#7A7068] tracking-wider hidden md:block">
+                    {num === 1 ? '始まりの力' : num === 2 ? '直感の泉' : num === 3 ? '創造の母' : num === 4 ? '秩序の柱' : num === 5 ? '変容の炎' : num === 6 ? '調和の中心' : num === 7 ? '探究の光' : num === 8 ? '豊穣の力' : num === 9 ? '完成の器' : num === 11 ? '直感の門' : num === 22 ? '王国の創造者' : '聖なる教師'}
+                  </p>
+                </a>
+              </FadeIn>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* ═══════════════════════════════════════════ */}
       {/* ═══ ⑥ FORM — Ritualized CTA ═══ */}
